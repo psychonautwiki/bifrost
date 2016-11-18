@@ -35,7 +35,8 @@ module.exports = function* ({app, log}) {
             rootValue: baseQuerySchema.root(req, res),
             context: {
                 substances: new Substances({
-                    connector: new Connector()
+                    connector: new Connector({log}),
+                    log
                 })
             }
         })(req, res, next)

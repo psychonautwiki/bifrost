@@ -1,11 +1,6 @@
 'use strict';
 
-const bunyan = require('bunyan');
-
-const log = bunyan.createLogger({
-    name: 'lotgraph',
-    level: 'trace'
-});
+const log = require('./log');
 
 log.info(require('./ac'));
 

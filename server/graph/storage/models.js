@@ -3,8 +3,11 @@
 const _ = require('lodash');
 
 class Substances {
-    constructor({ connector }) {
-        this.connector = connector;
+    constructor({connector, log}) {
+        this._connector = connector;
+        this._log = log.child({
+            type: 'Substances'
+        });
     }
 
     _mapTextUrl(obj) {
@@ -18,10 +21,16 @@ class Substances {
         });
     }
 
+    _renderPagination({limit, offset}) {
+        return `${limit?`|limit=${limit}`:''}${offset?`|offset=${offset}`:''}`;
+    }
+
     * getSubstances({effect, query, limit, offset}) {
         if (effect && query) {
             throw new Error('Substances: `effect` and `query` are mutually exclusive.');
         }
+
+        this._log.trace('[getSubstances] effect: %s query: %s', effect, query);
 
         /* Delegate the search to a specific substance query */
         if (effect) {
@@ -32,8 +41,8 @@ class Substances {
 
         const articleQuery = query ? `:${query}` : 'Category:Psychoactive substance';
 
-        const res = yield* this.connector.get({
-            query: `[[${articleQuery}]]|limit=${limit}|offset=${offset}`
+        const res = yield* this._connector.get({
+            query: `[[${articleQuery}]]${this._renderPagination({limit, offset})}`
         });
 
         const results = _.get(res, 'query.results', {});
@@ -42,8 +51,10 @@ class Substances {
     }
 
     * getSubstanceEffects({substance, limit, offset}) {
-        const res = yield* this.connector.get({
-            query: `[[:${substance}]]|?Effect|limit=${limit}|offset=${offset}`
+        this._log.trace('[getSubstanceEffects] substance: %s', substance);
+
+        const res = yield* this._connector.get({
+            query: `[[:${substance}]]|?Effect${this._renderPagination({limit, offset})}`
         });
 
         const results = _.get(res, `query.results.${substance}.printouts.Effect`, {});
@@ -56,6 +67,8 @@ class Substances {
             throw new Error('Effects: `substance` and `query` are mutually exclusive.');
         }
 
+        this._log.trace('[getEffects] substance: %s query: %s', substance, query);
+
         /* Delegate the search to a specific substance query */
         if (substance) {
             return yield* this.getSubstanceEffects({
@@ -65,8 +78,8 @@ class Substances {
 
         const articleQuery = query ? `Effect::${query}` : 'Category:Effect';
 
-        const res = yield* this.connector.get({
-            query: `[[${articleQuery}]]|limit=${limit}|offset=${offset}`
+        const res = yield* this._connector.get({
+            query: `[[${articleQuery}]]${this._renderPagination({limit, offset})}`
         });
 
         const results = _.get(res, 'query.results', {});
@@ -75,8 +88,10 @@ class Substances {
     }
 
     * getEffectSubstances({effect, limit, offset}) {
-        const res = yield* this.connector.get({
-            query: `[[Effect::${effect}]]|[[Category:Substance]]|limit=${limit}|offset=${offset}`
+        this._log.trace('[getEffectSubstances] effect: %s', effect);
+
+        const res = yield* this._connector.get({
+            query: `[[Effect::${effect}]]|[[Category:Substance]]${this._renderPagination({limit, offset})}`
         });
 
         const results = _.get(res, 'query.results', {});

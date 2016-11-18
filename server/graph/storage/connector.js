@@ -8,6 +8,10 @@ const querystring = require('querystring');
 const rp = require('request-promise');
 const DataLoader = require('dataloader');
 
+const baseLog = require('../../log');
+
+const LruMap = require('collections/lru-map');
+
 const ROOT_URL = 'https://psychonautwiki.org/w/api.php';
 
 const qsDefaults = {
@@ -15,15 +19,63 @@ const qsDefaults = {
     format: 'json'
 };
 
-const eTagCache = {};
+class BifrostCache {
+    constructor({log}) {
+        this._log = log.child({
+            type: 'bifrostCache'
+        });
+
+        this.backend = new LruMap({}, 1024);
+    }
+
+    getExpireIfNeeded(key, ttl) {
+        this._log.trace('Looking up key: `%s`', key);
+
+        const item = this.backend.get(key);
+
+        if (!item) {
+            return null;
+        }
+
+        if ((Date.now() - item.ts) > ttl) {
+            this._log.trace('Key invalidated, removing: `%s` (ttl: %s)', key, Date.now() - item.ts);
+
+            this.backend.delete(key);
+
+            return null;
+        }
+
+        return item.val;
+    }
+
+    add(key, val) {
+        this._log.trace('Adding key: `%s`', key);
+
+        return this.backend.set(key, {
+            ts: Date.now(), val
+        });
+    }
+}
+
+const sharedBifrostCache = new BifrostCache({
+    log: baseLog
+});
 
 class PwConnector {
-    constructor() {
-        this.rp = rp;
+    constructor({log}) {
+        // two minutes
+        this.LRU_LIFETIME = 2 * 60 * 1000;
 
-        this.loader = new DataLoader(this.fetch.bind(this), {
-            batch: false
+        this._rp = rp;
+        this._log = log.child({
+            type: 'PwConnector'
         });
+
+        this._loader = new DataLoader(this.fetch.bind(this), {
+            batch: true
+        });
+
+        this._cache = sharedBifrostCache;
     }
 
     fetch(urls) {
@@ -31,50 +83,51 @@ class PwConnector {
             json: true,
             resolveWithFullResponse: true,
             headers: {
-                'user-agent': 'GitHunt'
+                'user-agent': 'Bifrost'
             }
         };
 
-        const rp = this.rp;
+        const ctx = this;
 
-        return Promise.all(urls.map(url => {
-            const cachedRes = eTagCache[url];
+        this.ts = Date.now();
+        return Promise.all(
+            urls.map(
+                Promise.coroutine(function* (url) {
+                    try {
+                        ctx._log.debug('Trying to load url: `%s`', url);
 
-            if (cachedRes && cachedRes.eTag) {
-                options.headers['If-None-Match'] = cachedRes.eTag;
-            }
+//                        const cacheItem = ctx._cache.getExpireIfNeeded(url, ctx.LRU_LIFETIME);
 
-            return Promise.coroutine(function* () {
-                try {
-                    const response = yield rp(
-                        _.assign({
-                            uri: url
-                        }, options)
-                    );
+//                        if (cacheItem) {
+//                            return cacheItem;
+//                        }
 
-                    const body = response.body;
+                        const response = yield ctx._rp(
+                            _.assign({
+                                uri: url
+                            }, options)
+                        );
 
-                    eTagCache[url] = {
-                        result: body,
-                        eTag: response.headers.etag
-                    };
+//                        ctx._cache.add(url, response.body);
 
-                    return body;
-                } catch (err) {
-                    if (err.statusCode !== 304) {
+                        return response.body;
+                    } catch (err) {
+                        ctx._log.debug('Failed to load url: `%s`', err.message);
+
                         throw err;
                     }
-
-                    return cachedRes.result;
-                }
-            })();
-        }));
+                })
+            )
+        );
     }
 
     *get(args) {
         const params = querystring.encode(_.defaults(args, qsDefaults));
 
-        return yield this.loader.load(`${ROOT_URL}?${params}`);
+
+        const val = yield this._loader.load(`${ROOT_URL}?${params}`);
+
+        return val;
     }
 }
 
