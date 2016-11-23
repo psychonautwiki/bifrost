@@ -22,7 +22,7 @@ class Substances {
     }
 
     _renderPagination({limit, offset}) {
-        return `${limit?`|limit=${limit}`:''}${offset?`|offset=${offset}`:''}`;
+        return `${limit ? `|limit=${limit}` : ''}${offset ? `|offset=${offset}` : ''}`;
     }
 
     * getSubstances({effect, query, limit, offset}) {
