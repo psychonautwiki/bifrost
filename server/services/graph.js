@@ -15,8 +15,8 @@ const {Substances} = require('../graph/storage/models');
 module.exports = function* ({app, log}) {
     const baseQuerySchema = querySchema({log});
 
-    app.use('/graphiql', graphiqlExpress({
-        endpointURL: '/graph',
+    app.get('/', graphiqlExpress({
+        endpointURL: '/',
         query:
 `{
   substances {
@@ -29,7 +29,7 @@ module.exports = function* ({app, log}) {
 }`,
     }));
 
-    app.use('/', bodyParser.json(), (req, res, next) =>
+    app.post('/', bodyParser.json(), (req, res, next) =>
         graphqlExpress({
             schema: baseQuerySchema.schema,
             rootValue: baseQuerySchema.root(req, res),
