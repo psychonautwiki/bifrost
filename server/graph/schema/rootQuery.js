@@ -57,16 +57,15 @@ type SubstanceRoa {
 }
 
 type SubstanceRoaTypes {
+    oral: SubstanceRoa
+    sublingual: SubstanceRoa
     buccal: SubstanceRoa
-    inhalation: SubstanceRoa
-    insufflation: SubstanceRoa
+    insufflated: SubstanceRoa
+    rectal: SubstanceRoa
+    transdermal: SubstanceRoa
+    subcutaneous: SubstanceRoa
     intramuscular: SubstanceRoa
     intravenous: SubstanceRoa
-    oral: SubstanceRoa
-    rectal: SubstanceRoa
-    smoked: SubstanceRoa
-    sublingual: SubstanceRoa
-    vaporized: SubstanceRoa
 }
 
 type Substance {
