@@ -1,10 +1,13 @@
 'use strict';
 
+const Promise = require('bluebird');
 const _ = require('lodash');
 
 class Substances {
-    constructor({connector, log}) {
+    constructor({connector, pwPropParser, log}) {
         this._connector = connector;
+        this._pwPropParser = pwPropParser;
+
         this._log = log.child({
             type: 'Substances'
         });
@@ -23,6 +26,17 @@ class Substances {
 
     _renderPagination({limit, offset}) {
         return `${limit ? `|limit=${limit}` : ''}${offset ? `|offset=${offset}` : ''}`;
+    }
+
+    * getSemanticSubstanceProps(substance) {
+        this._log.trace('[getSemanticSubstanceProps] substance: %s', substance);
+
+        const res = yield* this._connector.get({
+            action: 'browsebysubject',
+            subject: substance
+        });
+
+        return this._pwPropParser.parseFromSMW(res);
     }
 
     * getSubstances({effect, query, limit, offset}) {
@@ -47,7 +61,19 @@ class Substances {
 
         const results = _.get(res, 'query.results', {});
 
-        return this._mapTextUrl(results);
+        const mappedResults = yield Promise.all(
+            this._mapTextUrl(results).map(item =>
+                Promise.coroutine(function* (_item) {
+                    const semanticData = yield* this.getSemanticSubstanceProps(_item.name);
+
+                    console.log(require('util').inspect(semanticData,{depth: null}));
+
+                    return _.merge(item, semanticData);
+                }).call(this, item)
+            )
+        );
+
+        return mappedResults;
     }
 
     * getSubstanceEffects({substance, limit, offset}) {

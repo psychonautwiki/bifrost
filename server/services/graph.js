@@ -12,6 +12,15 @@ const querySchema = require('../graph');
 const Connector = require('../graph/storage/connector');
 const {Substances} = require('../graph/storage/models');
 
+const SMWDataArbitrator = require('../graph/helpers/smwDataArbitrator');
+const smwDataArbitrator = new SMWDataArbitrator();
+
+const PWPropParser = require('../graph/helpers/pwPropParser');
+
+const pwPropParser = new PWPropParser({
+    smwDataArbitrator
+});
+
 module.exports = function* ({app, log}) {
     const baseQuerySchema = querySchema({log});
 
@@ -36,6 +45,7 @@ module.exports = function* ({app, log}) {
             context: {
                 substances: new Substances({
                     connector: new Connector({log}),
+                    pwPropParser,
                     log
                 })
             }
