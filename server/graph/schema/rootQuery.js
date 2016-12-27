@@ -30,7 +30,7 @@ type SubstanceRoaDurationRange implements RoaRange {
 }
 
 type SubstanceRoaDose {
-    unit: String
+    units: String
 
     treshold: String
     heavy: String
