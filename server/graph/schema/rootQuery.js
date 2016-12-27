@@ -2,8 +2,8 @@
 
 const RootQuery = `
 type SubstanceClass {
-    chemical: String
-    psychoactive: String
+    chemical: [String]
+    psychoactive: [String]
 }
 
 type SubstanceTolerance {
