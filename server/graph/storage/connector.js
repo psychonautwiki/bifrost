@@ -22,18 +22,22 @@ const qsDefaults = {
 /*
     Caching algorithm:
 
+    0. let synchronous be true
     1. check if item is in store
     2. if in store, check ttl
         2.1 let requireRefresh be false
         2.2 let refreshInProgress be false
         2.3 if expired, let requireRefresh be true
         2.4 if refreshInProgress is true
-            2.4.1 return existing data; bail
-        2.5 return existing data
-        2.6 let refreshInProgress be true
-    3. obtain new data in background
-    3.1 let requireRefresh be false
-    3.2 let refreshInProgress be false
+            2.4.1 return existing data; go to 3.
+        2.5 let refreshInProgress be true
+        2.6 let synchronous be false
+        2.7 return existing data
+    3. obtain new data, in background if synchronous is false
+    3.1 insert new data into cache
+    3.2 let requireRefresh be false
+    3.3 let refreshInProgress be false
+    3.4 return new data if synchronous is true
 */
 
 class BifrostCache {
@@ -127,6 +131,8 @@ class PwConnector {
     }
 
     * _fetchRefreshedCacheItem(url) {
+        this._log.trace('Fetching item: `%s`', url);
+
         const response = yield this._fetchUrl(url);
 
         this._cache.add(url, response);
@@ -148,13 +154,9 @@ class PwConnector {
         const {val, requireRefresh} = cacheState;
 
         if (requireRefresh && !this._cache.isBeingRefreshed(url)) {
-            this._cache.markBeingRefreshed(url, true);
+            this._unwindMarkAndRefreshItem(url);
 
-            const newVal = yield* this._fetchRefreshedCacheItem(url);
-
-            this._cache.markBeingRefreshed(url, false);
-
-            return newVal.body;
+            this._log.trace('Returning expired value of item: `%s`', url);
         }
 
         return val.body;
@@ -171,6 +173,27 @@ class PwConnector {
 
         return yield this._loader.load(`${ROOT_URL}?${params}`);
     }
+
+    _unwindMarkAndRefreshItem(url) {
+        this._log.trace('Marking item as being refreshed and unwinding update: `%s`', url);
+
+        /*
+         * This method ensures the synchronous marking
+         * of an item being refreshed before unwinding
+         * the markAndRefreshItem routine from this
+         * cycle.
+         */
+
+        this._cache.markBeingRefreshed(url, true);
+
+        /*
+         * This invocation escapes the synchronous
+         * context of the generator being inhabited.
+         */
+        process.nextTick(() =>
+            this._markAndRefreshItemAsync(url)
+        );
+    }
 }
 
 PwConnector.prototype._loadUrl = Promise.coroutine(function* (url) {
@@ -183,6 +206,16 @@ PwConnector.prototype._loadUrl = Promise.coroutine(function* (url) {
 
         throw err;
     }
+});
+
+PwConnector.prototype._markAndRefreshItemAsync = Promise.coroutine(function* (url) {
+    this._log.trace('[markAndRefreshAsync] Fetching item: `%s`', url);
+
+    yield* this._fetchRefreshedCacheItem(url);
+
+    this._log.trace('[markAndRefreshAsync] Marking item as not being refreshed: `%s`', url);
+
+    this._cache.markBeingRefreshed(url, false);
 });
 
 module.exports = PwConnector;
