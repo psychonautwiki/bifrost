@@ -66,7 +66,7 @@ class Substances {
                 Promise.coroutine(function* (_item) {
                     const semanticData = yield* this.getSemanticSubstanceProps(_item.name);
 
-                    process.env.DEBUG && console.log(require('util').inspect(semanticData,{depth: null}));
+                    process.env.DUMP_SEMANTICS && this._log.trace('Processed semantic data', semanticData);
 
                     return _.merge(item, semanticData);
                 }).call(this, item)
