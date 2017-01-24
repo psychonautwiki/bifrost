@@ -9,6 +9,8 @@ const {makeExecutableSchema} = require('graphql-tools');
 
 const schema = require('./schema/rootQuery');
 
+const features = require('../util/features');
+
 const _GeneratorFunction = (function*(){}).constructor;
 const crMap = obj =>
     _.mapValues(obj, robj =>
@@ -19,7 +21,7 @@ const crMap = obj =>
         )
     );
 
-const resolvers = crMap({
+const baseResolvers = {
     Query: {
         * substances(data, args, ctx) {
             ctx.args = args;
@@ -50,7 +52,17 @@ const resolvers = crMap({
             );
         }
     }
-});
+};
+
+if (features.has('plebiscite')) {
+    _.assign(baseResolvers.Query, {
+        * erowid(data, {substance, offset, limit}, {plebiscite}) {
+            return yield* plebiscite.find({substance, offset, limit});
+        }
+    });
+}
+
+const resolvers = crMap(baseResolvers);
 
 class PwEdge {
     get schema() {

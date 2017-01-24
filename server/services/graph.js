@@ -1,11 +1,23 @@
 'use strict';
 
+const _ = require('lodash');
+
 const {
     graphqlExpress,
     graphiqlExpress
 } = require('graphql-server-express');
 
 const bodyParser = require('body-parser');
+
+const featureContext = {};
+
+const features = require('../util/features');
+
+if (features.has('plebiscite')) {
+    _.assign(featureContext, {
+        plebiscite: require('../features/plebiscite')
+    });
+}
 
 const querySchema = require('../graph');
 
@@ -42,13 +54,13 @@ module.exports = function* ({app, log}) {
         graphqlExpress({
             schema: baseQuerySchema.schema,
             rootValue: baseQuerySchema.root(req, res),
-            context: {
+            context: _.assign({}, {
                 substances: new Substances({
                     connector: new Connector({log}),
                     pwPropParser,
                     log
                 })
-            }
+            }, featureContext)
         })(req, res, next)
     );
 };

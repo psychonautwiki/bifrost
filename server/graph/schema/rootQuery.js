@@ -7,7 +7,7 @@ const features = require('../../util/features');
 let plebisciteSchema = '';
 let plebisciteRootQuery = '';
 
-if (features.has('plebsicite')) {
+if (features.has('plebiscite')) {
     plebisciteSchema = `
         type ErowidMeta {
             erowidId: ID!
@@ -33,7 +33,7 @@ if (features.has('plebsicite')) {
             substance: String
 
             meta: ErowidMeta
-            substanceInfo: ErowidSubstanceInfo
+            substanceInfo: [ErowidSubstanceInfo]
 
             erowidNotes: [String]
             pullQuotes: [String]
@@ -46,7 +46,9 @@ if (features.has('plebsicite')) {
         erowid(
             substance: String
             # author
-            # pagination
+
+            limit: Int=50
+            offset: Int=0
         ): [Erowid]
     `;
 }
@@ -160,8 +162,8 @@ type Query {
         # Name of the substance you are looking for
     	query: String
 
-        limit: Int=50
-        Offset: Int=0
+        limit: Int=10
+        offset: Int=0
     ): [Substance]
 
     effects(
@@ -172,7 +174,7 @@ type Query {
         query: String
 
         limit: Int=50
-        Offset: Int=0
+        offset: Int=0
     ): [Effect]
 
     experiences(
