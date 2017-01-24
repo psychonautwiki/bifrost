@@ -2,7 +2,7 @@
 
 const log = require('./log');
 
-log.info(require('./ac'));
+log.info(require('./util/ac'));
 
 require('./testbed-bootstrap')(log);
 

@@ -1,5 +1,56 @@
 'use strict';
 
+const features = require('../../util/features');
+
+/* PLEBISCITE */
+
+let plebisciteSchema = '';
+let plebisciteRootQuery = '';
+
+if (features.has('plebsicite')) {
+    plebisciteSchema = `
+        type ErowidMeta {
+            erowidId: ID!
+
+            gender: String
+            published: String
+
+            year: Int
+            age: Int
+            views: Int
+        }
+
+        type ErowidSubstanceInfo {
+            amount: String
+            method: String
+            substance: String
+            form: String
+        }
+
+        type Erowid {
+            title: String
+            author: String
+            substance: String
+
+            meta: ErowidMeta
+            substanceInfo: ErowidSubstanceInfo
+
+            erowidNotes: [String]
+            pullQuotes: [String]
+
+            body: String
+        }
+    `;
+
+    plebisciteRootQuery = `
+        erowid(
+            substance: String
+            # author
+            # pagination
+        ): [Erowid]
+    `;
+}
+
 const RootQuery = `
 type SubstanceClass {
     chemical: [String]
@@ -99,6 +150,8 @@ type Experience {
 	effects: [Experience]
 }
 
+${plebisciteSchema}
+
 type Query {
     substances(
         # Name of the effect you want the substances of
@@ -126,6 +179,8 @@ type Query {
     	effect: String,
     	substance: String
     ): [Experience]
+
+    ${plebisciteRootQuery}
 }
 `;
 
