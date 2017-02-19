@@ -21,9 +21,13 @@ class Plebiscite {
     * find({substance, offset, limit}) {
         const collection = yield* this._getCollection();
 
-        return yield collection.find({
-            'substanceInfo.substance': substance
-        })
+        const query = {};
+
+        if (!substance === true) {
+            query['substanceInfo.substance'] = substance;
+        }
+
+        return yield collection.find(query)
         .sort({'meta.published': -1})
         .skip(offset)
         .limit(limit)
