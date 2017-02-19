@@ -119,6 +119,7 @@ type SubstanceRoaTypes {
     subcutaneous: SubstanceRoa
     intramuscular: SubstanceRoa
     intravenous: SubstanceRoa
+    smoked: SubstanceRoa
 }
 
 type Substance {
