@@ -85,8 +85,8 @@ type SubstanceRoaDurationRange implements RoaRange {
 type SubstanceRoaDose {
     units: String
 
-    threshold: String
-    heavy: String
+    threshold: Float
+    heavy: Float
 
     common: SubstanceRoaRange
     light: SubstanceRoaRange
