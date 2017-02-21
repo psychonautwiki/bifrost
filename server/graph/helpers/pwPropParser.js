@@ -8,21 +8,21 @@ class PWPropParser {
 
         this._rgx = {
             /* durations */
-            range_dur: /(.*?)_(.*?)_(.*?)_time/i,
+            range_dur: /(.*?)_(.*?)_(.*?)_time$/i,
 
             /* doses */
-            range_dose: /(.*?)_(.*?)_(.*?)_dose/i,
-            def_dose: /(.*?)_(.*?)_dose/i,
+            range_dose: /(.*?)_(.*?)_(.*?)_dose$/i,
+            def_dose: /(.*?)_(.*?)_dose$/i,
 
             /* bioavailability */
-            def_bioavailability: /(.*?)_(.*?)_bioavailability/i,
+            def_bioavailability: /(.*?)_(.*?)_bioavailability$/i,
 
             /* units */
-            dose_units: /(.*?)_dose_units/i,
-            roa_time_units: /(.*?)_(.*?)_time_units/i,
+            dose_units: /(.*?)_dose_units$/i,
+            roa_time_units: /(.*?)_(.*?)_time_units$/i,
 
             /* meta: tolerance */
-            meta_tolerance_time: /Time_to_(.*?)_tolerance/i,
+            meta_tolerance_time: /Time_to_(.*?)_tolerance$/i,
 
             /* misc */
             wt_prop_glob: /\[\[(.*?)\]\]/g,
@@ -67,8 +67,9 @@ class PWPropParser {
 
             switch (true) {
                 /* durations */
-
                 case this._rgx.range_dur.test(propName):
+                    console.log(propName);
+
                     rx = this._rgx.range_dur.exec(propName);
 
                     _.set(procPropMap, `roa.${rx[1]}.duration.${rx[3]}.${rx[2]}`, prop);

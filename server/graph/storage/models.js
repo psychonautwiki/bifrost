@@ -73,6 +73,8 @@ class Substances {
             )
         );
 
+        console.log(require('util').inspect(mappedResults, {depth:null}));
+
         return mappedResults;
     }
 
