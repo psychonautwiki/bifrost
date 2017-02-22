@@ -41,6 +41,30 @@ const baseResolvers = {
             return yield* ctx.substances.getSubstanceEffects(
                 _.assign({}, {substance}, ctx.args)
             );
+        },
+
+        * dangerousInteraction(data, __, ctx) {
+            const interactions = _.get(data, 'dangerousInteraction', null);
+
+            if (!interactions) {
+                return null;
+            }
+
+            return Promise.all(interactions.map(
+                Promise.coroutine(function* (substanceName) {
+                    const results = yield* ctx.substances.getSubstances({
+                        query: substanceName,
+                        limit: 1,
+                        offset: 0
+                    });
+
+                    if (_.size(results) === 1) {
+                        return results[0];
+                    }
+
+                    return null;
+                })
+            ));
         }
     },
     Effect: {

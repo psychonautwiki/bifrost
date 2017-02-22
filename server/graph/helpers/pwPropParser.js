@@ -68,8 +68,6 @@ class PWPropParser {
             switch (true) {
                 /* durations */
                 case this._rgx.range_dur.test(propName):
-                    console.log(propName);
-
                     rx = this._rgx.range_dur.exec(propName);
 
                     _.set(procPropMap, `roa.${rx[1]}.duration.${rx[3]}.${rx[2]}`, prop);
