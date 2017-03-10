@@ -135,6 +135,8 @@ type Substance {
     tolerance: SubstanceTolerance
     roa: SubstanceRoaTypes
 
+    summary: String
+
     addictionPotential: String
     crossTolerance: [String]
     dangerousInteraction: [Substance]

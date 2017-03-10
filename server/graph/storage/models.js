@@ -3,10 +3,62 @@
 const Promise = require('bluebird');
 const _ = require('lodash');
 
+/*
+    ABSTRACT GENERATION
+*/
+
+const cheerio = require('cheerio');
+
+class AbstractGenerator {
+    _sanitize(text) {
+        return text
+            // trim opening paragraph
+            .trim()
+            // remove reference markers
+            .replace(/\[(.*?)\]/, '')
+            // break by lines
+            .split('\n')
+            // trim lines -- accounting for \r\n linebreaks
+            .map(line => line.trim())
+            // take first two paragraphs
+            .slice(0,2)
+            // reconcile into single blob
+            .join(' ')
+            .replace(/\s\s+/);
+    }
+
+    _envelope(extract) {
+        const $_base = cheerio(`<section>${extract}</section>`);
+
+        return $_base.find('section > p').text();
+    }
+
+    _unwrap(res) {
+        const extract = _.get(res, 'parse.text.*', null);
+
+        if (!extract) {
+            return null;
+        }
+
+        return extract;
+    }
+
+    abstract(res) {
+        try {
+            return this._sanitize(this._envelope(this._unwrap(res)));
+        } catch(err) {
+            return err;
+        }
+    }
+}
+
 class Substances {
     constructor({connector, pwPropParser, log}) {
         this._connector = connector;
         this._pwPropParser = pwPropParser;
+
+        // special controllers
+        this._abstractGenerator = new AbstractGenerator();
 
         this._log = log.child({
             type: 'Substances'
@@ -86,6 +138,23 @@ class Substances {
         const results = _.get(res, `query.results.${substance}.printouts.Effect`, {});
 
         return this._mapTextUrl(results);
+    }
+
+    * getSubstanceAbstract({substance}) {
+        this._log.trace('[getSubstanceAbstract] substance: %s', substance);
+
+        const abstractPayload = yield* this._connector.get({
+            action: 'parse',
+            page: substance,
+            prop: 'text',
+            section: 0
+        });
+
+        const targetSummary = this._abstractGenerator.abstract(abstractPayload);
+
+        this._log.trace('[getSubstanceAbstract:result] %s', targetSummary);
+
+        return targetSummary;
     }
 
     * getEffects({substance, query, limit, offset}) {

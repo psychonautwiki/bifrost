@@ -65,6 +65,14 @@ const baseResolvers = {
                     return null;
                 })
             ));
+        },
+
+        * summary(data, args, ctx) {
+            const substance = _.get(data, 'name');
+
+            return yield* ctx.substances.getSubstanceAbstract(
+                _.assign({}, {substance}, ctx.args)
+            );
         }
     },
     Effect: {

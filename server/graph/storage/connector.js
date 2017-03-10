@@ -10,8 +10,6 @@ const DataLoader = require('dataloader');
 
 const baseLog = require('../../log');
 
-const LruMap = require('collections/lru-map');
-
 const ROOT_URL = 'https://psychonautwiki.org/w/api.php';
 
 const qsDefaults = {
@@ -86,7 +84,7 @@ class BifrostCache {
     }
 
     add(key, val) {
-        this._log.trace('Adding key: `%s`', key);
+        this._log.trace('Adding key: `%s\'', key);
 
         return this._backend.set(key, {
             ts: Date.now(), val
