@@ -1,7 +1,5 @@
 'use strict';
 
-const assert = require('assert');
-
 const _ = require('lodash');
 const Promise = require('bluebird');
 
@@ -46,7 +44,7 @@ const baseResolvers = {
         * dangerousInteraction(data, __, ctx) {
             const interactions = _.get(data, 'dangerousInteraction', null);
 
-            if (!interactions) {
+            if (!_.isArray(interactions)) {
                 return null;
             }
 
