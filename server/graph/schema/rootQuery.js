@@ -138,8 +138,8 @@ type Substance {
     summary: String
 
     addictionPotential: String
-    crossTolerance: [String]
-    dangerousInteraction: [Substance]
+    crossTolerances: [String]
+    dangerousInteractions: [Substance]
 }
 
 type Effect {

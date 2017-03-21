@@ -31,13 +31,13 @@ class PWPropParser {
 
         this._flatMetaProps = new Map([
             ['addiction_potential', 'addictionPotential'],
-            ['dangerousinteraction', 'dangerousInteraction'],
+            ['dangerousinteraction', 'dangerousInteractions'],
             ['effect', 'effects']
         ]);
 
         this._mappedMetaProps = new Map([
             ['cross-tolerance', prop => {
-                const propTarget = 'crossTolerance';
+                const propTarget = 'crossTolerances';
 
                 if (!this._rgx.wt_prop_glob.test(prop)) {
                     return [propTarget, []];
