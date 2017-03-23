@@ -1,7 +1,11 @@
 'use strict';
 
+const crypto = require('crypto');
+
 const Promise = require('bluebird');
 const _ = require('lodash');
+
+const constants = require('../../util/constants');
 
 /*
     ABSTRACT GENERATION
@@ -46,11 +50,33 @@ class AbstractGenerator {
     abstract(res) {
         try {
             return this._sanitize(this._envelope(this._unwrap(res)));
-        } catch(err) {
+        } catch (err) {
             return err;
         }
     }
 }
+
+/*
+    IMAGE URL COMPUTATION
+*/
+
+const cdnURL = constants.get('cdn');
+const thumbSize = constants.get('thumbSize');
+
+const buildImage = fileName => {
+    const fileNameHash = crypto.createHash('md5')
+                               .update(fileName)
+                               .digest()
+                               .toString('hex');
+
+    const imageThumbnail = `${cdnURL}w/thumb.php?f=${fileName}&width=${thumbSize}`;
+    const imageURL = `${cdnURL}w/images/${fileNameHash[0]}/${fileNameHash.slice(0,2)}/${fileName}`;
+
+    return {
+        thumb: imageThumbnail,
+        image: imageURL
+    };
+};
 
 class Substances {
     constructor({connector, pwPropParser, log}) {
@@ -155,6 +181,26 @@ class Substances {
         this._log.trace('[getSubstanceAbstract:result] %s', targetSummary);
 
         return targetSummary;
+    }
+
+    * getSubstanceImages({substance}) {
+        this._log.trace('[getSubstanceImages] substance: %s', substance);
+
+        const imagePayload = yield* this._connector.get({
+            action: 'parse',
+            page: substance,
+            prop: 'images'
+        });
+
+        const images = _.get(imagePayload, 'parse.images', null);
+
+        this._log.trace('[getSubstanceImages:result] %s', images);
+
+        if (!_.isArray(images)) {
+            return null;
+        }
+
+        return images.map(buildImage);
     }
 
     * getEffects({substance, query, limit, offset}) {

@@ -122,6 +122,11 @@ type SubstanceRoaTypes {
     smoked: SubstanceRoa
 }
 
+type SubstanceImage {
+    thumb: String
+    image: String
+}
+
 type Substance {
     name: String
     url: String
@@ -136,6 +141,7 @@ type Substance {
     roa: SubstanceRoaTypes
 
     summary: String
+    images: [SubstanceImage]
 
     addictionPotential: String
     crossTolerances: [String]
