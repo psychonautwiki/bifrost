@@ -41,7 +41,7 @@ const baseResolvers = {
             );
         },
 
-        * dangerousInteraction(data, __, ctx) {
+        * dangerousInteractions(data, __, ctx) {
             const interactions = _.get(data, 'dangerousInteraction', null);
 
             if (!_.isArray(interactions)) {
@@ -69,6 +69,14 @@ const baseResolvers = {
             const substance = _.get(data, 'name');
 
             return yield* ctx.substances.getSubstanceAbstract(
+                _.assign({}, {substance}, ctx.args)
+            );
+        },
+
+        * images(data, args, ctx) {
+            const substance = _.get(data, 'name');
+
+            return yield* ctx.substances.getSubstanceImages(
                 _.assign({}, {substance}, ctx.args)
             );
         }
