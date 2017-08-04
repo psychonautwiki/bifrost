@@ -1,5 +1,7 @@
 'use strict';
 
+const opticsAgent = require('optics-agent');
+
 const log = require('./log');
 
 log.info(require('./util/ac'));
@@ -10,6 +12,8 @@ const async = require('bluebird').coroutine;
 
 const express = require('express');
 const app = express();
+
+app.use(opticsAgent.middleware());
 
 const graphRoutes = require('./services/graph');
 
