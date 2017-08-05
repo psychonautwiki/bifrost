@@ -56,7 +56,7 @@ module.exports = function* ({app, log}) {
 
     app.post('/', bodyParser.json(), (req, res, next) =>
         graphqlExpress({
-            schema: baseQuerySchema.schema,
+            schema: opticsAgent.instrumentSchema(baseQuerySchema.schema),
             rootValue: baseQuerySchema.root(req, res),
             context: _.assign({}, {
                 substances: new Substances({
