@@ -2,6 +2,8 @@
 
 const _ = require('lodash');
 
+const opticsAgent = require('optics-agent');
+
 const {
     graphqlExpress,
     graphiqlExpress
@@ -36,6 +38,8 @@ const pwPropParser = new PWPropParser({
 module.exports = function* ({app, log}) {
     const baseQuerySchema = querySchema({log});
 
+    app.use(opticsAgent.middleware());
+
     app.get('/', graphiqlExpress({
         endpointURL: '/',
         query:
@@ -59,7 +63,8 @@ module.exports = function* ({app, log}) {
                     connector: new Connector({log}),
                     pwPropParser,
                     log
-                })
+                }),
+                opticsContext: opticsAgent.context(req)
             }, featureContext)
         })(req, res, next)
     );
