@@ -44,12 +44,20 @@ module.exports = function* ({app, log}) {
         endpointURL: '/',
         query:
 `{
-  substances {
-    name
-
+  substances(query: "Armodafinil") {
     effects {
       name
+      substances {
+        addictionPotential
+        crossTolerances
+        featured
+        name
+        summary
+        url
+      }
+      url
     }
+    name
   }
 }`,
     }));
