@@ -104,6 +104,7 @@ type SubstanceRoaDuration {
 }
 
 type SubstanceRoa {
+    name: String
     dose: SubstanceRoaDose
     duration: SubstanceRoaDuration
     bioavailability: SubstanceRoaRange
@@ -138,7 +139,9 @@ type Substance {
 
     class: SubstanceClass
     tolerance: SubstanceTolerance
+    
     roa: SubstanceRoaTypes
+    roas: [SubstanceRoa]
 
     summary: String
     images: [SubstanceImage]

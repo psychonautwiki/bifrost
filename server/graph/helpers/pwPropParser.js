@@ -134,6 +134,16 @@ class PWPropParser {
             }
         });
 
+        // new ROA interface
+        const rawROAMap = _.get(procPropMap, 'roa', {});
+
+        const mappedROAs = _.chain(rawROAMap)
+                            .keys()
+                            .map(key => _.merge(_.get(rawROAMap, key), {name: key}))
+                            .value();
+
+        _.assign(procPropMap, { roas: mappedROAs });
+
         return procPropMap;
     }
 
