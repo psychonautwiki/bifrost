@@ -13,6 +13,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "apollo-engine": "^0.8.1",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
     "bunyan": "^1.8.12",
@@ -30,7 +31,6 @@
     "jwt-simple": "^0.5.1",
     "lodash": "^4.17.4",
     "mongodb": "2.2.33",
-    "optics-agent": "^1.1.9",
     "psychonautwiki-bifrost-testutils": "^1.0.0",
     "request": "^2.83.0",
     "request-promise": "^4.2.2"

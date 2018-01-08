@@ -1,6 +1,6 @@
 'use strict';
 
-const opticsAgent = require('optics-agent');
+const {Engine} = require('apollo-engine');
 
 const log = require('./log');
 
@@ -13,7 +13,22 @@ const async = require('bluebird').coroutine;
 const express = require('express');
 const app = express();
 
-app.use(opticsAgent.middleware());
+const apollo_key = process.env.ENGINE_API_KEY;
+
+if (apollo_key) {
+    const engine = new Engine({
+        engineConfig: {
+            apiKey: apollo_key
+        },
+
+        graphqlPort: process.env.PORT || 3000,
+        endpoint: '/'
+    });
+
+    engine.start();
+
+    app.use(engine.expressMiddleware());
+}
 
 const graphRoutes = require('./services/graph');
 

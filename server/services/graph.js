@@ -2,8 +2,6 @@
 
 const _ = require('lodash');
 
-const opticsAgent = require('optics-agent');
-
 const {
     graphqlExpress,
     graphiqlExpress
@@ -38,10 +36,12 @@ const pwPropParser = new PWPropParser({
 module.exports = function* ({app, log}) {
     const baseQuerySchema = querySchema({log});
 
-    app.use(opticsAgent.middleware());
-
     app.get('/', graphiqlExpress({
         endpointURL: '/',
+
+        tracing: true,
+        cacheControl: true,
+
         query:
 `{
     substances(query: "Armodafinil") {
@@ -80,20 +80,19 @@ module.exports = function* ({app, log}) {
             name url
         }
     }
-}`,
+}`
     }));
 
     app.post('/', bodyParser.json(), (req, res, next) =>
         graphqlExpress({
-            schema: opticsAgent.instrumentSchema(baseQuerySchema.schema),
+            schema: baseQuerySchema.schema,
             rootValue: baseQuerySchema.root(req, res),
             context: _.assign({}, {
                 substances: new Substances({
                     connector: new Connector({log}),
                     pwPropParser,
                     log
-                }),
-                opticsContext: opticsAgent.context(req)
+                })
             }, featureContext)
         })(req, res, next)
     );
