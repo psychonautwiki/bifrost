@@ -172,7 +172,10 @@ type Query {
         effect: String
 
         # Name of the substance you are looking for
-    	query: String
+        query: String
+        
+        # Chemical class of the substances you are looking for
+        chemicalClass: String
 
         limit: Int=10
         offset: Int=0

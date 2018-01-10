@@ -117,12 +117,19 @@ class Substances {
         return this._pwPropParser.parseFromSMW(res);
     }
 
-    * getSubstances({effect, query, limit, offset}) {
-        if (effect && query) {
-            throw new Error('Substances: `effect` and `query` are mutually exclusive.');
+    * getSubstances({chemicalClass, effect, query, limit, offset}) {
+        if ((effect && query) || (effect && chemicalClass) || (query && chemicalClass)) {
+            throw new Error('Substances: `chemicalClass`, `effect` and `query` are mutually exclusive.');
         }
 
-        this._log.trace('[getSubstances] effect: %s query: %s', effect, query);
+        this._log.trace('[getSubstances] effect: %s query: %s chemicalClass: %s', effect, query, chemicalClass);
+
+        /* delegate to chemicalClass search */
+        if (chemicalClass) {
+            return yield* this.getChemicalClassSubstances({
+                chemicalClass, limit, offset
+            });
+        }
 
         /* Delegate the search to a specific substance query */
         if (effect) {
@@ -232,7 +239,19 @@ class Substances {
         this._log.trace('[getEffectSubstances] effect: %s', effect);
 
         const res = yield* this._connector.get({
-            query: `[[Effect::${effect}]]|[[Category:Substance]]${this._renderPagination({limit, offset})}`
+            query: `[[Effect::${effect}]]|[[Category:Psychoactive substance]]${this._renderPagination({limit, offset})}`
+        });
+
+        const results = _.get(res, 'query.results', {});
+
+        return this._mapTextUrl(results);
+    }
+
+    * getChemicalClassSubstances({chemicalClass, limit, offset}) {
+        this._log.trace('[getChemicalClassSubstances] effect: %s', chemicalClass);
+
+        const res = yield* this._connector.get({
+            query: `[[Chemical class::${chemicalClass}]]|[[Category:Psychoactive substance]]${this._renderPagination({limit, offset})}`
         });
 
         const results = _.get(res, 'query.results', {});
