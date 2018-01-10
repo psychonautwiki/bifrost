@@ -174,8 +174,11 @@ type Query {
         # Name of the substance you are looking for
         query: String
         
-        # Chemical class of the substances you are looking for
+        # Chemical class of the substances you are looking for (i.e. tryptamine)
         chemicalClass: String
+
+        # Psychoactive class of the substances you are looking for (i.e. nootropic)
+        psychoactiveClass: String
 
         limit: Int=10
         offset: Int=0

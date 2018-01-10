@@ -117,8 +117,8 @@ class Substances {
         return this._pwPropParser.parseFromSMW(res);
     }
 
-    * getSubstances({chemicalClass, effect, query, limit, offset}) {
-        if ((effect && query) || (effect && chemicalClass) || (query && chemicalClass)) {
+    * getSubstances({chemicalClass, psychoactiveClass, effect, query, limit, offset}) {
+        if ([effect, query, chemicalClass, psychoactiveClass].filter(a => a).length !== 1) {
             throw new Error('Substances: `chemicalClass`, `effect` and `query` are mutually exclusive.');
         }
 
@@ -128,6 +128,13 @@ class Substances {
         if (chemicalClass) {
             return yield* this.getChemicalClassSubstances({
                 chemicalClass, limit, offset
+            });
+        }
+
+        /* delegate to psychoactiveClass search */
+        if (psychoactiveClass) {
+            return yield* this.getPsychoactiveClassSubstances({
+                psychoactiveClass, limit, offset
             });
         }
 
@@ -252,6 +259,18 @@ class Substances {
 
         const res = yield* this._connector.get({
             query: `[[Chemical class::${chemicalClass}]]|[[Category:Psychoactive substance]]${this._renderPagination({limit, offset})}`
+        });
+
+        const results = _.get(res, 'query.results', {});
+
+        return this._mapTextUrl(results);
+    }
+
+    * getPsychoactiveClassSubstances({psychoactiveClass, limit, offset}) {
+        this._log.trace('[getPsychoactiveClassSubstances] effect: %s', psychoactiveClass);
+
+        const res = yield* this._connector.get({
+            query: `[[Psychoactive class::${psychoactiveClass}]]|[[Category:Psychoactive substance]]${this._renderPagination({limit, offset})}`
         });
 
         const results = _.get(res, 'query.results', {});
