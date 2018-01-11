@@ -119,10 +119,10 @@ class Substances {
 
     * getSubstances({chemicalClass, psychoactiveClass, effect, query, limit, offset}) {
         if ([effect, query, chemicalClass, psychoactiveClass].filter(a => a).length >= 2) {
-            throw new Error('Substances: `chemicalClass`, `effect` and `query` are mutually exclusive.');
+            throw new Error('Substances: `chemicalClass`, `psychoactiveClass`, `effect` and `query` are mutually exclusive.');
         }
 
-        this._log.trace('[getSubstances] effect: %s query: %s chemicalClass: %s', effect, query, chemicalClass);
+        this._log.trace('[getSubstances] effect: %s query: %s chemicalClass: %s psychoactiveClass: %s', effect, query, psychoactiveClass);
 
         /* delegate to chemicalClass search */
         if (chemicalClass) {
