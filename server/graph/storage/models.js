@@ -118,7 +118,7 @@ class Substances {
     }
 
     * getSubstances({chemicalClass, psychoactiveClass, effect, query, limit, offset}) {
-        if ([effect, query, chemicalClass, psychoactiveClass].filter(a => a).length !== 1) {
+        if ([effect, query, chemicalClass, psychoactiveClass].filter(a => a).length >= 2) {
             throw new Error('Substances: `chemicalClass`, `effect` and `query` are mutually exclusive.');
         }
 
