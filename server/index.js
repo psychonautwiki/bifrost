@@ -1,6 +1,6 @@
 'use strict';
 
-const {Engine} = require('apollo-engine');
+const {ApolloEngine} = require('apollo-engine');
 
 const log = require('./log');
 
@@ -15,21 +15,6 @@ const app = express();
 
 const apollo_key = process.env.ENGINE_API_KEY;
 
-if (apollo_key) {
-    const engine = new Engine({
-        engineConfig: {
-            apiKey: apollo_key
-        },
-
-        graphqlPort: process.env.PORT || 3000,
-        endpoint: '/'
-    });
-
-    engine.start();
-
-    app.use(engine.expressMiddleware());
-}
-
 const graphRoutes = require('./services/graph');
 
 async(function* () {
@@ -39,6 +24,25 @@ async(function* () {
 
     const host = process.env.HOST || '0.0.0.0';
     const port = process.env.PORT || 3000;
+
+    if (apollo_key) {
+        const engine = new ApolloEngine({
+            apiKey: apollo_key,
+        });
+    
+        engine.listen({
+            host, port,
+            graphqlPaths: ['/'],
+            expressApp: app,
+            launcherOptions: {
+                startupTimeout: 3000,
+            },
+        }, () =>
+            log.info({type: 'server'}, `Online: ${host} ${port}`)
+        );
+
+        return;
+    }
 
     app.listen(port, host, () =>
         log.info({type: 'server'}, `Online: ${host} ${port}`)
