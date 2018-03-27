@@ -147,7 +147,7 @@ type Substance {
     images: [SubstanceImage]
 
     addictionPotential: String
-    toxicity: String
+    toxicity: [String]
 
     crossTolerances: [String]
     dangerousInteractions: [Substance]
