@@ -32,8 +32,7 @@ class PWPropParser {
         this._flatMetaProps = new Map([
             ['addiction_potential', 'addictionPotential'],
             ['dangerousinteraction', 'dangerousInteractions'],
-            ['effect', 'effects'],
-            ['toxicity', 'toxicity']
+            ['effect', 'effects']
         ]);
 
         this._mappedMetaProps = new Map([
@@ -54,7 +53,8 @@ class PWPropParser {
             }],
             ['featured', prop => ['featured', prop === 't']],
             ['psychoactive_class', prop => (['class.psychoactive', [].concat(prop)])],
-            ['chemical_class', prop => (['class.chemical', [].concat(prop)])]
+            ['chemical_class', prop => (['class.chemical', [].concat(prop)])],
+            ['toxicity', prop => (['toxicity', [].concat(prop)])]
         ]);
     }
 
