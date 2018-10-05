@@ -245,8 +245,10 @@ class Substances {
     * getEffectSubstances({effect, limit, offset}) {
         this._log.trace('[getEffectSubstances] effect: %s', effect);
 
+        const serializedEffectQuery = effect.map(effectName => `[[Effect::${effectName}]]`).join('|');
+
         const res = yield* this._connector.get({
-            query: `[[Effect::${effect}]]|[[Category:Psychoactive substance]]${this._renderPagination({limit, offset})}`
+            query: `${serializedEffectQuery}|[[Category:Psychoactive substance]]${this._renderPagination({limit, offset})}`
         });
 
         const results = _.get(res, 'query.results', {});

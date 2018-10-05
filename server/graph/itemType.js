@@ -3,13 +3,16 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
 
-const {makeExecutableSchema} = require('graphql-tools');
+const {
+    makeExecutableSchema,
+    SchemaDirectiveVisitor
+} = require('graphql-tools');
 
 const schema = require('./schema/rootQuery');
 
 const features = require('../util/features');
 
-const _GeneratorFunction = (function*(){}).constructor;
+const _GeneratorFunction = (function*() {}).constructor;
 const crMap = obj =>
     _.mapValues(obj, robj =>
         _.mapValues(robj, val =>
@@ -30,6 +33,16 @@ const baseResolvers = {
             ctx.args = args;
 
             return yield* ctx.substances.getEffects(args);
+        },
+        * effects_by_substance(data, args, ctx) {
+            ctx.args = args;
+
+            return yield* ctx.substances.getSubstanceEffects(args);
+        },
+        * substances_by_effect(data, args, ctx) {
+            ctx.args = args;
+
+            return yield* ctx.substances.getEffectSubstances(args);
         }
     },
     Substance: {
@@ -100,13 +113,28 @@ if (features.has('plebiscite')) {
     });
 }
 
+class DeprecatedDirective extends SchemaDirectiveVisitor {
+    visitFieldDefinition(field) {
+        field.isDeprecated = true;
+        field.deprecationReason = this.args.reason;
+    }
+
+    visitEnumValue(value) {
+        value.isDeprecated = true;
+        value.deprecationReason = this.args.reason;
+    }
+}
+
 const resolvers = crMap(baseResolvers);
 
 class PwEdge {
     get schema() {
         return makeExecutableSchema({
             typeDefs: [schema],
-            resolvers
+            resolvers,
+            schemaDirectives: {
+                deprecated: DeprecatedDirective
+            }
         });
     }
 }
