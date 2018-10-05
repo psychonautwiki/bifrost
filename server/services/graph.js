@@ -44,6 +44,20 @@ module.exports = function* ({app, log}) {
 
         query:
 `{
+    # Welcome to the PsychonautWiki API!
+    #
+    # To learn more about individual fields,
+    # keep 'ctrl' (Windows) or 'cmd' (macOS)
+    # pressed and click the field name. This
+    # will open the respective documentation
+    # entry in a sidebar on the right.
+    #
+    # If you have any questions or found an
+    # issue or any bug, don't hesitate to
+    # contact Kenan (kenan@dtr.is).
+    #
+    # Happy hacking!
+
     substances(query: "Armodafinil") {
         name
 
