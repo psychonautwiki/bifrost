@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fpsychonautwiki%2Fbifrost.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fpsychonautwiki%2Fbifrost?ref=badge_shield)
+
  ┌──────────────────────────────────────────────────────────────────┐
  │            ______ _________________ _____ _____ _____            │
  │            | ___ \_   _|  ___| ___ \  _  /  ___|_   _|           │
@@ -31,3 +33,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fpsychonautwiki%2Fbifrost.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fpsychonautwiki%2Fbifrost?ref=badge_large)
