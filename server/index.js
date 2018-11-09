@@ -1,5 +1,14 @@
 'use strict';
 
+if ( process.env.useAPM ) {
+    require('elastic-apm-node').start({
+        appName: 'bifrost',
+        secretToken: process.env.apmKey,
+        serverUrl: process.env.apmServer,
+        logLevel: 'info'
+    });
+}
+
 const {ApolloEngine} = require('apollo-engine');
 
 const log = require('./log');
