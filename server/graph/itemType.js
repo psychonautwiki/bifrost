@@ -54,6 +54,58 @@ const baseResolvers = {
             );
         },
 
+        * uncertainInteractions(data, __, ctx) {
+            const interactions = _.get(data, 'uncertainInteractions', null);
+
+            if (!_.isArray(interactions)) {
+                return null;
+            }
+
+            return Promise.all(interactions.map(
+                Promise.coroutine(function* (substanceName) {
+                    const results = yield* ctx.substances.getSubstances({
+                        query: substanceName,
+                        limit: 1,
+                        offset: 0
+                    });
+
+                    if (_.size(results) === 1) {
+                        return results[0];
+                    }
+
+                    return {
+                        name: substanceName
+                    };
+                })
+            ));
+        },
+
+        * unsafeInteractions(data, __, ctx) {
+            const interactions = _.get(data, 'unsafeInteractions', null);
+
+            if (!_.isArray(interactions)) {
+                return null;
+            }
+
+            return Promise.all(interactions.map(
+                Promise.coroutine(function* (substanceName) {
+                    const results = yield* ctx.substances.getSubstances({
+                        query: substanceName,
+                        limit: 1,
+                        offset: 0
+                    });
+
+                    if (_.size(results) === 1) {
+                        return results[0];
+                    }
+
+                    return {
+                        name: substanceName
+                    };
+                })
+            ));
+        },
+
         * dangerousInteractions(data, __, ctx) {
             const interactions = _.get(data, 'dangerousInteractions', null);
 
@@ -73,7 +125,9 @@ const baseResolvers = {
                         return results[0];
                     }
 
-                    return null;
+                    return {
+                        name: substanceName
+                    };
                 })
             ));
         },

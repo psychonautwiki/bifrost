@@ -150,6 +150,9 @@ type Substance {
     toxicity: [String]
 
     crossTolerances: [String]
+
+    uncertainInteractions: [Substance]
+    unsafeInteractions: [Substance]
     dangerousInteractions: [Substance]
 }
 

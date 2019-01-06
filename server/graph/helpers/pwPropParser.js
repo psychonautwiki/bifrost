@@ -31,6 +31,8 @@ class PWPropParser {
 
         this._flatMetaProps = new Map([
             ['addiction_potential', 'addictionPotential'],
+            ['uncertaininteraction', 'uncertainInteractions'],
+            ['unsafeinteraction', 'unsafeInteractions'],
             ['dangerousinteraction', 'dangerousInteractions'],
             ['effect', 'effects']
         ]);
