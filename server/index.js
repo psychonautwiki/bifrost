@@ -38,7 +38,7 @@ async(function* () {
         const engine = new ApolloEngine({
             apiKey: apollo_key,
         });
-    
+
         engine.listen({
             host, port,
             graphqlPaths: ['/'],

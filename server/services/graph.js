@@ -54,7 +54,7 @@ module.exports = function* ({app, log}) {
     #
     # If you have any questions or found an
     # issue or any bug, don't hesitate to
-    # contact Kenan (kenan@dtr.is).
+    # contact Kenan (kenan@psy.is).
     #
     # Happy hacking!
 
