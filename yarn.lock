@@ -1050,10 +1050,15 @@ cookie-signature@1.0.6:
   resolved "https://registry.yarnpkg.com/cookie-signature/-/cookie-signature-1.0.6.tgz#e303a882b342cc3ee8ca513a79999734dab3ae2c"
   integrity sha1-4wOogrNCzD7oylE6eZmXNNqzriw=
 
-cookie@0.3.1, cookie@^0.3.1:
+cookie@0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.3.1.tgz#e7e0a1f9ef43b4c8ba925c5c5a96e806d16873bb"
   integrity sha1-5+Ch+e9DtMi6klxcWpboBtFoc7s=
+
+cookie@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.4.0.tgz#beb437e7022b3b6d49019d088665303ebe9c14ba"
+  integrity sha512-+Hp8fLp57wnUSt0tY0tHEXh4voZRDnoIrZPqlo3DPiI4y9lwg/jqx+1Om94/W6ZaPDOUbnjOt/99w66zk+l1Xg==
 
 copy-descriptor@^0.1.0:
   version "0.1.1"
@@ -1370,10 +1375,10 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-elastic-apm-http-client@^7.2.1:
-  version "7.2.1"
-  resolved "https://registry.yarnpkg.com/elastic-apm-http-client/-/elastic-apm-http-client-7.2.1.tgz#48a7fc7c1186cf990e4612428eb789b50d06756a"
-  integrity sha512-9kpCVVVvCdKuhcf3zbFXBOilTa4Cnfuks/zoc2oBaRDoKrgBsVTPCwyXDixT5g49xFXYem2cNkJwBv6vhsBAOQ==
+elastic-apm-http-client@^7.3.0:
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/elastic-apm-http-client/-/elastic-apm-http-client-7.3.0.tgz#3722aa9cd1f08cbfe9b777e384e6fdffa3a5b49d"
+  integrity sha512-NFUa/UV9Cu3d2eJH5xbSJ8LcwXRpqbHLFZh/AXLHs97jOYqVUXjnUZNU+cUUa5JubKFwmZZkdSZ7tThgyNzR1g==
   dependencies:
     breadth-filter "^2.0.0"
     container-info "^1.0.1"
@@ -1385,24 +1390,25 @@ elastic-apm-http-client@^7.2.1:
     stream-chopper "^3.0.1"
     unicode-byte-truncate "^1.0.0"
 
-elastic-apm-node@^2.9.0:
-  version "2.9.0"
-  resolved "https://registry.yarnpkg.com/elastic-apm-node/-/elastic-apm-node-2.9.0.tgz#3d57d3b3c20803970a1e067ef2d1116c23e9d158"
-  integrity sha512-PMPCqTB6h4UyPcQI7hdRlUYOf5izQP8gsiLLwzJAMmeyvm6eqNhYJ3yVRkg2LsCDKyP7jv45dNN60Ekd4Ew53g==
+elastic-apm-node@^2.11.5:
+  version "2.11.5"
+  resolved "https://registry.yarnpkg.com/elastic-apm-node/-/elastic-apm-node-2.11.5.tgz#78956ef6a0bb4a59f627e3f0d80fc4b671997022"
+  integrity sha512-E5pSXDKvA83nYVF6xWMOCDVTaGVz3qBc75rO61pNDKFq7W9wNZfizATPwwzB5jHvDU/fvPir3CA/N+Pwvv9eNA==
   dependencies:
     after-all-results "^2.0.0"
     async-value-promise "^1.1.1"
     basic-auth "^2.0.1"
     console-log-level "^1.4.0"
-    cookie "^0.3.1"
+    cookie "^0.4.0"
     core-util-is "^1.0.2"
-    elastic-apm-http-client "^7.2.1"
+    elastic-apm-http-client "^7.3.0"
     end-of-stream "^1.4.1"
     fast-safe-stringify "^2.0.6"
     http-headers "^3.0.2"
     is-native "^1.0.1"
     measured-reporting "^1.41.0"
     object-filter-sequence "^1.0.0"
+    object.entries "^1.1.0"
     original-url "^1.2.2"
     read-pkg-up "^4.0.0"
     redact-secrets "^1.0.0"
@@ -2261,10 +2267,10 @@ graphql-tools@^4.0.4:
     iterall "^1.1.3"
     uuid "^3.1.0"
 
-graphql@^14.2.1:
-  version "14.2.1"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.2.1.tgz#779529bf9a01e7207b977a54c20670b48ca6e95c"
-  integrity sha512-2PL1UbvKeSjy/lUeJqHk+eR9CvuErXoCNwJI4jm3oNFEeY+9ELqHNKO1ZuSxAkasPkpWbmT/iMRMFxd3cEL3tQ==
+graphql@^14.3.1:
+  version "14.3.1"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.3.1.tgz#b3aa50e61a841ada3c1f9ccda101c483f8e8c807"
+  integrity sha512-FZm7kAa3FqKdXy8YSSpAoTtyDFMIYSpCDOr+3EqlI1bxmtHu+Vv/I2vrSeT1sBOEnEniX3uo4wFhFdS/8XN6gA==
   dependencies:
     iterall "^1.2.2"
 
@@ -3628,7 +3634,7 @@ object.defaults@^1.0.0, object.defaults@^1.1.0:
     for-own "^1.0.0"
     isobject "^3.0.0"
 
-object.entries@^1.0.4:
+object.entries@^1.0.4, object.entries@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/object.entries/-/object.entries-1.1.0.tgz#2024fc6d6ba246aee38bdb0ffd5cfbcf371b7519"
   integrity sha512-l+H6EQ8qzGRxbkHOd5I/aHRhHDKoQXQ8g0BYt4uSweQU1/J6dZUOyWh9a2Vky35YCKjzmgxOzta2hH6kf9HuXA==

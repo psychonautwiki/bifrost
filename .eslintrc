@@ -81,7 +81,7 @@
     "no-cond-assign": 2,
     "no-console": 1,
     "no-const-assign": 2,
-    "no-constant-condition": 2,
+    "no-constant-condition": 0,
     "no-continue": 0,
     "no-control-regex": 0,
     "no-debugger": 1,

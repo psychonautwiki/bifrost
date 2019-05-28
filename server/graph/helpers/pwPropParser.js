@@ -26,7 +26,11 @@ class PWPropParser {
 
             /* misc */
             wt_prop_glob: /\[\[(.*?)\]\]/g,
-            wt_prop: /\[\[(.*?)\]\]/
+            wt_prop: /\[\[(.*?)\]\]/,
+
+            /* misc sanitization */
+            wt_link: /(\[\[.*?\]\])/ig,
+            wt_named_link: /(\[\[.*?\|.*?\]\])/ig,
         };
 
         this._flatMetaProps = new Map([
@@ -58,6 +62,68 @@ class PWPropParser {
             ['chemical_class', prop => (['class.chemical', [].concat(prop)])],
             ['toxicity', prop => (['toxicity', [].concat(prop)])]
         ]);
+
+        this._sanitizers = new Map([
+            [
+                'addictionPotential',
+                val => this._sanitizeLinks(val)
+            ],
+            [
+                'toxicity',
+                val => val.map(item => this._sanitizeLinks(item))
+            ],
+        ]);
+    }
+
+    _sanitizeLinks(propValue) {
+        let tmpVal = propValue;
+
+        if (this._rgx.wt_link.test(tmpVal)) {
+            // handle [[link|name]]
+            {
+                const matches = tmpVal.match(this._rgx.wt_named_link) || [];
+
+                for (let i = 0; i < matches.length; ++i) {
+                    const match = matches[i];
+
+                    tmpVal = tmpVal.replace(
+                        match,
+                        match
+                            .slice(2, -2) // get rid of [[ and ]]
+                            .split('|') // split by delimiter
+                            .pop() // get right side xx|yy -> yy
+                    );
+                }
+            }
+
+            // handle [[link]]
+            {
+                const matches = tmpVal.match(this._rgx.wt_link) || [];
+
+                for (let i = 0; i < matches.length; ++i) {
+                    const match = matches[i];
+
+                    tmpVal = tmpVal.replace(
+                        match,
+                        match.slice(2, -2) // get rid of [[ and ]]
+                    );
+                }
+            }
+        }
+
+        return tmpVal;
+    }
+
+    _sanitizedIfNeeded(propName, propValue) {
+        if (!propValue) {
+            return propValue;
+        }
+
+        if (this._sanitizers.has(propName)) {
+            return this._sanitizers.get(propName)(propValue);
+        }
+
+        return propValue;
     }
 
     parse(propSet) {
@@ -73,67 +139,105 @@ class PWPropParser {
                 case this._rgx.range_dur.test(propName):
                     rx = this._rgx.range_dur.exec(propName);
 
-                    _.set(procPropMap, `roa.${rx[1]}.duration.${rx[3]}.${rx[2]}`, prop);
+                    _.set(
+                        procPropMap,
+                        `roa.${rx[1]}.duration.${rx[3]}.${rx[2]}`,
+                        prop
+                    );
 
                     break;
 
-                /* doses */
+                    /* doses */
 
                 case this._rgx.range_dose.test(propName):
                     rx = this._rgx.range_dose.exec(propName);
 
-                    _.set(procPropMap, `roa.${rx[1]}.dose.${rx[3]}.${rx[2]}`, prop);
+                    _.set(
+                        procPropMap,
+                        `roa.${rx[1]}.dose.${rx[3]}.${rx[2]}`,
+                        prop
+                    );
 
                     break;
 
                 case this._rgx.def_dose.test(propName):
                     rx = this._rgx.def_dose.exec(propName);
 
-                    _.set(procPropMap, `roa.${rx[1]}.dose.${rx[2]}`, prop);
+                    _.set(
+                        procPropMap,
+                        `roa.${rx[1]}.dose.${rx[2]}`,
+                        prop
+                    );
 
                     break;
 
                 case this._rgx.def_bioavailability.test(propName):
                     rx = this._rgx.def_bioavailability.exec(propName);
 
-                    _.set(procPropMap, `roa.${rx[1]}.bioavailability.${rx[2]}`, prop);
+                    _.set(
+                        procPropMap,
+                        `roa.${rx[1]}.bioavailability.${rx[2]}`,
+                        prop
+                    );
 
                     break;
 
-                /* units */
+                    /* units */
 
                 case this._rgx.dose_units.test(propName):
                     rx = this._rgx.dose_units.exec(propName);
 
-                    _.set(procPropMap, `roa.${rx[1]}.dose.units`, prop);
+                    _.set(
+                        procPropMap,
+                        `roa.${rx[1]}.dose.units`,
+                        prop
+                    );
 
                     break;
 
                 case this._rgx.roa_time_units.test(propName):
                     rx = this._rgx.roa_time_units.exec(propName);
 
-                    _.set(procPropMap, `roa.${rx[1]}.duration.${rx[2]}.units`, prop);
+                    _.set(
+                        procPropMap,
+                        `roa.${rx[1]}.duration.${rx[2]}.units`,
+                        prop
+                    );
 
                     break;
 
-                /* meta */
+                    /* meta */
 
                 case this._rgx.meta_tolerance_time.test(propName):
                     rx = this._rgx.meta_tolerance_time.exec(propName);
 
-                    _.set(procPropMap, `tolerance.${rx[1]}`, prop);
+                    _.set(
+                        procPropMap,
+                        `tolerance.${rx[1]}`,
+                        prop
+                    );
 
                     break;
             }
 
             if (this._flatMetaProps.has(propName)) {
-                _.set(procPropMap, this._flatMetaProps.get(propName), prop);
+                const mappedPropName = this._flatMetaProps.get(propName);
+
+                _.set(
+                    procPropMap,
+                    mappedPropName,
+                    this._sanitizedIfNeeded(mappedPropName, prop)
+                );
             }
 
             if (this._mappedMetaProps.has(propName)) {
                 rx = this._mappedMetaProps.get(propName)(prop);
 
-                _.set(procPropMap, rx[0], rx[1]);
+                _.set(
+                    procPropMap,
+                    rx[0],
+                    this._sanitizedIfNeeded(rx[0], rx[1])
+                );
             }
         });
 
@@ -141,9 +245,9 @@ class PWPropParser {
         const rawROAMap = _.get(procPropMap, 'roa', {});
 
         const mappedROAs = _.chain(rawROAMap)
-                            .keys()
-                            .map(key => _.merge(_.get(rawROAMap, key), {name: key}))
-                            .value();
+            .keys()
+            .map(key => _.merge(_.get(rawROAMap, key), {name: key}))
+            .value();
 
         _.assign(procPropMap, { roas: mappedROAs });
 
