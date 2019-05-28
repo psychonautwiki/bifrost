@@ -31,6 +31,7 @@ class PWPropParser {
             /* misc sanitization */
             wt_link: /(\[\[.*?\]\])/ig,
             wt_named_link: /(\[\[.*?\|.*?\]\])/ig,
+            wt_sub_sup: /<su[bp]>(.*?)<\/su[bp]>/ig,
         };
 
         this._flatMetaProps = new Map([
@@ -66,18 +67,23 @@ class PWPropParser {
         this._sanitizers = new Map([
             [
                 'addictionPotential',
-                val => this._sanitizeLinks(val)
+                val => this._sanitizeText(val)
             ],
             [
                 'toxicity',
-                val => val.map(item => this._sanitizeLinks(item))
+                val => val.map(item => this._sanitizeText(item))
             ],
         ]);
     }
 
-    _sanitizeLinks(propValue) {
+    _sanitizeText(propValue) {
         let tmpVal = propValue;
 
+        if (!tmpVal) {
+            return tmpVal;
+        }
+
+        // Links
         if (this._rgx.wt_link.test(tmpVal)) {
             // handle [[link|name]]
             {
@@ -110,6 +116,9 @@ class PWPropParser {
                 }
             }
         }
+
+        // <sub>, <sup>
+        tmpVal = tmpVal.replace(this._rgx.wt_sub_sup, '$1');
 
         return tmpVal;
     }
