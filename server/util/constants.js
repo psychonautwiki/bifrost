@@ -1,6 +1,6 @@
 'use strict';
 
 module.exports = new Map([
-    ['cdn', 'https://psychonautwiki.global.ssl.fastly.net/'],
+    ['cdn', 'https://psychonautwiki.org/'],
     ['thumbSize', 100]
 ]);

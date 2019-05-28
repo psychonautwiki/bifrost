@@ -16,24 +16,24 @@ class Features {
         this._initialize(featureSet);
     }
 
-    _envIsSet(flag) {
+    static _envIsSet(flag) {
         return _.has(process.env, flag.toUpperCase());
     }
 
-    envGet(flag) {
+    static envGet(flag) {
         return _.get(process.env, flag.toUpperCase());
     }
 
     _initialize(featureSet) {
         featureSet.forEach((props, feature) => {
-            if (!this._envIsSet(feature)) {
+            if (!Features._envIsSet(feature)) {
                 return;
             }
 
             const required = props.get('required');
 
             required.some(prop => {
-                if (!this._envIsSet(prop)) {
+                if (!Features._envIsSet(prop)) {
                     throw new Error(`Feature '${feature}' is active, but the flag '${prop}' is missing. `);
                 }
             });
@@ -41,7 +41,7 @@ class Features {
             const optional = props.get('optional');
 
             optional.forEach(([prop, def]) => {
-                if (!this._envIsSet(prop)) {
+                if (!Features._envIsSet(prop)) {
                     process.env[prop] = def;
                 }
             });

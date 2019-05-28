@@ -1,7 +1,5 @@
 'use strict';
 
-const Promise = require('bluebird');
-
 const {MongoClient} = require('mongodb');
 
 const MONGO_URL = process.env.MONGO_URL;
@@ -28,10 +26,10 @@ class Plebiscite {
         }
 
         return yield collection.find(query)
-        .sort({'meta.published': -1})
-        .skip(offset)
-        .limit(limit)
-        .toArray();
+            .sort({'meta.published': -1})
+            .skip(offset)
+            .limit(limit)
+            .toArray();
     }
 }
 

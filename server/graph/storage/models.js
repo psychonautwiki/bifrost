@@ -14,7 +14,7 @@ const constants = require('../../util/constants');
 const cheerio = require('cheerio');
 
 class AbstractGenerator {
-    _sanitize(text) {
+    static _sanitize(text) {
         return text
             // trim opening paragraph
             .trim()
@@ -31,13 +31,13 @@ class AbstractGenerator {
             .replace(/\s\s+/);
     }
 
-    _envelope(extract) {
+    static _envelope(extract) {
         const $_base = cheerio(`<section>${extract}</section>`);
 
         return $_base.find('section > p').text();
     }
 
-    _unwrap(res) {
+    static _unwrap(res) {
         const extract = _.get(res, 'parse.text.*', null);
 
         if (!extract) {
@@ -47,9 +47,9 @@ class AbstractGenerator {
         return extract;
     }
 
-    abstract(res) {
+    static abstract(res) {
         try {
-            return this._sanitize(this._envelope(this._unwrap(res)));
+            return AbstractGenerator._sanitize(AbstractGenerator._envelope(AbstractGenerator._unwrap(res)));
         } catch (err) {
             return err;
         }
@@ -65,9 +65,9 @@ const thumbSize = constants.get('thumbSize');
 
 const buildImage = fileName => {
     const fileNameHash = crypto.createHash('md5')
-                               .update(fileName)
-                               .digest()
-                               .toString('hex');
+        .update(fileName)
+        .digest()
+        .toString('hex');
 
     const imageThumbnail = `${cdnURL}w/thumb.php?f=${fileName}&width=${thumbSize}`;
     const imageURL = `${cdnURL}w/images/${fileNameHash[0]}/${fileNameHash.slice(0,2)}/${fileName}`;
@@ -102,7 +102,7 @@ class Substances {
         });
     }
 
-    _renderPagination({limit, offset}) {
+    static _renderPagination({limit, offset}) {
         return `${limit ? `|limit=${limit}` : ''}${offset ? `|offset=${offset}` : ''}`;
     }
 
@@ -148,15 +148,17 @@ class Substances {
         const articleQuery = query ? `:${query}` : 'Category:Psychoactive substance';
 
         const res = yield* this._connector.get({
-            query: `[[${articleQuery}]]${this._renderPagination({limit, offset})}`
+            query: `[[${articleQuery}]]${Substances._renderPagination({limit, offset})}`
         });
 
         const results = _.get(res, 'query.results', {});
 
-        const mappedResults = yield Promise.all(
+        const self = this;
+
+        return yield Promise.all(
             this._mapTextUrl(results).map(item =>
                 Promise.coroutine(function* (_item) {
-                    const semanticData = yield* this.getSemanticSubstanceProps(_item.name);
+                    const semanticData = yield* self.getSemanticSubstanceProps(_item.name);
 
                     process.env.DUMP_SEMANTICS && this._log.trace('Processed semantic data', semanticData);
 
@@ -164,15 +166,13 @@ class Substances {
                 }).call(this, item)
             )
         );
-
-        return mappedResults;
     }
 
     * getSubstanceEffects({substance, limit, offset}) {
         this._log.trace('[getSubstanceEffects] substance: %s', substance);
 
         const res = yield* this._connector.get({
-            query: `[[:${substance}]]|?Effect${this._renderPagination({limit, offset})}`
+            query: `[[:${substance}]]|?Effect${Substances._renderPagination({limit, offset})}`
         });
 
         const results = _.get(res, `query.results.${substance}.printouts.Effect`, {});
@@ -190,7 +190,7 @@ class Substances {
             section: 0
         });
 
-        const targetSummary = this._abstractGenerator.abstract(abstractPayload);
+        const targetSummary = AbstractGenerator.abstract(abstractPayload);
 
         this._log.trace('[getSubstanceAbstract:result] %s', targetSummary);
 
@@ -234,7 +234,7 @@ class Substances {
         const articleQuery = query ? `Effect::${query}` : 'Category:Effect';
 
         const res = yield* this._connector.get({
-            query: `[[${articleQuery}]]${this._renderPagination({limit, offset})}`
+            query: `[[${articleQuery}]]${Substances._renderPagination({limit, offset})}`
         });
 
         const results = _.get(res, 'query.results', {});
@@ -248,7 +248,7 @@ class Substances {
         const serializedEffectQuery = effect.map(effectName => `[[Effect::${effectName}]]`).join('|');
 
         const res = yield* this._connector.get({
-            query: `${serializedEffectQuery}|[[Category:Psychoactive substance]]${this._renderPagination({limit, offset})}`
+            query: `${serializedEffectQuery}|[[Category:Psychoactive substance]]${Substances._renderPagination({limit, offset})}`
         });
 
         const results = _.get(res, 'query.results', {});
@@ -260,7 +260,7 @@ class Substances {
         this._log.trace('[getChemicalClassSubstances] effect: %s', chemicalClass);
 
         const res = yield* this._connector.get({
-            query: `[[Chemical class::${chemicalClass}]]|[[Category:Psychoactive substance]]${this._renderPagination({limit, offset})}`
+            query: `[[Chemical class::${chemicalClass}]]|[[Category:Psychoactive substance]]${Substances._renderPagination({limit, offset})}`
         });
 
         const results = _.get(res, 'query.results', {});
@@ -272,7 +272,7 @@ class Substances {
         this._log.trace('[getPsychoactiveClassSubstances] effect: %s', psychoactiveClass);
 
         const res = yield* this._connector.get({
-            query: `[[Psychoactive class::${psychoactiveClass}]]|[[Category:Psychoactive substance]]${this._renderPagination({limit, offset})}`
+            query: `[[Psychoactive class::${psychoactiveClass}]]|[[Category:Psychoactive substance]]${Substances._renderPagination({limit, offset})}`
         });
 
         const results = _.get(res, 'query.results', {});
