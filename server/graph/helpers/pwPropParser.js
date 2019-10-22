@@ -25,12 +25,12 @@ class PWPropParser {
             meta_tolerance_time: /Time_to_(.*?)_tolerance$/i,
 
             /* misc */
-            wt_prop_glob: /\[\[(.*?)\]\]/g,
-            wt_prop: /\[\[(.*?)\]\]/,
+            wt_prop_glob: /\[\[(.*?)]]/g,
+            wt_prop: /\[\[(.*?)]]/,
 
             /* misc sanitization */
-            wt_link: /(\[\[.*?\]\])/ig,
-            wt_named_link: /(\[\[.*?\|.*?\]\])/ig,
+            wt_link: /(\[\[.*?]])/ig,
+            wt_named_link: /(\[\[.*?\|.*?]])/ig,
             wt_sub_sup: /<su[bp]>(.*?)<\/su[bp]>/ig,
         };
 
@@ -59,9 +59,21 @@ class PWPropParser {
                 return [propTarget, mappedCrossTolerance];
             }],
             ['featured', prop => ['featured', prop === 't']],
-            ['psychoactive_class', prop => (['class.psychoactive', [].concat(prop)])],
-            ['chemical_class', prop => (['class.chemical', [].concat(prop)])],
-            ['toxicity', prop => (['toxicity', [].concat(prop)])]
+            ['toxicity', prop => (['toxicity', [].concat(prop)])],
+            [
+                'psychoactive_class',
+                prop => ([
+                    'class.psychoactive',
+                    [].concat(prop && String(prop).replace(/#$/, '')),
+                ]),
+            ],
+            [
+                'chemical_class',
+                prop => ([
+                    'class.chemical',
+                    [].concat(prop && String(prop).replace(/#$/, '')),
+                ]),
+            ],
         ]);
 
         this._sanitizers = new Map([
