@@ -64,14 +64,14 @@ class PWPropParser {
                 'psychoactive_class',
                 prop => ([
                     'class.psychoactive',
-                    [].concat(prop && String(prop).replace(/#$/, '')),
+                    [].concat(prop).map(prop => prop.replace(/#$/, '')),
                 ]),
             ],
             [
                 'chemical_class',
                 prop => ([
                     'class.chemical',
-                    [].concat(prop && String(prop).replace(/#$/, '')),
+                    [].concat(prop).map(prop => prop.replace(/#$/, '')),
                 ]),
             ],
         ]);
