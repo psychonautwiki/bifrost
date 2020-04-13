@@ -30,8 +30,7 @@
     "lodash": "^4.17.15",
     "mongodb": "^3.5.5",
     "psychonautwiki-bifrost-testutils": "^1.0.0",
-    "request": "^2.88.2",
-    "request-promise": "^4.2.5"
+    "request": "^2.88.2"
   },
   "devDependencies": {}
 }

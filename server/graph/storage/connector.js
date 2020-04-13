@@ -5,7 +5,8 @@ const Promise = require('bluebird');
 
 const querystring = require('querystring');
 
-const rp = require('request-promise');
+const { promisify } = require('util');
+const request = promisify(require('request'));
 
 const baseLog = require('../../log');
 
@@ -97,40 +98,32 @@ const sharedBifrostCache = new BifrostCache({
 
 class PwConnector {
     constructor({log}) {
-        this._rp = rp;
         this._log = log.child({
             type: 'PwConnector'
         });
 
         this._cache = sharedBifrostCache;
-
-        this._fetchOptions = {
-            json: true,
-            resolveWithFullResponse: true,
-            headers: {
-                'user-agent': 'Bifrost'
-            }
-        };
-    }
-
-    _buildFetchOptions(url) {
-        return _.assign({
-            uri: url
-        }, this._fetchOptions);
     }
 
     _fetchUrl(url) {
-        return this._rp(this._buildFetchOptions(url));
+        return request({
+            uri: url,
+            json: true,
+            gzip: true,
+            headers: {
+                'user-agent': 'psy-bf'
+            },
+        });
     }
 
     * _fetchRefreshedCacheItem(url) {
         this._log.trace('Fetching item: `%s`', url);
 
         const response = yield this._fetchUrl(url);
-console.log(-2, url, response);
-        this._cache.add(url, response);
 
-        return response;
+        this._cache.add(url, response.body);
+
+        return response.body;
     }
 
     * _getCacheIfNeeded(url) {
@@ -139,9 +132,7 @@ console.log(-2, url, response);
         /* todo: handle state when key doesnt exist and fetch is in progress */
 
         if (cacheState === null) {
-            const res = yield* this._fetchRefreshedCacheItem(url);
-
-            return res.body;
+            return yield* this._fetchRefreshedCacheItem(url);
         }
 
         const {val, requireRefresh} = cacheState;
@@ -152,7 +143,7 @@ console.log(-2, url, response);
             this._log.trace('Returning expired value of item: `%s`', url);
         }
 
-        return val.body;
+        return val;
     }
 
     * get(args) {
