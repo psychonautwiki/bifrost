@@ -4,13 +4,13 @@ class SMWDataArbitrator {
     }
 
     _stripSMWProp(prop) {
-        return prop.replace(/\#1?0\#/, '');
+        return prop.replace(/#1?0#/, '');
     }
 
     _processDataItem({type, item}) {
         switch (type) {
             case 1:
-                return parseFloat(item, 10);
+                return parseFloat(item);
 
             case 9:
                 return this._stripSMWProp(item);
