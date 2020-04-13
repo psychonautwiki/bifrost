@@ -112,7 +112,7 @@ module.exports = function* ({app, log}) {
         introspection: true,
 
         tracing: true,
-        cacheControl: true,
+        cacheControl: false,
     });
 
     server.applyMiddleware({
