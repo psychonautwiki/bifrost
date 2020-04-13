@@ -2,12 +2,7 @@
 
 const _ = require('lodash');
 
-const {
-    graphqlExpress,
-    graphiqlExpress
-} = require('graphql-server-express');
-
-const bodyParser = require('body-parser');
+const { ApolloServer } = require('apollo-server-express');
 
 const featureContext = {};
 
@@ -36,14 +31,29 @@ const pwPropParser = new PWPropParser({
 module.exports = function* ({app, log}) {
     const baseQuerySchema = querySchema({log});
 
-    app.get('/', graphiqlExpress({
-        endpointURL: '/',
+    const server = new ApolloServer({
+        schema: baseQuerySchema.schema,
+        context: _.assign({}, {
+            substances: new Substances({
+                connector: new Connector({log}),
+                pwPropParser,
+                log
+            })
+        }, featureContext),
 
-        tracing: true,
-        cacheControl: true,
+        formatError: (err) => {
+            return {
+                message: err.message,
+                path: err.path,
+                code: err.extensions.code,
+            };
+        },
 
-        query:
-`{
+        debug: true,
+        playground: {
+            tabs: [
+                {
+                  query: `{
     # Welcome to the PsychonautWiki API!
     #
     # To learn more about individual fields,
@@ -94,20 +104,19 @@ module.exports = function* ({app, log}) {
             name url
         }
     }
-}`
-    }));
+}`,
+                  endpoint: '/',
+                },
+            ]
+        },
+        introspection: true,
 
-    app.post('/', bodyParser.json(), (req, res, next) =>
-        graphqlExpress({
-            schema: baseQuerySchema.schema,
-            rootValue: baseQuerySchema.root(req, res),
-            context: _.assign({}, {
-                substances: new Substances({
-                    connector: new Connector({log}),
-                    pwPropParser,
-                    log
-                })
-            }, featureContext)
-        })(req, res, next)
-    );
+        tracing: true,
+        cacheControl: true,
+    });
+
+    server.applyMiddleware({
+        app,
+        path: '/',
+    });
 };

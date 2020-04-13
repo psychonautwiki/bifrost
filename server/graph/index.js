@@ -3,10 +3,7 @@
 const ItemEdge = require('./itemType');
 
 module.exports = ({log}) => {
-    const itemEdge = new ItemEdge({
-        name: 'query',
-        description: 'The Lots base edge'
-    }, {});
+    const itemEdge = new ItemEdge();
 
     return {
         schema: itemEdge.schema,

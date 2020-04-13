@@ -109,7 +109,7 @@ const baseResolvers = {
         * dangerousInteractions(data, __, ctx) {
             const interactions = _.get(data, 'dangerousInteractions', null);
 
-            if (!_.isArray(interactions)) {
+            if (!Array.isArray(interactions)) {
                 return null;
             }
 

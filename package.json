@@ -13,7 +13,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "apollo-engine": "^1.1.2",
+    "apollo-server-express": "^2.12.0",
     "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.12",

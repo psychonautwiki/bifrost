@@ -127,7 +127,7 @@ class PwConnector {
         this._log.trace('Fetching item: `%s`', url);
 
         const response = yield this._fetchUrl(url);
-
+console.log(-2, url, response);
         this._cache.add(url, response);
 
         return response;
