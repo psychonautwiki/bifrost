@@ -6,7 +6,6 @@ const Promise = require('bluebird');
 const querystring = require('querystring');
 
 const rp = require('request-promise');
-const DataLoader = require('dataloader');
 
 const baseLog = require('../../log');
 
@@ -103,10 +102,6 @@ class PwConnector {
             type: 'PwConnector'
         });
 
-        this._loader = new DataLoader(this.fetch.bind(this), {
-            batch: true
-        });
-
         this._cache = sharedBifrostCache;
 
         this._fetchOptions = {
@@ -160,16 +155,12 @@ class PwConnector {
         return val.body;
     }
 
-    fetch(urls) {
-        return Promise.all(urls.map(url =>
-            this._loadUrl(url)
-        ));
-    }
-
     * get(args) {
         const params = querystring.encode(_.defaults(args, qsDefaults));
 
-        return yield this._loader.load(`${ROOT_URL}?${params}`);
+        return yield* this._getCacheIfNeeded(
+            `${ROOT_URL}?${params}`
+        );
     }
 
     _unwindMarkAndRefreshItem(url) {
@@ -193,18 +184,6 @@ class PwConnector {
         );
     }
 }
-
-PwConnector.prototype._loadUrl = Promise.coroutine(function* (url) {
-    try {
-        this._log.debug('Trying to load url: `%s`', url);
-
-        return yield* this._getCacheIfNeeded(url);
-    } catch (err) {
-        this._log.debug('Failed to load url: `%s`', err.message);
-
-        throw err;
-    }
-});
 
 PwConnector.prototype._markAndRefreshItemAsync = Promise.coroutine(function* (url) {
     this._log.trace('[markAndRefreshAsync] Fetching item: `%s`', url);
