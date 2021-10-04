@@ -6,15 +6,13 @@ log.info(require('./util/ac'));
 
 require('./testbed-bootstrap')(log);
 
-const async = require('bluebird').coroutine;
-
 const express = require('express');
 const app = express();
 
 const graphRoutes = require('./services/graph');
 
-async(function* () {
-    yield* graphRoutes({
+(async () => {
+    await graphRoutes({
         app, log
     });
 

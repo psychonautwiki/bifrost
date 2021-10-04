@@ -2,7 +2,6 @@
 
 const crypto = require('crypto');
 
-const Promise = require('bluebird');
 const _ = require('lodash');
 
 const constants = require('../../util/constants');
@@ -19,13 +18,13 @@ class AbstractGenerator {
             // trim opening paragraph
             .trim()
             // remove reference markers
-            .replace(/\[(.*?)\]/, '')
+            .replace(/\[(.*?)]/, '')
             // break by lines
             .split('\n')
             // trim lines -- accounting for \r\n linebreaks
             .map(line => line.trim())
             // take first two paragraphs
-            .slice(0,2)
+            .slice(0, 2)
             // reconcile into single blob
             .join(' ')
             .replace(/\s\s+/);
@@ -70,16 +69,16 @@ const buildImage = fileName => {
         .toString('hex');
 
     const imageThumbnail = `${cdnURL}w/thumb.php?f=${fileName}&width=${thumbSize}`;
-    const imageURL = `${cdnURL}w/images/${fileNameHash[0]}/${fileNameHash.slice(0,2)}/${fileName}`;
+    const imageURL = `${cdnURL}w/images/${fileNameHash[0]}/${fileNameHash.slice(0, 2)}/${fileName}`;
 
     return {
         thumb: imageThumbnail,
-        image: imageURL
+        image: imageURL,
     };
 };
 
 class Substances {
-    constructor({connector, pwPropParser, log}) {
+    constructor({ connector, pwPropParser, log }) {
         this._connector = connector;
         this._pwPropParser = pwPropParser;
 
@@ -87,7 +86,7 @@ class Substances {
         this._abstractGenerator = new AbstractGenerator();
 
         this._log = log.child({
-            type: 'Substances'
+            type: 'Substances',
         });
     }
 
@@ -95,29 +94,29 @@ class Substances {
         return _.map(obj, item => {
             const {
                 fulltext: name,
-                fullurl: url
+                fullurl: url,
             } = _.pick(item, ['fulltext', 'fullurl']);
 
-            return {name, url};
+            return { name, url };
         });
     }
 
-    static _renderPagination({limit, offset}) {
+    static _renderPagination({ limit, offset }) {
         return `${limit ? `|limit=${limit}` : ''}${offset ? `|offset=${offset}` : ''}`;
     }
 
-    * getSemanticSubstanceProps(substance) {
+    async getSemanticSubstanceProps(substance) {
         this._log.trace('[getSemanticSubstanceProps] substance: %s', substance);
 
-        const res = yield* this._connector.get({
+        const res = await this._connector.get({
             action: 'browsebysubject',
-            subject: substance
+            subject: substance,
         });
 
         return this._pwPropParser.parseFromSMW(res);
     }
 
-    * getSubstances({chemicalClass, psychoactiveClass, effect, query, limit, offset}) {
+    async getSubstances({ chemicalClass, psychoactiveClass, effect, query, limit, offset }) {
         if ([effect, query, chemicalClass, psychoactiveClass].filter(a => a).length >= 2) {
             throw new Error('Substances: `chemicalClass`, `psychoactiveClass`, `effect` and `query` are mutually exclusive.');
         }
@@ -126,53 +125,55 @@ class Substances {
 
         /* delegate to chemicalClass search */
         if (chemicalClass) {
-            return yield* this.getChemicalClassSubstances({
-                chemicalClass, limit, offset
+            return this.getChemicalClassSubstances({
+                chemicalClass, limit, offset,
             });
         }
 
         /* delegate to psychoactiveClass search */
         if (psychoactiveClass) {
-            return yield* this.getPsychoactiveClassSubstances({
-                psychoactiveClass, limit, offset
+            return this.getPsychoactiveClassSubstances({
+                psychoactiveClass, limit, offset,
             });
         }
 
         /* Delegate the search to a specific substance query */
         if (effect) {
-            return yield* this.getEffectSubstances({
-                effect, limit, offset
+            return this.getEffectSubstances({
+                effect, limit, offset,
             });
         }
 
         const articleQuery = query ? `:${query}` : 'Category:Psychoactive substance';
 
-        const res = yield* this._connector.get({
-            query: `[[${articleQuery}]]${Substances._renderPagination({limit, offset})}`
+        const res = await this._connector.get({
+            query: `[[${articleQuery}]]${Substances._renderPagination({ limit, offset })}`,
         });
 
         const results = _.get(res, 'query.results', {});
 
         const self = this;
 
-        return yield Promise.all(
-            this._mapTextUrl(results).map(item =>
-                Promise.coroutine(function* (_item) {
-                    const semanticData = yield* self.getSemanticSubstanceProps(_item.name);
+        return Promise.all(
+            this._mapTextUrl(results)
+                .map(async item => {
+                    const semanticData =
+                        await this.getSemanticSubstanceProps(
+                            item.name,
+                        );
 
                     process.env.DUMP_SEMANTICS && this._log.trace('Processed semantic data', semanticData);
 
                     return _.merge(item, semanticData);
-                }).call(this, item)
-            )
+                }),
         );
     }
 
-    * getSubstanceEffects({substance, limit, offset}) {
+    async getSubstanceEffects({ substance, limit, offset }) {
         this._log.trace('[getSubstanceEffects] substance: %s', substance);
 
-        const res = yield* this._connector.get({
-            query: `[[:${substance}]]|?Effect${Substances._renderPagination({limit, offset})}`
+        const res = await this._connector.get({
+            query: `[[:${substance}]]|?Effect${Substances._renderPagination({ limit, offset })}`,
         });
 
         const results = _.get(res, `query.results.${substance}.printouts.Effect`, {});
@@ -180,14 +181,14 @@ class Substances {
         return this._mapTextUrl(results);
     }
 
-    * getSubstanceAbstract({substance}) {
+    async getSubstanceAbstract({ substance }) {
         this._log.trace('[getSubstanceAbstract] substance: %s', substance);
 
-        const abstractPayload = yield* this._connector.get({
+        const abstractPayload = await this._connector.get({
             action: 'parse',
             page: substance,
             prop: 'text',
-            section: 0
+            section: 0,
         });
 
         const targetSummary = AbstractGenerator.abstract(abstractPayload);
@@ -197,13 +198,13 @@ class Substances {
         return targetSummary;
     }
 
-    * getSubstanceImages({substance}) {
+    async getSubstanceImages({ substance }) {
         this._log.trace('[getSubstanceImages] substance: %s', substance);
 
-        const imagePayload = yield* this._connector.get({
+        const imagePayload = await this._connector.get({
             action: 'parse',
             page: substance,
-            prop: 'images'
+            prop: 'images',
         });
 
         const images = _.get(imagePayload, 'parse.images', null);
@@ -217,7 +218,7 @@ class Substances {
         return images.map(buildImage);
     }
 
-    * getEffects({substance, query, limit, offset}) {
+    async getEffects({ substance, query, limit, offset }) {
         if (substance && query) {
             throw new Error('Effects: `substance` and `query` are mutually exclusive.');
         }
@@ -226,15 +227,15 @@ class Substances {
 
         /* Delegate the search to a specific substance query */
         if (substance) {
-            return yield* this.getSubstanceEffects({
-                substance, limit, offset
+            return this.getSubstanceEffects({
+                substance, limit, offset,
             });
         }
 
         const articleQuery = query ? `Effect::${query}` : 'Category:Effect';
 
-        const res = yield* this._connector.get({
-            query: `[[${articleQuery}]]${Substances._renderPagination({limit, offset})}`
+        const res = await this._connector.get({
+            query: `[[${articleQuery}]]${Substances._renderPagination({ limit, offset })}`,
         });
 
         const results = _.get(res, 'query.results', {});
@@ -242,13 +243,16 @@ class Substances {
         return this._mapTextUrl(results);
     }
 
-    * getEffectSubstances({effect, limit, offset}) {
+    async getEffectSubstances({ effect, limit, offset }) {
         this._log.trace('[getEffectSubstances] effect: %s', effect);
 
         const serializedEffectQuery = effect.map(effectName => `[[Effect::${effectName}]]`).join('|');
 
-        const res = yield* this._connector.get({
-            query: `${serializedEffectQuery}|[[Category:Psychoactive substance]]${Substances._renderPagination({limit, offset})}`
+        const res = await this._connector.get({
+            query: `${serializedEffectQuery}|[[Category:Psychoactive substance]]${Substances._renderPagination({
+                limit,
+                offset,
+            })}`,
         });
 
         const results = _.get(res, 'query.results', {});
@@ -256,11 +260,14 @@ class Substances {
         return this._mapTextUrl(results);
     }
 
-    * getChemicalClassSubstances({chemicalClass, limit, offset}) {
+    async getChemicalClassSubstances({ chemicalClass, limit, offset }) {
         this._log.trace('[getChemicalClassSubstances] effect: %s', chemicalClass);
 
-        const res = yield* this._connector.get({
-            query: `[[Chemical class::${chemicalClass}]]|[[Category:Psychoactive substance]]${Substances._renderPagination({limit, offset})}`
+        const res = await this._connector.get({
+            query: `[[Chemical class::${chemicalClass}]]|[[Category:Psychoactive substance]]${Substances._renderPagination({
+                limit,
+                offset,
+            })}`,
         });
 
         const results = _.get(res, 'query.results', {});
@@ -268,11 +275,14 @@ class Substances {
         return this._mapTextUrl(results);
     }
 
-    * getPsychoactiveClassSubstances({psychoactiveClass, limit, offset}) {
+    async getPsychoactiveClassSubstances({ psychoactiveClass, limit, offset }) {
         this._log.trace('[getPsychoactiveClassSubstances] effect: %s', psychoactiveClass);
 
-        const res = yield* this._connector.get({
-            query: `[[Psychoactive class::${psychoactiveClass}]]|[[Category:Psychoactive substance]]${Substances._renderPagination({limit, offset})}`
+        const res = await this._connector.get({
+            query: `[[Psychoactive class::${psychoactiveClass}]]|[[Category:Psychoactive substance]]${Substances._renderPagination({
+                limit,
+                offset,
+            })}`,
         });
 
         const results = _.get(res, 'query.results', {});
@@ -282,5 +292,5 @@ class Substances {
 }
 
 module.exports = {
-    Substances
+    Substances,
 };

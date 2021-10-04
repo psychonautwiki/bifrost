@@ -1,60 +1,49 @@
 'use strict';
 
 const _ = require('lodash');
-const Promise = require('bluebird');
 
 const {
     makeExecutableSchema,
-    SchemaDirectiveVisitor
+    SchemaDirectiveVisitor,
 } = require('graphql-tools');
 
 const schema = require('./schema/rootQuery');
 
 const features = require('../util/features');
 
-const _GeneratorFunction = (function*() {}).constructor;
-const crMap = obj =>
-    _.mapValues(obj, robj =>
-        _.mapValues(robj, val =>
-            val.constructor === _GeneratorFunction
-                ? Promise.coroutine(val)
-                : val
-        )
-    );
-
 const baseResolvers = {
     Query: {
-        * substances(data, args, ctx) {
+        async substances(data, args, ctx) {
             ctx.args = args;
 
-            return yield* ctx.substances.getSubstances(args);
+            return ctx.substances.getSubstances(args);
         },
-        * effects(data, args, ctx) {
+        async effects(data, args, ctx) {
             ctx.args = args;
 
-            return yield* ctx.substances.getEffects(args);
+            return ctx.substances.getEffects(args);
         },
-        * effects_by_substance(data, args, ctx) {
+        async effects_by_substance(data, args, ctx) {
             ctx.args = args;
 
-            return yield* ctx.substances.getSubstanceEffects(args);
+            return ctx.substances.getSubstanceEffects(args);
         },
-        * substances_by_effect(data, args, ctx) {
+        async substances_by_effect(data, args, ctx) {
             ctx.args = args;
 
-            return yield* ctx.substances.getEffectSubstances(args);
-        }
+            return ctx.substances.getEffectSubstances(args);
+        },
     },
     Substance: {
-        * effects(data, args, ctx) {
+        async effects(data, args, ctx) {
             const substance = _.get(data, 'name');
 
-            return yield* ctx.substances.getSubstanceEffects(
-                _.assign({}, {substance}, ctx.args)
+            return ctx.substances.getSubstanceEffects(
+                _.assign({}, { substance }, ctx.args),
             );
         },
 
-        * uncertainInteractions(data, __, ctx) {
+        async uncertainInteractions(data, __, ctx) {
             const interactions = _.get(data, 'uncertainInteractions', null);
 
             if (!_.isArray(interactions)) {
@@ -62,11 +51,11 @@ const baseResolvers = {
             }
 
             return Promise.all(interactions.map(
-                Promise.coroutine(function* (substanceName) {
-                    const results = yield* ctx.substances.getSubstances({
+                async (substanceName) => {
+                    const results = awaitctx.substances.getSubstances({
                         query: substanceName,
                         limit: 1,
-                        offset: 0
+                        offset: 0,
                     });
 
                     if (_.size(results) === 1) {
@@ -74,13 +63,13 @@ const baseResolvers = {
                     }
 
                     return {
-                        name: substanceName
+                        name: substanceName,
                     };
-                })
+                },
             ));
         },
 
-        * unsafeInteractions(data, __, ctx) {
+        async unsafeInteractions(data, __, ctx) {
             const interactions = _.get(data, 'unsafeInteractions', null);
 
             if (!_.isArray(interactions)) {
@@ -88,11 +77,11 @@ const baseResolvers = {
             }
 
             return Promise.all(interactions.map(
-                Promise.coroutine(function* (substanceName) {
-                    const results = yield* ctx.substances.getSubstances({
+                async (substanceName) => {
+                    const results = await ctx.substances.getSubstances({
                         query: substanceName,
                         limit: 1,
-                        offset: 0
+                        offset: 0,
                     });
 
                     if (_.size(results) === 1) {
@@ -100,13 +89,13 @@ const baseResolvers = {
                     }
 
                     return {
-                        name: substanceName
+                        name: substanceName,
                     };
-                })
+                },
             ));
         },
 
-        * dangerousInteractions(data, __, ctx) {
+        async dangerousInteractions(data, __, ctx) {
             const interactions = _.get(data, 'dangerousInteractions', null);
 
             if (!Array.isArray(interactions)) {
@@ -114,11 +103,11 @@ const baseResolvers = {
             }
 
             return Promise.all(interactions.map(
-                Promise.coroutine(function* (substanceName) {
-                    const results = yield* ctx.substances.getSubstances({
+                async (substanceName) => {
+                    const results = await ctx.substances.getSubstances({
                         query: substanceName,
                         limit: 1,
-                        offset: 0
+                        offset: 0,
                     });
 
                     if (_.size(results) === 1) {
@@ -126,48 +115,58 @@ const baseResolvers = {
                     }
 
                     return {
-                        name: substanceName
+                        name: substanceName,
                     };
-                })
+                },
             ));
         },
 
-        * summary(data, args, ctx) {
+        async summary(data, args, ctx) {
             const substance = _.get(data, 'name');
 
-            return yield* ctx.substances.getSubstanceAbstract(
-                _.assign({}, {substance}, ctx.args)
+            return ctx.substances.getSubstanceAbstract(
+                _.assign({}, { substance }, ctx.args),
             );
         },
 
-        * images(data, args, ctx) {
+        async images(data, args, ctx) {
             const substance = _.get(data, 'name');
 
-            return yield* ctx.substances.getSubstanceImages(
-                _.assign({}, {substance}, ctx.args)
+            return ctx.substances.getSubstanceImages(
+                _.assign({}, { substance }, ctx.args),
             );
-        }
+        },
     },
     Effect: {
-        * substances(data, args, ctx) {
+        async substances(data, args, ctx) {
             const effect = _.get(data, 'name');
 
-            return yield* ctx.substances.getEffectSubstances(
-                _.assign({}, {effect}, ctx.args)
+            return ctx.substances.getEffectSubstances(
+                _.assign({}, { effect }, ctx.args),
             );
-        }
-    }
+        },
+    },
 };
 
 if (features.has('plebiscite')) {
     _.assign(baseResolvers.Query, {
-        * erowid(data, {substance, offset, limit}, {plebiscite}) {
-            return yield* plebiscite.find({substance, offset, limit});
-        }
+        async erowid(data, { substance, offset, limit }, { plebiscite }) {
+            return plebiscite.find({ substance, offset, limit });
+        },
     });
 }
 
 class DeprecatedDirective extends SchemaDirectiveVisitor {
+    visitArgumentDefinition(arg, { field }) {
+        field.isDeprecated = true;
+        field.deprecationReason = this.args.reason;
+    }
+
+    visitInputFieldDefinition(field) {
+        field.isDeprecated = true;
+        field.deprecationReason = this.args.reason;
+    }
+
     visitFieldDefinition(field) {
         field.isDeprecated = true;
         field.deprecationReason = this.args.reason;
@@ -179,16 +178,14 @@ class DeprecatedDirective extends SchemaDirectiveVisitor {
     }
 }
 
-const resolvers = crMap(baseResolvers);
-
 class PwEdge {
     get schema() {
         return makeExecutableSchema({
             typeDefs: [schema],
-            resolvers,
+            resolvers: baseResolvers,
             schemaDirectives: {
-                deprecated: DeprecatedDirective
-            }
+                deprecated: DeprecatedDirective,
+            },
         });
     }
 }

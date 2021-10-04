@@ -12,12 +12,12 @@ class Plebiscite {
         this._db = db;
     }
 
-    * _getCollection() {
-        return (yield this._db).collection(MONGO_COLLECTION);
+    async _getCollection() {
+        return (await this._db).collection(MONGO_COLLECTION);
     }
 
-    * find({substance, offset, limit}) {
-        const collection = yield* this._getCollection();
+    async find({substance, offset, limit}) {
+        const collection = await this._getCollection();
 
         const query = {};
 
@@ -25,7 +25,7 @@ class Plebiscite {
             query['substanceInfo.substance'] = substance;
         }
 
-        return yield collection.find(query)
+        return collection.find(query)
             .sort({'meta.published': -1})
             .skip(offset)
             .limit(limit)

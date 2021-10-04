@@ -13,8 +13,12 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "apollo-server-express": "^2.12.0",
-    "bluebird": "^3.7.2",
+    "@types/bluebird": "^3.5.36",
+    "@types/cheerio": "^0.22.30",
+    "@types/lodash": "^4.14.175",
+    "@types/node-fetch": "^3.0.3",
+    "apollo-server-core": "^3.3.0",
+    "apollo-server-express": "^3.3.0",
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.12",
     "cheerio": "^1.0.0-rc.3",
@@ -29,6 +33,7 @@
     "jwt-simple": "^0.5.6",
     "lodash": "^4.17.15",
     "mongodb": "^3.5.5",
+    "node-fetch": "^3.0.0",
     "psychonautwiki-bifrost-testutils": "^1.0.0",
     "request": "^2.88.2"
   },

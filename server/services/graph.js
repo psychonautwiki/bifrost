@@ -3,6 +3,7 @@
 const _ = require('lodash');
 
 const { ApolloServer } = require('apollo-server-express');
+const { ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');
 
 const featureContext = {};
 
@@ -10,14 +11,14 @@ const features = require('../util/features');
 
 if (features.has('plebiscite')) {
     _.assign(featureContext, {
-        plebiscite: require('../features/plebiscite')
+        plebiscite: require('../features/plebiscite'),
     });
 }
 
 const querySchema = require('../graph');
 
 const Connector = require('../graph/storage/connector');
-const {Substances} = require('../graph/storage/models');
+const { Substances } = require('../graph/storage/models');
 
 const SMWDataArbitrator = require('../graph/helpers/smwDataArbitrator');
 const smwDataArbitrator = new SMWDataArbitrator();
@@ -25,20 +26,20 @@ const smwDataArbitrator = new SMWDataArbitrator();
 const PWPropParser = require('../graph/helpers/pwPropParser');
 
 const pwPropParser = new PWPropParser({
-    smwDataArbitrator
+    smwDataArbitrator,
 });
 
-module.exports = function* ({app, log}) {
-    const baseQuerySchema = querySchema({log});
+module.exports = ({ app, log }) => {
+    const baseQuerySchema = querySchema({ log });
 
     const server = new ApolloServer({
         schema: baseQuerySchema.schema,
         context: _.assign({}, {
             substances: new Substances({
-                connector: new Connector({log}),
+                connector: new Connector({ log }),
                 pwPropParser,
-                log
-            })
+                log,
+            }),
         }, featureContext),
 
         formatError: (err) => {
@@ -50,10 +51,12 @@ module.exports = function* ({app, log}) {
         },
 
         debug: true,
-        playground: {
-            tabs: [
-                {
-                  query: `{
+
+        plugins: [
+            ApolloServerPluginLandingPageGraphQLPlayground({
+                tabs: [
+                    {
+                        query: `{
     # Welcome to the PsychonautWiki API!
     #
     # To learn more about individual fields,
@@ -105,18 +108,24 @@ module.exports = function* ({app, log}) {
         }
     }
 }`,
-                  endpoint: '/',
-                },
-            ]
-        },
+                        endpoint: '/',
+                    },
+                ],
+            }),
+        ],
+
         introspection: true,
 
         tracing: true,
         cacheControl: false,
     });
 
-    server.applyMiddleware({
-        app,
-        path: '/',
-    });
+    return server
+        .start()
+        .then(() =>
+            server.applyMiddleware({
+                app,
+                path: '/',
+            }),
+        );
 };

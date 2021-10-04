@@ -1,12 +1,13 @@
 'use strict';
 
 const _ = require('lodash');
-const Promise = require('bluebird');
 
 const querystring = require('querystring');
 
 const { promisify } = require('util');
 const request = promisify(require('request'));
+
+const fetch = import('node-fetch');
 
 const baseLog = require('../../log');
 
@@ -14,7 +15,7 @@ const ROOT_URL = 'https://psychonautwiki.org/w/api.php';
 
 const qsDefaults = {
     action: 'ask',
-    format: 'json'
+    format: 'json',
 };
 
 /*
@@ -39,9 +40,9 @@ const qsDefaults = {
 */
 
 class BifrostCache {
-    constructor({log}) {
+    constructor({ log }) {
         this._log = log.child({
-            type: 'bifrostCache'
+            type: 'bifrostCache',
         });
 
         // thirty minutes
@@ -60,7 +61,7 @@ class BifrostCache {
             return null;
         }
 
-        const {ts, val} = cachedItem;
+        const { ts, val } = cachedItem;
 
         let requireRefresh = false;
 
@@ -68,11 +69,11 @@ class BifrostCache {
             requireRefresh = true;
         }
 
-        return {val, requireRefresh};
+        return { val, requireRefresh };
     }
 
     isBeingRefreshed(key) {
-        return this._processMap.get(key) !== undefined;
+        return this._processMap.get(key) === true;
     }
 
     markBeingRefreshed(key, isBeingRefreshed) {
@@ -87,55 +88,63 @@ class BifrostCache {
         this._log.trace('Adding key: `%s\'', key);
 
         return this._backend.set(key, {
-            ts: Date.now(), val
+            ts: Date.now(), val,
         });
     }
 }
 
 const sharedBifrostCache = new BifrostCache({
-    log: baseLog
+    log: baseLog,
 });
 
 class PwConnector {
-    constructor({log}) {
+    constructor({ log }) {
         this._log = log.child({
-            type: 'PwConnector'
+            type: 'PwConnector',
         });
 
         this._cache = sharedBifrostCache;
     }
 
     _fetchUrl(url) {
-        return request({
-            uri: url,
-            json: true,
-            gzip: true,
-            headers: {
-                'user-agent': 'psy-bf'
-            },
-        });
+        return fetch.then(fetch =>
+            fetch
+                .default(url)
+                .then(res => res.json()),
+        );
     }
 
-    * _fetchRefreshedCacheItem(url) {
+    async _fetchRefreshedCacheItem(url) {
         this._log.trace('Fetching item: `%s`', url);
 
-        const response = yield this._fetchUrl(url);
+        try {
+            const response = await this._fetchUrl(url);
 
-        this._cache.add(url, response.body);
+            this._cache
+                .add(
+                    url,
+                    response,
+                );
 
-        return response.body;
+            return response;
+        } catch (err) {
+            this._log
+                .error(err);
+
+            return null;
+        }
     }
 
-    * _getCacheIfNeeded(url) {
+    async _getCacheIfNeeded(url) {
         const cacheState = this._cache.get(url);
 
         /* todo: handle state when key doesnt exist and fetch is in progress */
 
         if (cacheState === null) {
-            return yield* this._fetchRefreshedCacheItem(url);
+            return this._fetchRefreshedCacheItem(url);
         }
 
-        const {val, requireRefresh} = cacheState;
+        const { val, requireRefresh } = cacheState;
 
         if (requireRefresh && !this._cache.isBeingRefreshed(url)) {
             this._unwindMarkAndRefreshItem(url);
@@ -146,11 +155,17 @@ class PwConnector {
         return val;
     }
 
-    * get(args) {
-        const params = querystring.encode(_.defaults(args, qsDefaults));
+    get(args) {
+        const params =
+            querystring.encode(
+                _.defaults(
+                    args,
+                    qsDefaults,
+                ),
+            );
 
-        return yield* this._getCacheIfNeeded(
-            `${ROOT_URL}?${params}`
+        return this._getCacheIfNeeded(
+            `${ROOT_URL}?${params}`,
         );
     }
 
@@ -166,24 +181,20 @@ class PwConnector {
 
         this._cache.markBeingRefreshed(url, true);
 
-        /*
-         * This invocation escapes the synchronous
-         * context of the generator being inhabited.
-         */
         process.nextTick(() =>
-            this._markAndRefreshItemAsync(url)
+            this._markAndRefreshItemAsync(url),
         );
     }
 }
 
-PwConnector.prototype._markAndRefreshItemAsync = Promise.coroutine(function* (url) {
+PwConnector.prototype._markAndRefreshItemAsync = async (url) => {
     this._log.trace('[markAndRefreshAsync] Fetching item: `%s`', url);
 
-    yield* this._fetchRefreshedCacheItem(url);
+    await this._fetchRefreshedCacheItem(url);
 
     this._log.trace('[markAndRefreshAsync] Marking item as not being refreshed: `%s`', url);
 
     this._cache.markBeingRefreshed(url, false);
-});
+};
 
 module.exports = PwConnector;
