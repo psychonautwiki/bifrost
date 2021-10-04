@@ -113,7 +113,8 @@ class Substances {
             subject: substance,
         });
 
-        return this._pwPropParser.parseFromSMW(res);
+        return this._pwPropParser
+            .parseFromSMW(res);
     }
 
     async getSubstances({ chemicalClass, psychoactiveClass, effect, query, limit, offset }) {

@@ -99,10 +99,14 @@ class PWPropParser {
         if (this._rgx.wt_link.test(tmpVal)) {
             // handle [[link|name]]
             {
-                const matches = tmpVal?.match(this._rgx.wt_named_link) || [];
+                const matches = tmpVal.match(this._rgx.wt_named_link) || [];
 
                 for (const match of matches) {
-                    const repl_op = tmpVal?.replace(
+                    if (!tmpVal) {
+                        continue;
+                    }
+
+                    const repl_op = tmpVal.replace(
                         match,
                         match
                             .slice(2, -2) // get rid of [[ and ]]
@@ -123,7 +127,11 @@ class PWPropParser {
                 const matches = tmpVal.match(this._rgx.wt_link) || [];
 
                 for (const match of matches) {
-                    const repl_op = tmpVal?.replace(
+                    if (!tmpVal) {
+                        continue;
+                    }
+
+                    const repl_op = tmpVal.replace(
                         match,
                         match.slice(2, -2), // get rid of [[ and ]]
                     );
@@ -138,7 +146,13 @@ class PWPropParser {
         }
 
         // <sub>, <sup>
-        tmpVal?.replace(this._rgx.wt_sub_sup, '$1');
+        if (tmpVal) {
+            tmpVal =
+                tmpVal.replace(
+                    this._rgx.wt_sub_sup,
+                    '$1',
+                );
+        }
 
         return tmpVal;
     }
@@ -149,6 +163,7 @@ class PWPropParser {
         }
 
         if (this._sanitizers.has(propName)) {
+            console.log(this._sanitizers.get(propName));
             return this._sanitizers.get(propName)(propValue);
         }
 
@@ -273,18 +288,32 @@ class PWPropParser {
         // new ROA interface
         const rawROAMap = _.get(procPropMap, 'roa', {});
 
-        const mappedROAs = _.chain(rawROAMap)
-            .keys()
-            .map(key => _.merge(_.get(rawROAMap, key), { name: key }))
-            .value();
+        const mappedROAs =
+            _.chain(rawROAMap)
+                .keys()
+                .map(key =>
+                    _.merge(
+                        _.get(rawROAMap, key),
+                        { name: key },
+                    ),
+                )
+                .value();
 
-        _.assign(procPropMap, { roas: mappedROAs });
+        _.assign(
+            procPropMap,
+            {
+                roas: mappedROAs,
+            },
+        );
 
         return procPropMap;
     }
 
     parseFromSMW(obj) {
-        return this.parse(this._smwDataArbitrator.parse(obj));
+        return this.parse(
+            this._smwDataArbitrator
+                .parse(obj),
+        );
     }
 }
 
