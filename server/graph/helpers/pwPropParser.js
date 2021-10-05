@@ -95,6 +95,10 @@ class PWPropParser {
             return tmpVal;
         }
 
+        if (tmpVal.constructor !== String) {
+            return null;
+        }
+
         // Links
         if (this._rgx.wt_link.test(tmpVal)) {
             // handle [[link|name]]
@@ -163,7 +167,6 @@ class PWPropParser {
         }
 
         if (this._sanitizers.has(propName)) {
-            console.log(this._sanitizers.get(propName));
             return this._sanitizers.get(propName)(propValue);
         }
 
@@ -275,7 +278,12 @@ class PWPropParser {
             }
 
             if (this._mappedMetaProps.has(propName)) {
-                rx = this._mappedMetaProps.get(propName)(prop);
+                const is_falsy = !prop || prop.constructor !== String;
+
+                rx =
+                    is_falsy
+                        ? [propName, null]
+                        : this._mappedMetaProps.get(propName)(prop);
 
                 _.set(
                     procPropMap,
