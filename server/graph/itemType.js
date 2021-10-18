@@ -52,7 +52,7 @@ const baseResolvers = {
 
             return Promise.all(interactions.map(
                 async (substanceName) => {
-                    const results = awaitctx.substances.getSubstances({
+                    const results = await ctx.substances.getSubstances({
                         query: substanceName,
                         limit: 1,
                         offset: 0,
