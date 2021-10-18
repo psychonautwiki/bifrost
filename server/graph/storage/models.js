@@ -33,7 +33,7 @@ class AbstractGenerator {
     static _envelope(extract) {
         const $_base = cheerio.load(`<section>${extract}</section>`);
 
-        return $_base.find('section > p').text();
+        return $_base.root().find('section > p').text();
     }
 
     static _unwrap(res) {
