@@ -1,7 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
-
 const { ApolloServer } = require('apollo-server-express');
 const { ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');
 
@@ -10,9 +8,7 @@ const featureContext = {};
 const features = require('../util/features');
 
 if (features.has('plebiscite')) {
-    _.assign(featureContext, {
-        plebiscite: require('../features/plebiscite'),
-    });
+    featureContext.plebiscite = require('../features/plebiscite');
 }
 
 const querySchema = require('../graph');
@@ -34,13 +30,18 @@ module.exports = ({ app, log }) => {
 
     const server = new ApolloServer({
         schema: baseQuerySchema.schema,
-        context: _.assign({}, {
-            substances: new Substances({
-                connector: new Connector({ log }),
-                pwPropParser,
-                log,
-            }),
-        }, featureContext),
+        context:
+            Object.assign(
+                {},
+                {
+                    substances: new Substances({
+                        connector: new Connector({ log }),
+                        pwPropParser,
+                        log,
+                    }),
+                },
+                featureContext,
+            ),
 
         formatError: (err) => {
             return {

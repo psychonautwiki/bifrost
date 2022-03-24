@@ -189,17 +189,6 @@ type Query {
         offset: Int=0
     ): [Substance]
 
-    effects(
-        # Name of the effect you are looking for
-        effect: String
-
-        # Name of the substance you want the effects of
-    	substance: String
-
-        limit: Int=50
-        offset: Int=0
-    ): [Substance] @deprecated(reason: "This node will be removed soon. In order to fetch effect related information, use the specific nodes \`substances_by_effect\` or \`effects_by_substance\` instead.")
-
     substances_by_effect(
         # Name of the effect you are looking for
         effect: [String]

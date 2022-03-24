@@ -153,8 +153,6 @@ class Substances {
 
         const results = _.get(res, 'query.results', {});
 
-        const self = this;
-
         return Promise.all(
             this._mapTextUrl(results)
                 .map(async item => {

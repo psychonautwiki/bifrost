@@ -4,10 +4,7 @@ const _ = require('lodash');
 
 const querystring = require('querystring');
 
-const { promisify } = require('util');
-const request = promisify(require('request'));
-
-const fetch = import('node-fetch');
+const fetch = require('node-fetch');
 
 const baseLog = require('../../log');
 
@@ -52,8 +49,6 @@ class BifrostCache {
         this._processMap = new Map();
     }
 
-    /* this._log.trace('Key invalidated, removing: `%s` (ttl: %s)', key, Date.now() - item.ts); */
-
     get(key) {
         const cachedItem = this._backend.get(key);
 
@@ -97,6 +92,13 @@ const sharedBifrostCache = new BifrostCache({
     log: baseLog,
 });
 
+const sleepAsync =
+    (ms) =>
+        new Promise(
+            (resolve) =>
+                setTimeout(resolve, ms),
+        );
+
 class PwConnector {
     constructor({ log }) {
         this._log = log.child({
@@ -107,11 +109,40 @@ class PwConnector {
     }
 
     _fetchUrl(url) {
-        return fetch.then(fetch =>
-            fetch
-                .default(url)
-                .then(res => res.json()),
+        this._log.trace(
+            'Fetching url: `%s\'',
+            url
         );
+
+        let failures = 0;
+
+        return fetch(url)
+            .then(res => res.json())
+            .catch(err => {
+                this._log.error(
+                    'Failed to fetch url: `%s\'',
+                    url
+                );
+
+                failures += 1;
+
+                if (failures > 3) {
+                    this._log.error(
+                        'Failed 3 times.. \'%s\'',
+                        url
+                    );
+
+                    throw err;
+                }
+
+                this._log.error(
+                    'Retrying.. \'%s\'',
+                    url
+                );
+
+                return sleepAsync(1000 * failures)
+                    .then(() => this._fetchUrl(url));
+            });
     }
 
     async _fetchRefreshedCacheItem(url) {
@@ -185,16 +216,16 @@ class PwConnector {
             this._markAndRefreshItemAsync(url),
         );
     }
+
+    async _markAndRefreshItemAsync(url) {
+        this._log.trace('[markAndRefreshAsync] Fetching item: `%s`', url);
+
+        await this._fetchRefreshedCacheItem(url);
+
+        this._log.trace('[markAndRefreshAsync] Marking item as not being refreshed: `%s`', url);
+
+        this._cache.markBeingRefreshed(url, false);
+    }
 }
-
-PwConnector.prototype._markAndRefreshItemAsync = async (url) => {
-    this._log.trace('[markAndRefreshAsync] Fetching item: `%s`', url);
-
-    await this._fetchRefreshedCacheItem(url);
-
-    this._log.trace('[markAndRefreshAsync] Marking item as not being refreshed: `%s`', url);
-
-    this._cache.markBeingRefreshed(url, false);
-};
 
 module.exports = PwConnector;

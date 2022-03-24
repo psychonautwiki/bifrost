@@ -1,6 +1,6 @@
 'use strict';
 
-const ItemEdge = require('./itemType');
+const ItemEdge = require('./resolvers');
 
 module.exports = ({log}) => {
     const itemEdge = new ItemEdge();

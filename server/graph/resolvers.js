@@ -4,8 +4,7 @@ const _ = require('lodash');
 
 const {
     makeExecutableSchema,
-    SchemaDirectiveVisitor,
-} = require('graphql-tools');
+} = require('@graphql-tools/schema');
 
 const schema = require('./schema/rootQuery');
 
@@ -17,11 +16,6 @@ const baseResolvers = {
             ctx.args = args;
 
             return ctx.substances.getSubstances(args);
-        },
-        async effects(data, args, ctx) {
-            ctx.args = args;
-
-            return ctx.substances.getEffects(args);
         },
         async effects_by_substance(data, args, ctx) {
             ctx.args = args;
@@ -156,36 +150,11 @@ if (features.has('plebiscite')) {
     });
 }
 
-class DeprecatedDirective extends SchemaDirectiveVisitor {
-    visitArgumentDefinition(arg, { field }) {
-        field.isDeprecated = true;
-        field.deprecationReason = this.args.reason;
-    }
-
-    visitInputFieldDefinition(field) {
-        field.isDeprecated = true;
-        field.deprecationReason = this.args.reason;
-    }
-
-    visitFieldDefinition(field) {
-        field.isDeprecated = true;
-        field.deprecationReason = this.args.reason;
-    }
-
-    visitEnumValue(value) {
-        value.isDeprecated = true;
-        value.deprecationReason = this.args.reason;
-    }
-}
-
 class PwEdge {
     get schema() {
         return makeExecutableSchema({
             typeDefs: [schema],
             resolvers: baseResolvers,
-            schemaDirectives: {
-                deprecated: DeprecatedDirective,
-            },
         });
     }
 }
