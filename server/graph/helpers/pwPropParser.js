@@ -86,6 +86,8 @@ class PWPropParser {
             ],
         ]);
 
+        const forceArray = val => Array.isArray(val) ? val : [val];
+
         this._sanitizers = new Map([
             [
                 'addictionPotential',
@@ -94,6 +96,22 @@ class PWPropParser {
             [
                 'toxicity',
                 val => val.map(item => this._sanitizeText(item)),
+            ],
+            [
+                'uncertainInteractions',
+                forceArray,
+            ],
+            [
+                'unsafeInteractions',
+                forceArray,
+            ],
+            [
+                'dangerousInteractions',
+                forceArray,
+            ],
+            [
+                'effects',
+                forceArray,
             ],
         ]);
     }
