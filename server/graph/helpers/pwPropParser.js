@@ -278,12 +278,11 @@ class PWPropParser {
             }
 
             if (this._mappedMetaProps.has(propName)) {
-                const is_falsy = !prop || prop.constructor !== String;
-
-                rx =
-                    is_falsy
-                        ? [propName, null]
-                        : this._mappedMetaProps.get(propName)(prop);
+                try {
+                    rx = this._mappedMetaProps.get(propName)(prop);
+                } catch {
+                    rx = [propName, null]
+                }
 
                 _.set(
                     procPropMap,
