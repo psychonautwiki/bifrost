@@ -64,14 +64,24 @@ class PWPropParser {
                 'psychoactive_class',
                 prop => ([
                     'class.psychoactive',
-                    [].concat(prop).map(prop => prop.replace(/#$/, '')),
+                    []
+                        .concat(prop)
+                        .map(prop =>
+                            prop.replace(/#$/, '')
+                                .replace(/_/g, ' '),
+                        ),
                 ]),
             ],
             [
                 'chemical_class',
                 prop => ([
                     'class.chemical',
-                    [].concat(prop).map(prop => prop.replace(/#$/, '')),
+                    []
+                        .concat(prop)
+                        .map(prop =>
+                            prop.replace(/#$/, '')
+                                .replace(/_/g, ' '),
+                        ),
                 ]),
             ],
         ]);
