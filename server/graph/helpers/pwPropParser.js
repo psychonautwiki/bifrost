@@ -40,6 +40,7 @@ class PWPropParser {
             ['unsafeinteraction', 'unsafeInteractions'],
             ['dangerousinteraction', 'dangerousInteractions'],
             ['effect', 'effects'],
+            ['common_name', 'commonNames'],
         ]);
 
         this._mappedMetaProps = new Map([
@@ -64,6 +65,18 @@ class PWPropParser {
                 'psychoactive_class',
                 prop => ([
                     'class.psychoactive',
+                    []
+                        .concat(prop)
+                        .map(prop =>
+                            prop.replace(/#$/, '')
+                                .replace(/_/g, ' '),
+                        ),
+                ]),
+            ],
+            [
+                'chemical_class',
+                prop => ([
+                    'class.chemical',
                     []
                         .concat(prop)
                         .map(prop =>
@@ -113,6 +126,10 @@ class PWPropParser {
                 'effects',
                 forceArray,
             ],
+            [
+                'commonNames',
+                forceArray,
+            ]
         ]);
     }
 

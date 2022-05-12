@@ -150,6 +150,8 @@ type Substance {
     toxicity: [String]
 
     crossTolerances: [String]
+    
+    commonNames: [String]
 
     uncertainInteractions: [Substance]
     unsafeInteractions: [Substance]
