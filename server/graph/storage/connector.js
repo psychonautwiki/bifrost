@@ -43,7 +43,7 @@ class BifrostCache {
         });
 
         // thirty minutes
-        this._CACHE_LIFETIME = 30 * 60 * 1000;
+        this._CACHE_LIFETIME = 24 * 60 * 60 * 1000;
 
         this._backend = new Map();
         this._processMap = new Map();
