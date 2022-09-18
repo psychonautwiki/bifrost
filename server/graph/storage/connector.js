@@ -120,7 +120,7 @@ class PwConnector {
             .then(res => res.json())
             .catch(err => {
                 this._log.error(
-                    'Failed to fetch url: `%s\'',
+                    'Failed to fetch url: %s',
                     url
                 );
 

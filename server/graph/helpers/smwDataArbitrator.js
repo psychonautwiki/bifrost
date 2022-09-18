@@ -21,6 +21,10 @@ class SMWDataArbitrator {
     }
 
     _induceItemType([item]) {
+        if (!item) {
+            return null;
+        }
+
         const {type} = item;
 
         switch (type) {
