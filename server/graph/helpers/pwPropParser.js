@@ -41,6 +41,7 @@ class PWPropParser {
             ['dangerousinteraction', 'dangerousInteractions'],
             ['effect', 'effects'],
             ['common_name', 'commonNames'],
+            ['systematic_name', 'systematicName'],
         ]);
 
         this._mappedMetaProps = new Map([
@@ -86,9 +87,9 @@ class PWPropParser {
                 ]),
             ],
             [
-                'chemical_class',
+                'common_name',
                 prop => ([
-                    'class.chemical',
+                    'commonNames',
                     []
                         .concat(prop)
                         .map(prop =>
@@ -129,7 +130,11 @@ class PWPropParser {
             [
                 'commonNames',
                 forceArray,
-            ]
+            ],
+            [
+                'systematicName',
+                val => this._sanitizeText(val),
+            ],
         ]);
     }
 

@@ -147,11 +147,26 @@ class Substances {
 
         const articleQuery = query ? `:${query}` : 'Category:Psychoactive substance';
 
-        const res = await this._connector.get({
+        let res = await this._connector.get({
             query: `[[${articleQuery}]]${Substances._renderPagination({ limit, offset })}`,
         });
 
-        const results = _.get(res, 'query.results', {});
+        let results = _.get(res, 'query.results', {});
+
+        if (_.isEmpty(results)) {
+            res = await this._connector.get({
+                query: `[[common_name::${query}]]|[[Category:psychoactive_substance]]${Substances._renderPagination({ limit, offset })}`,
+            });
+            results = _.get(res, 'query.results', {});
+            if (_.isEmpty(results)) {
+                res = await this._connector.get({
+                    query: `[[systematic_name::${systematicName}]]|[[Category:psychoactive_substance]]${Substances._renderPagination({
+                        limit,
+                        offset,
+                    })}`,
+                });
+            }
+        }
 
         return Promise.all(
             this._mapTextUrl(results)

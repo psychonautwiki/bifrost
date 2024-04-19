@@ -134,12 +134,12 @@ type Substance {
 
     featured: Boolean
 
-	effects: [Effect]
-	experiences: [Experience]
+    effects: [Effect]
+    experiences: [Experience]
 
     class: SubstanceClass
     tolerance: SubstanceTolerance
-    
+
     roa: SubstanceRoaTypes
     roas: [SubstanceRoa]
 
@@ -150,8 +150,9 @@ type Substance {
     toxicity: [String]
 
     crossTolerances: [String]
-    
+
     commonNames: [String]
+    systematicName: String
 
     uncertainInteractions: [Substance]
     unsafeInteractions: [Substance]
@@ -162,13 +163,13 @@ type Effect {
     name: String
     url: String
 
-	substances: [Substance]
-	experiences: [Experience]
+    substances: [Substance]
+    experiences: [Experience]
 }
 
 type Experience {
-	substances: [Substance]
-	effects: [Experience]
+    substances: [Substance]
+    effects: [Experience]
 }
 
 ${plebisciteSchema}
@@ -201,16 +202,16 @@ type Query {
 
     effects_by_substance(
         # Name of the substance you want the effects of
-    	substance: String
+        substance: String
 
         limit: Int=50
         offset: Int=0
     ): [Effect]
 
     experiences(
-    	substances_by_effect: String,
-    	effects_by_substance: String,
-    	substance: String
+        substances_by_effect: String,
+        effects_by_substance: String,
+        substance: String
     ): [Experience]
 
     ${plebisciteRootQuery}
