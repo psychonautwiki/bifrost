@@ -147,25 +147,30 @@ class Substances {
 
         const articleQuery = query ? `:${query}` : 'Category:Psychoactive substance';
 
-        let res = await this._connector.get({
-            query: `[[${articleQuery}]]${Substances._renderPagination({ limit, offset })}`,
-        });
+        const lookupWithPagination =
+            async query => {
+                const res = await this._connector.get({
+                    query: `${query}${Substances._renderPagination({ limit, offset })}`,
+                });
 
-        let results = _.get(res, 'query.results', {});
+                return _.get(res, "query.results", {});
+            };
+
+        let results =
+            await lookupWithPagination(
+                `[[${articleQuery}]]`,
+            );
 
         if (_.isEmpty(results)) {
-            res = await this._connector.get({
-                query: `[[common_name::${query}]]|[[Category:psychoactive_substance]]${Substances._renderPagination({ limit, offset })}`,
-            });
-            results = _.get(res, 'query.results', {});
-            if (_.isEmpty(results)) {
-                res = await this._connector.get({
-                    query: `[[systematic_name::${systematicName}]]|[[Category:psychoactive_substance]]${Substances._renderPagination({
-                        limit,
-                        offset,
-                    })}`,
-                });
-            }
+            results = await lookupWithPagination(
+                `[[common_name::${query}]]|[[Category:psychoactive_substance]]`,
+            );
+        }
+
+        if (_.isEmpty(results)) {
+            results = await lookupWithPagination(
+                `[[systematic_name::${systematicName}]]|[[Category:psychoactive_substance]]`,
+            );
         }
 
         return Promise.all(
