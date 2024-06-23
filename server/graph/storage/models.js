@@ -169,7 +169,7 @@ class Substances {
 
         if (_.isEmpty(results)) {
             results = await lookupWithPagination(
-                `[[systematic_name::${systematicName}]]|[[Category:psychoactive_substance]]`,
+                `[[systematic_name::${query}]]|[[Category:psychoactive_substance]]`,
             );
         }
 
