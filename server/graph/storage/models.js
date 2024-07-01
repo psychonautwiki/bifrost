@@ -117,6 +117,25 @@ class Substances {
             .parseFromSMW(res);
     }
 
+    async getQueryPromise(results) {
+       return Promise.all(
+           this._mapTextUrl(results)
+               .map(async item => {
+                   if (item.name.startsWith("Talk:")) {
+                       return semanticData;
+                   }
+                   const semanticData =
+                       await this.getSemanticSubstanceProps(
+                           item.name,
+                       );
+
+                   process.env.DUMP_SEMANTICS && this._log.trace('Processed semantic data', semanticData);
+
+                   return _.merge(item, semanticData);
+               }),
+       );
+    }
+
     async getSubstances({ chemicalClass, psychoactiveClass, effect, query, limit, offset }) {
         if ([effect, query, chemicalClass, psychoactiveClass].filter(a => a).length >= 2) {
             throw new Error('Substances: `chemicalClass`, `psychoactiveClass`, `effect` and `query` are mutually exclusive.');
@@ -145,7 +164,7 @@ class Substances {
             });
         }
 
-        const articleQuery = query ? `:${query}` : 'Category:Psychoactive substance';
+        const articleQuery = query ? `:${query}]]|[[Category:Psychoactive substance` : 'Category:Psychoactive substance';
 
         const lookupWithPagination =
             async query => {
@@ -156,36 +175,40 @@ class Substances {
                 return _.get(res, "query.results", {});
             };
 
-        let results =
-            await lookupWithPagination(
-                `[[${articleQuery}]]`,
-            );
-
-        if (_.isEmpty(results)) {
-            results = await lookupWithPagination(
-                `[[common_name::${query}]]|[[Category:psychoactive_substance]]`,
-            );
-        }
-
-        if (_.isEmpty(results)) {
-            results = await lookupWithPagination(
-                `[[systematic_name::${query}]]|[[Category:psychoactive_substance]]`,
-            );
-        }
-
-        return Promise.all(
-            this._mapTextUrl(results)
-                .map(async item => {
-                    const semanticData =
-                        await this.getSemanticSubstanceProps(
-                            item.name,
-                        );
-
-                    process.env.DUMP_SEMANTICS && this._log.trace('Processed semantic data', semanticData);
-
-                    return _.merge(item, semanticData);
-                }),
+        let promise;
+        let results = await lookupWithPagination(
+            `[[${articleQuery}]]`,
         );
+        if (!_.isEmpty(results)) {
+            promise = await this.getQueryPromise(results);
+            if (!_.isEmpty(promise)) {
+                return promise;
+            }
+        }
+
+        if (query) {
+            results = [];
+            if (_.isEmpty(results)) {
+                results = await lookupWithPagination(
+                    `[[common_name::${query}]]|[[Category:Psychoactive substance]]`,
+                );
+            }
+
+            if (!_.isEmpty(results)) {
+                promise = await this.getQueryPromise(results);
+                if (!_.isEmpty(promise)) {
+                    return promise;
+                }
+            }
+
+            results = [];
+            if (_.isEmpty(results)) {
+                results = await lookupWithPagination(
+                    `[[systematic_name::${query}]]|[[Category:Psychoactive substance]]`,
+                );
+            }
+        }
+        return await this.getQueryPromise(results);
     }
 
     async getSubstanceEffects({ substance, limit, offset }) {
