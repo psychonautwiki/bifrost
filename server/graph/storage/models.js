@@ -1,54 +1,78 @@
 'use strict';
 
 const crypto = require('crypto');
-
 const _ = require('lodash');
-
 const constants = require('../../util/constants');
+const cheerio = require('cheerio');
+
+/*
+    Data sanitization helpers
+    -------------------------
+    These functions clean numeric fields coming from raw semantic data.
+    They prevent GraphQL schema validation errors caused by invalid formats,
+    such as "20#", [3,8], or other non-float values.
+*/
+
+function sanitizeFloat(value) {
+    if (Array.isArray(value)) {
+        // If it's an array, take the first element recursively
+        return sanitizeFloat(value[0]);
+    }
+    if (typeof value === 'string') {
+        // Remove non-numeric characters and parse as float
+        const cleaned = parseFloat(value.replace(/[^0-9.]/g, ''));
+        return isNaN(cleaned) ? null : cleaned;
+    }
+    if (typeof value === 'number') {
+        return value;
+    }
+    return null;
+}
+
+function sanitizeObject(obj) {
+    if (Array.isArray(obj)) return obj.map(sanitizeObject);
+    if (obj && typeof obj === 'object') {
+        return Object.fromEntries(
+            Object.entries(obj).map(([k, v]) => [k, sanitizeObject(v)])
+        );
+    }
+    return sanitizeFloat(obj);
+}
 
 /*
     ABSTRACT GENERATION
 */
 
-const cheerio = require('cheerio');
-
 class AbstractGenerator {
     static _sanitize(text) {
         return text
-            // trim opening paragraph
             .trim()
-            // remove reference markers
-            .replace(/\[(.*?)]/, '')
-            // break by lines
+            .replace(/\[(.*?)]/, '') // remove reference markers
             .split('\n')
-            // trim lines -- accounting for \r\n linebreaks
             .map(line => line.trim())
-            // take first two paragraphs
-            .slice(0, 2)
-            // reconcile into single blob
+            .slice(0, 2) // first two paragraphs
             .join(' ')
             .replace(/\s\s+/);
     }
 
     static _envelope(extract) {
         const $_base = cheerio.load(`<section>${extract}</section>`);
-
         return $_base.root().find('section > p').text();
     }
 
     static _unwrap(res) {
         const extract = _.get(res, 'parse.text.*', null);
-
         if (!extract) {
             return null;
         }
-
         return extract;
     }
 
     static abstract(res) {
         try {
-            return AbstractGenerator._sanitize(AbstractGenerator._envelope(AbstractGenerator._unwrap(res)));
+            return AbstractGenerator._sanitize(
+                AbstractGenerator._envelope(AbstractGenerator._unwrap(res))
+            );
         } catch (err) {
             return err;
         }
@@ -122,7 +146,10 @@ class Substances {
             throw new Error('Substances: `chemicalClass`, `psychoactiveClass`, `effect` and `query` are mutually exclusive.');
         }
 
-        this._log.trace('[getSubstances] effect: %s query: %s chemicalClass: %s psychoactiveClass: %s', effect, query, psychoactiveClass);
+        this._log.trace(
+            '[getSubstances] effect: %s query: %s chemicalClass: %s psychoactiveClass: %s',
+            effect, query, chemicalClass, psychoactiveClass
+        );
 
         /* delegate to chemicalClass search */
         if (chemicalClass) {
@@ -183,7 +210,8 @@ class Substances {
 
                     process.env.DUMP_SEMANTICS && this._log.trace('Processed semantic data', semanticData);
 
-                    return _.merge(item, semanticData);
+                    // 🔧 Sanitize the merged semantic data before returning
+                    return sanitizeObject(_.merge(item, semanticData));
                 }),
         );
     }
