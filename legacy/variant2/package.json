@@ -1,0 +1,28 @@
+{
+  "name": "bifrost-server",
+  "version": "2.0.0",
+  "description": "GraphQL Gateway for PsychonautWiki and Erowid data",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "apollo-server-core": "^3.10.0",
+    "apollo-server-express": "^3.10.0",
+    "bunyan": "^1.8.15",
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.0",
+    "graphql": "^16.0.0",
+    "lodash": "^4.17.21",
+    "mongodb": "^4.5.0",
+    "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

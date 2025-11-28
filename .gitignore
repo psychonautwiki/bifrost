@@ -3,3 +3,8 @@ node_modules
 .pnp
 .pnp.js
 .idea/
+
+
+# Added by cargo
+
+/target
