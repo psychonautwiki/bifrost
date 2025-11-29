@@ -2,24 +2,68 @@ pub mod model;
 pub mod schema;
 
 use crate::graphql::schema::BifrostSchema;
+use async_graphql::Request;
 use async_graphql_axum::{GraphQLRequest, GraphQLResponse};
 use axum::{
-    extract::State,
-    response::{Html, IntoResponse},
+    extract::{RawQuery, State},
+    response::{Html, IntoResponse, Response},
 };
 
 pub use schema::create_schema;
 
-pub async fn graphql_handler(
+pub async fn graphql_post_handler(
     State(schema): State<BifrostSchema>,
     req: GraphQLRequest,
 ) -> GraphQLResponse {
     schema.execute(req.into_inner()).await.into()
 }
 
-/// Custom GraphQL Playground with sample queries matching the legacy Node.js implementation.
-pub async fn graphiql() -> impl IntoResponse {
-    Html(custom_playground_source("/"))
+/// Combined handler for GET requests - serves GraphiQL UI if no query param, otherwise executes GraphQL
+pub async fn graphql_or_graphiql(
+    State(schema): State<BifrostSchema>,
+    raw_query: RawQuery,
+) -> Response {
+    // Check if there's a query string with a 'query' parameter
+    if let Some(query_string) = raw_query.0 {
+        // Parse query string manually to extract the query parameter
+        let params: std::collections::HashMap<String, String> =
+            query_string
+                .split('&')
+                .filter_map(|pair| {
+                    let mut parts = pair.splitn(2, '=');
+                    match (parts.next(), parts.next()) {
+                        (Some(key), Some(value)) => {
+                            Some((
+                                urlencoding::decode(key).ok()?.into_owned(),
+                                urlencoding::decode(value).ok()?.into_owned(),
+                            ))
+                        }
+                        _ => None,
+                    }
+                })
+                .collect();
+
+        // If there's a 'query' parameter, execute the GraphQL request
+        if let Some(query) = params.get("query") {
+            let mut request = Request::new(query.clone());
+
+            if let Some(vars) = params.get("variables") {
+                if let Ok(variables) = serde_json::from_str(vars) {
+                    request = request.variables(variables);
+                }
+            }
+
+            if let Some(op_name) = params.get("operationName") {
+                request = request.operation_name(op_name);
+            }
+
+            let response: GraphQLResponse = schema.execute(request).await.into();
+            return response.into_response();
+        }
+    }
+
+    // No valid query params, serve GraphiQL UI
+    Html(custom_playground_source("/")).into_response()
 }
 
 /// Generate custom GraphQL Playground HTML with sample queries.

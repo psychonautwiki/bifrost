@@ -91,7 +91,10 @@ async fn main() -> anyhow::Result<()> {
 
     // Setup Router
     let app = Router::new()
-        .route("/", get(graphql::graphiql).post(graphql::graphql_handler))
+        .route(
+            "/",
+            get(graphql::graphql_or_graphiql).post(graphql::graphql_post_handler),
+        )
         .layer(
             CorsLayer::new()
                 .allow_origin(Any)
