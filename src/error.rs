@@ -11,9 +11,6 @@ pub enum BifrostError {
     #[error("Database error: {0}")]
     Database(#[from] mongodb::error::Error),
 
-    #[error("Cache error: {0}")]
-    Cache(String),
-
     #[error("Internal server error: {0}")]
     Internal(String),
 }

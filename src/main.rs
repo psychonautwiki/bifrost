@@ -54,7 +54,7 @@ async fn main() -> anyhow::Result<()> {
     // Print banner after logging is initialized
     print_startup_banner();
 
-    info!("Initializing Bifrost v{}", env!("CARGO_PKG_VERSION"));
+    info!("Starting Bifrost v{}", env!("CARGO_PKG_VERSION"));
 
     // Load config (CLI port overrides env var)
     let mut config = Config::from_env()?;
@@ -66,14 +66,14 @@ async fn main() -> anyhow::Result<()> {
     config.debug_requests = args.debug_requests;
 
     if args.debug_requests {
-        info!("Backend request debugging is ENABLED");
+        info!("Request debugging enabled");
     }
 
     // Initialize Services
     let psychonaut_service = Arc::new(PsychonautService::new(&config));
 
     let plebiscite_service = if config.features.plebiscite_enabled {
-        info!("Feature 'Plebiscite' is ENABLED. Connecting to MongoDB...");
+        info!("Plebiscite service enabled, connecting to MongoDB");
         match PlebisciteService::new(&config).await {
             Ok(service) => Some(Arc::new(service)),
             Err(e) => {
@@ -82,7 +82,7 @@ async fn main() -> anyhow::Result<()> {
             }
         }
     } else {
-        info!("Feature 'Plebiscite' is DISABLED.");
+        info!("Plebiscite service disabled");
         None
     };
 
@@ -106,7 +106,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Start Server
     let addr = SocketAddr::from(([0, 0, 0, 0], config.server.port));
-    info!("Bifrost Online: http://{}", addr);
+    info!("Listening on http://{}", addr);
 
     // Handle shutdown signal
     tokio::spawn(async move {
@@ -114,7 +114,7 @@ async fn main() -> anyhow::Result<()> {
             error!("Failed to listen for ctrl-c: {}", e);
             return;
         }
-        info!("Received shutdown signal, exiting...");
+        info!("Shutting down");
         std::process::exit(0);
     });
 

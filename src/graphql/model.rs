@@ -54,13 +54,6 @@ pub struct SubstanceTolerance {
     pub zero: Option<String>,
 }
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
-#[serde(tag = "type")]
-pub enum RoaRange {
-    SubstanceRoaRange(SubstanceRoaRange),
-    SubstanceRoaDurationRange(SubstanceRoaDurationRange),
-}
-
 #[derive(SimpleObject, Serialize, Deserialize, Debug, Clone)]
 pub struct SubstanceRoaRange {
     pub min: Option<f64>,

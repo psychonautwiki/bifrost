@@ -151,21 +151,22 @@ impl PsychonautService {
             let article_query = if q.is_empty() {
                 "Category:Psychoactive substance".to_string()
             } else {
-                format!(":{}", q)
+                // Limit query to Psychoactive substance category to avoid non-substance matches
+                format!(":{}]]|[[Category:Psychoactive substance", q)
             };
 
             let mut res = self.cached_ask_query(&format!("[[{}]]", article_query), limit, offset).await?;
 
             if res.is_empty() && !q.is_empty() {
                 res = self.cached_ask_query(
-                    &format!("[[common_name::{}]]|[[Category:psychoactive_substance]]", q),
+                    &format!("[[common_name::{}]]|[[Category:Psychoactive substance]]", q),
                     limit,
                     offset,
                 ).await?;
             }
             if res.is_empty() && !q.is_empty() {
                 res = self.cached_ask_query(
-                    &format!("[[systematic_name::{}]]|[[Category:psychoactive_substance]]", q),
+                    &format!("[[systematic_name::{}]]|[[Category:Psychoactive substance]]", q),
                     limit,
                     offset,
                 ).await?;
