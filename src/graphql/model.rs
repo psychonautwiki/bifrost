@@ -179,6 +179,83 @@ pub struct Experience {
     pub effects: Option<Vec<Effect>>,
 }
 
+// ============================================================================
+// Reagent Test Types
+// ============================================================================
+
+/// A color used in reagent test results
+#[derive(SimpleObject, Serialize, Deserialize, Debug, Clone)]
+pub struct ReagentColor {
+    /// Unique color identifier
+    pub id: i32,
+    /// Color name (e.g., "black1", "blue2", "purple3")
+    pub name: String,
+    /// Hex color code (e.g., "#333333")
+    pub hex: String,
+    /// Whether this is a primary/simple color
+    pub simple: bool,
+    /// Reference to the simple version of this color
+    #[serde(rename = "simpleColorId")]
+    pub simple_color_id: Option<i32>,
+}
+
+/// A reagent test (e.g., Marquis, Mecke, Mandelin)
+#[derive(SimpleObject, Serialize, Deserialize, Debug, Clone)]
+pub struct Reagent {
+    /// Unique reagent identifier
+    pub id: i32,
+    /// Internal name key
+    pub name: String,
+    /// Full display name (e.g., "Marquis")
+    #[serde(rename = "fullName")]
+    pub full_name: String,
+    /// Short abbreviation (e.g., "Mq")
+    #[serde(rename = "shortName")]
+    pub short_name: String,
+    /// Whether white is the first/base color for this reagent
+    #[serde(rename = "whiteFirstColor")]
+    pub white_first_color: Option<bool>,
+}
+
+/// A single reagent test result for a substance
+#[derive(SimpleObject, Serialize, Deserialize, Debug, Clone)]
+pub struct ReagentTestResult {
+    /// The reagent used in this test
+    pub reagent: Reagent,
+    /// Colors at the start of the reaction
+    pub start_colors: Vec<ReagentColor>,
+    /// Colors at the end of the reaction
+    pub end_colors: Vec<ReagentColor>,
+    /// Whether this result indicates presence of the substance
+    pub is_positive: bool,
+    /// Human-readable description of the color change
+    pub description: String,
+}
+
+/// Complete reagent test results for a substance
+#[derive(SimpleObject, Serialize, Deserialize, Debug, Clone)]
+#[graphql(complex)]
+pub struct SubstanceReagents {
+    /// The substance name from the reagent database
+    pub substance_name: String,
+    /// The original (raw) name from the reagent database before parsing
+    pub raw_name: Option<String>,
+    /// All reagent test results for this substance
+    pub results: Vec<ReagentTestResult>,
+}
+
+/// Result of a reagent query with optional PsychonautWiki linking
+#[derive(SimpleObject, Serialize, Deserialize, Debug, Clone)]
+#[graphql(complex)]
+pub struct ReagentQueryResult {
+    /// The query string that matched this result
+    pub query: String,
+    /// The substance name in the reagent database
+    pub matched_name: String,
+    /// All reagent test results
+    pub results: Vec<ReagentTestResult>,
+}
+
 #[derive(SimpleObject, Serialize, Deserialize, Debug, Clone)]
 pub struct ErowidMeta {
     #[serde(rename = "erowidId")]

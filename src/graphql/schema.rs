@@ -8,6 +8,7 @@ use crate::config::CacheConfig;
 use crate::graphql::model::*;
 use crate::metrics::SharedMetrics;
 use crate::services::plebiscite::PlebisciteService;
+use crate::services::reagents::ReagentDataHolder;
 use async_graphql::{ComplexObject, Context, EmptyMutation, EmptySubscription, Object, Schema};
 use std::sync::Arc;
 use std::time::Instant;
@@ -18,12 +19,14 @@ pub type BifrostSchema = Schema<QueryRoot, EmptyMutation, EmptySubscription>;
 pub fn create_schema(
     snapshot: SnapshotHolder,
     plebiscite_service: Option<Arc<PlebisciteService>>,
+    reagent_data: Option<ReagentDataHolder>,
     metrics: SharedMetrics,
     cache_config: CacheConfig,
 ) -> BifrostSchema {
     Schema::build(QueryRoot, EmptyMutation, EmptySubscription)
         .data(snapshot)
         .data(plebiscite_service)
+        .data(reagent_data)
         .data(metrics)
         .data(cache_config)
         .finish()
@@ -266,6 +269,85 @@ impl QueryRoot {
 
         Ok(vec![result])
     }
+
+    /// Query reagent test results for substances.
+    ///
+    /// Accepts either a single substance name or an array of names.
+    /// Names are fuzzy-matched: "4homet", "4-homet", "4-HO-MET" all match.
+    /// Returns None for a query if:
+    /// - No match found
+    /// - Multiple substances could match (ambiguous)
+    async fn reagent_results(
+        &self,
+        ctx: &Context<'_>,
+        #[graphql(desc = "Single substance name to query")] substance: Option<String>,
+        #[graphql(desc = "Multiple substance names to query")] substances: Option<Vec<String>>,
+    ) -> async_graphql::Result<Vec<ReagentQueryResult>> {
+        let start = Instant::now();
+        let metrics = ctx.data::<SharedMetrics>()?;
+        let reagent_data_opt = ctx.data::<Option<ReagentDataHolder>>()?;
+
+        let reagent_data = match reagent_data_opt {
+            Some(data) => data,
+            None => {
+                metrics.record_query("reagent_results", "disabled", 0.0, 0);
+                return Ok(vec![]);
+            }
+        };
+
+        // Collect all queries
+        let queries: Vec<String> = match (substance, substances) {
+            (Some(s), None) => vec![s],
+            (None, Some(ss)) => ss,
+            (Some(s), Some(mut ss)) => {
+                ss.insert(0, s);
+                ss
+            }
+            (None, None) => vec![],
+        };
+
+        if queries.is_empty() {
+            metrics.record_query("reagent_results", "success", 0.0, 0);
+            return Ok(vec![]);
+        }
+
+        let mut results = Vec::new();
+
+        for query in queries {
+            if let Some(substance_reagents) = reagent_data.lookup(&query) {
+                results.push(ReagentQueryResult {
+                    query: query.clone(),
+                    matched_name: substance_reagents.substance_name.clone(),
+                    results: substance_reagents.results,
+                });
+            }
+        }
+
+        let duration = start.elapsed().as_secs_f64();
+        metrics.record_query("reagent_results", "success", duration, results.len() as u64);
+
+        Ok(results)
+    }
+
+    /// List all available reagent tests
+    async fn reagents(&self, ctx: &Context<'_>) -> async_graphql::Result<Vec<Reagent>> {
+        let reagent_data_opt = ctx.data::<Option<ReagentDataHolder>>()?;
+
+        match reagent_data_opt {
+            Some(data) => Ok(data.get_all_reagents()),
+            None => Ok(vec![]),
+        }
+    }
+
+    /// List all reagent colors
+    async fn reagent_colors(&self, ctx: &Context<'_>) -> async_graphql::Result<Vec<ReagentColor>> {
+        let reagent_data_opt = ctx.data::<Option<ReagentDataHolder>>()?;
+
+        match reagent_data_opt {
+            Some(data) => Ok(data.get_all_colors()),
+            None => Ok(vec![]),
+        }
+    }
 }
 
 #[ComplexObject]
@@ -317,6 +399,27 @@ impl Substance {
         self.resolve_interactions(ctx, &self.dangerous_interactions_raw)
             .await
     }
+
+    /// Get reagent test results for this substance
+    ///
+    /// Uses fuzzy matching to find the substance in the reagent database.
+    /// Returns None if the substance is not found or if the match is ambiguous.
+    async fn reagents(
+        &self,
+        ctx: &Context<'_>,
+    ) -> async_graphql::Result<Option<SubstanceReagents>> {
+        let name = match &self.name {
+            Some(n) => n,
+            None => return Ok(None),
+        };
+
+        let reagent_data_opt = ctx.data::<Option<ReagentDataHolder>>()?;
+
+        match reagent_data_opt {
+            Some(data) => Ok(data.lookup(name)),
+            None => Ok(None),
+        }
+    }
 }
 
 impl Substance {
@@ -359,5 +462,75 @@ impl Effect {
             .collect();
 
         Ok(results)
+    }
+}
+
+#[ComplexObject]
+impl SubstanceReagents {
+    /// Get the linked PsychonautWiki substance for this reagent entry.
+    ///
+    /// Uses fuzzy matching to find the best matching substance in the
+    /// PsychonautWiki database. Returns None if no match is found.
+    async fn pw_substance(
+        &self,
+        ctx: &Context<'_>,
+    ) -> async_graphql::Result<Option<Substance>> {
+        let snapshot_holder = ctx.data::<SnapshotHolder>()?;
+        let config = ctx.data::<CacheConfig>()?;
+        let snapshot = snapshot_holder.get().await;
+
+        // Try exact match first
+        if let Some(s) = snapshot.get_by_name(&self.substance_name) {
+            return Ok(Some(s.clone()));
+        }
+
+        // Try fuzzy search
+        let results = snapshot.search(&self.substance_name, config.trigram_threshold);
+        if let Some(s) = results.into_iter().next() {
+            return Ok(Some(s.clone()));
+        }
+
+        Ok(None)
+    }
+}
+
+#[ComplexObject]
+impl ReagentQueryResult {
+    /// Get the linked PsychonautWiki substance for this query result.
+    ///
+    /// Uses the original query string to fuzzy match against the
+    /// PsychonautWiki substance database. This preserves the user's
+    /// original intent even if the reagent database has a different
+    /// canonical name.
+    async fn pw_substance(
+        &self,
+        ctx: &Context<'_>,
+    ) -> async_graphql::Result<Option<Substance>> {
+        let snapshot_holder = ctx.data::<SnapshotHolder>()?;
+        let config = ctx.data::<CacheConfig>()?;
+        let snapshot = snapshot_holder.get().await;
+
+        // Try the original query first (what the user typed)
+        if let Some(s) = snapshot.get_by_name(&self.query) {
+            return Ok(Some(s.clone()));
+        }
+
+        // Try fuzzy search with the query
+        let results = snapshot.search(&self.query, config.trigram_threshold);
+        if let Some(s) = results.into_iter().next() {
+            return Ok(Some(s.clone()));
+        }
+
+        // Fallback: try the matched reagent database name
+        if let Some(s) = snapshot.get_by_name(&self.matched_name) {
+            return Ok(Some(s.clone()));
+        }
+
+        let results = snapshot.search(&self.matched_name, config.trigram_threshold);
+        if let Some(s) = results.into_iter().next() {
+            return Ok(Some(s.clone()));
+        }
+
+        Ok(None)
     }
 }

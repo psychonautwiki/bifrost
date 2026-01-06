@@ -23,6 +23,7 @@ use crate::metrics::{create_metrics, SharedMetrics};
 use crate::services::plebiscite::PlebisciteService;
 use crate::services::psychonaut::api::PsychonautApi;
 use crate::services::psychonaut::parser::WikitextParser;
+use crate::services::reagents::{ReagentData, ReagentDataHolder};
 use crate::utils::ascii::print_startup_banner;
 use axum::{extract::State, http::header, response::IntoResponse, routing::get, Router};
 use clap::Parser;
@@ -180,10 +181,34 @@ async fn main() -> anyhow::Result<()> {
         None
     };
 
+    // Load reagent test data
+    let reagent_data = {
+        let reagent_path = std::path::Path::new("data/reagents.json");
+        if reagent_path.exists() {
+            match ReagentData::load_from_file(reagent_path) {
+                Ok(data) => {
+                    info!(
+                        substances = data.substance_count(),
+                        "Reagent data loaded successfully"
+                    );
+                    Some(ReagentDataHolder::new(data))
+                }
+                Err(e) => {
+                    warn!(error = %e, "Failed to load reagent data, reagent queries will be unavailable");
+                    None
+                }
+            }
+        } else {
+            info!("No reagent data file found at data/reagents.json, reagent queries will be unavailable");
+            None
+        }
+    };
+
     // Build GraphQL Schema
     let schema = create_schema(
         snapshot_holder.clone(),
         plebiscite_service,
+        reagent_data,
         metrics.clone(),
         config.cache.clone(),
     );
