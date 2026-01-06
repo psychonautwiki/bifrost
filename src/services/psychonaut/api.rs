@@ -3,7 +3,7 @@ use reqwest::Client;
 use serde::Deserialize;
 use serde_json::Value;
 use std::time::{Duration, Instant};
-use tracing::{debug, trace, warn, instrument};
+use tracing::{debug, instrument, trace, warn};
 
 const MAX_RETRIES: u32 = 3;
 const INITIAL_BACKOFF_MS: u64 = 100;
@@ -34,7 +34,11 @@ impl PsychonautApi {
     /// Execute an HTTP GET request with exponential backoff retry logic.
     async fn get_with_retry(&self, params: &[(&str, &str)]) -> Result<Value, BifrostError> {
         let mut last_error = None;
-        let action = params.iter().find(|(k, _)| *k == "action").map(|(_, v)| *v).unwrap_or("unknown");
+        let action = params
+            .iter()
+            .find(|(k, _)| *k == "action")
+            .map(|(_, v)| *v)
+            .unwrap_or("unknown");
 
         for attempt in 0..MAX_RETRIES {
             let start = Instant::now();
@@ -114,7 +118,8 @@ impl PsychonautApi {
             }
         }
 
-        Err(last_error.unwrap_or_else(|| BifrostError::Upstream("Request failed after retries".into())))
+        Err(last_error
+            .unwrap_or_else(|| BifrostError::Upstream("Request failed after retries".into())))
     }
 
     fn render_pagination(limit: i32, offset: i32) -> String {
@@ -129,7 +134,12 @@ impl PsychonautApi {
     }
 
     #[instrument(skip(self), fields(query_type = "ask"))]
-    pub async fn ask_query(&self, query: &str, limit: i32, offset: i32) -> Result<Vec<AskResultItem>, BifrostError> {
+    pub async fn ask_query(
+        &self,
+        query: &str,
+        limit: i32,
+        offset: i32,
+    ) -> Result<Vec<AskResultItem>, BifrostError> {
         let full_query = format!("{}{}", query, Self::render_pagination(limit, offset));
         debug!(query = %full_query, "Executing SMW ask query");
 
@@ -140,11 +150,11 @@ impl PsychonautApi {
         ];
 
         let json = self.get_with_retry(&params).await?;
-        
+
         // Parse query.results
         // Results can be an object (map) or array. We need to normalize.
         let results = json.pointer("/query/results");
-        
+
         match results {
             Some(Value::Object(map)) => {
                 let mut items = Vec::new();
@@ -154,7 +164,7 @@ impl PsychonautApi {
                     }
                 }
                 Ok(items)
-            },
+            }
             Some(Value::Array(arr)) => {
                 let mut items = Vec::new();
                 for v in arr {
@@ -163,21 +173,35 @@ impl PsychonautApi {
                     }
                 }
                 Ok(items)
-            },
+            }
             _ => Ok(Vec::new()),
         }
     }
 
     #[instrument(skip(self), fields(query_type = "class"))]
-    pub async fn get_by_class(&self, class_type: &str, class_name: &str, limit: i32, offset: i32) -> Result<Vec<AskResultItem>, BifrostError> {
-        let query = format!("[[{}::{}]]|[[Category:Psychoactive substance]]", class_type, class_name);
+    pub async fn get_by_class(
+        &self,
+        class_type: &str,
+        class_name: &str,
+        limit: i32,
+        offset: i32,
+    ) -> Result<Vec<AskResultItem>, BifrostError> {
+        let query = format!(
+            "[[{}::{}]]|[[Category:Psychoactive substance]]",
+            class_type, class_name
+        );
         self.ask_query(&query, limit, offset).await
     }
 
     #[instrument(skip(self), fields(query_type = "substance_effects"))]
-    pub async fn get_substance_effects(&self, substance: &str, limit: i32, offset: i32) -> Result<Vec<AskResultItem>, BifrostError> {
+    pub async fn get_substance_effects(
+        &self,
+        substance: &str,
+        limit: i32,
+        offset: i32,
+    ) -> Result<Vec<AskResultItem>, BifrostError> {
         let query = format!("[[:{}]]|?Effect", substance);
-        // Note: The legacy code handles printouts differently. 
+        // Note: The legacy code handles printouts differently.
         // We need to fetch the printouts.
         // For simplicity in this rewrite, we'll stick to the ask_query structure but we might need to adjust parsing if printouts are structured differently.
         // However, the legacy code maps text/url from results.
@@ -185,12 +209,16 @@ impl PsychonautApi {
         // Actually, `ask` with `|?Effect` puts the effect in `printouts`.
         // The generic `ask_query` above extracts `fulltext` and `fullurl` of the SUBJECT.
         // To get the effects, we need to parse the printouts.
-        
+
         // Custom implementation for printouts:
         let full_query = format!("{}{}", query, Self::render_pagination(limit, offset));
-        let params = [("action", "ask"), ("format", "json"), ("query", &full_query)];
+        let params = [
+            ("action", "ask"),
+            ("format", "json"),
+            ("query", &full_query),
+        ];
         let json = self.get_with_retry(&params).await?;
-        
+
         let mut effects = Vec::new();
         if let Some(results) = json.pointer("/query/results") {
             if let Some(sub_obj) = results.get(substance) {
@@ -198,7 +226,9 @@ impl PsychonautApi {
                     if let Some(eff_arr) = printouts.get("Effect") {
                         if let Some(arr) = eff_arr.as_array() {
                             for item in arr {
-                                if let Ok(res) = serde_json::from_value::<AskResultItem>(item.clone()) {
+                                if let Ok(res) =
+                                    serde_json::from_value::<AskResultItem>(item.clone())
+                                {
                                     effects.push(res);
                                 }
                             }
@@ -211,7 +241,12 @@ impl PsychonautApi {
     }
 
     #[instrument(skip(self), fields(query_type = "effect_substances"))]
-    pub async fn get_effect_substances(&self, effect: &str, limit: i32, offset: i32) -> Result<Vec<AskResultItem>, BifrostError> {
+    pub async fn get_effect_substances(
+        &self,
+        effect: &str,
+        limit: i32,
+        offset: i32,
+    ) -> Result<Vec<AskResultItem>, BifrostError> {
         let query = format!("[[Effect::{}]]|[[Category:Psychoactive substance]]", effect);
         self.ask_query(&query, limit, offset).await
     }

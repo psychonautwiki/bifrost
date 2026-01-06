@@ -1,13 +1,13 @@
 pub mod model;
 pub mod schema;
 
-use crate::graphql::schema::BifrostSchema;
 use async_graphql::Request;
 use async_graphql_axum::{GraphQLRequest, GraphQLResponse};
 use axum::{
     extract::{RawQuery, State},
     response::{Html, IntoResponse, Response},
 };
+pub use schema::BifrostSchema;
 
 pub use schema::create_schema;
 
@@ -26,22 +26,19 @@ pub async fn graphql_or_graphiql(
     // Check if there's a query string with a 'query' parameter
     if let Some(query_string) = raw_query.0 {
         // Parse query string manually to extract the query parameter
-        let params: std::collections::HashMap<String, String> =
-            query_string
-                .split('&')
-                .filter_map(|pair| {
-                    let mut parts = pair.splitn(2, '=');
-                    match (parts.next(), parts.next()) {
-                        (Some(key), Some(value)) => {
-                            Some((
-                                urlencoding::decode(key).ok()?.into_owned(),
-                                urlencoding::decode(value).ok()?.into_owned(),
-                            ))
-                        }
-                        _ => None,
-                    }
-                })
-                .collect();
+        let params: std::collections::HashMap<String, String> = query_string
+            .split('&')
+            .filter_map(|pair| {
+                let mut parts = pair.splitn(2, '=');
+                match (parts.next(), parts.next()) {
+                    (Some(key), Some(value)) => Some((
+                        urlencoding::decode(key).ok()?.into_owned(),
+                        urlencoding::decode(value).ok()?.into_owned(),
+                    )),
+                    _ => None,
+                }
+            })
+            .collect();
 
         // If there's a 'query' parameter, execute the GraphQL request
         if let Some(query) = params.get("query") {

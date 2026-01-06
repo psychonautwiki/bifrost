@@ -42,14 +42,17 @@ impl PsychonautService {
         let api_ref = self.api.clone();
         let query_clone = query.to_string();
 
-        let result = self.cache.get(cache_key, move || {
-            let api = api_ref.clone();
-            let q = query_clone.clone();
-            async move {
-                let items = api.ask_query(&q, limit, offset).await?;
-                Ok(serde_json::to_value(&items)?)
-            }
-        }).await?;
+        let result = self
+            .cache
+            .get(cache_key, move || {
+                let api = api_ref.clone();
+                let q = query_clone.clone();
+                async move {
+                    let items = api.ask_query(&q, limit, offset).await?;
+                    Ok(serde_json::to_value(&items)?)
+                }
+            })
+            .await?;
 
         Ok(serde_json::from_value(result)?)
     }
@@ -67,15 +70,18 @@ impl PsychonautService {
         let class_type_clone = class_type.to_string();
         let class_name_clone = class_name.to_string();
 
-        let result = self.cache.get(cache_key, move || {
-            let api = api_ref.clone();
-            let ct = class_type_clone.clone();
-            let cn = class_name_clone.clone();
-            async move {
-                let items = api.get_by_class(&ct, &cn, limit, offset).await?;
-                Ok(serde_json::to_value(&items)?)
-            }
-        }).await?;
+        let result = self
+            .cache
+            .get(cache_key, move || {
+                let api = api_ref.clone();
+                let ct = class_type_clone.clone();
+                let cn = class_name_clone.clone();
+                async move {
+                    let items = api.get_by_class(&ct, &cn, limit, offset).await?;
+                    Ok(serde_json::to_value(&items)?)
+                }
+            })
+            .await?;
 
         Ok(serde_json::from_value(result)?)
     }
@@ -91,14 +97,17 @@ impl PsychonautService {
         let api_ref = self.api.clone();
         let effect_clone = effect.to_string();
 
-        let result = self.cache.get(cache_key, move || {
-            let api = api_ref.clone();
-            let e = effect_clone.clone();
-            async move {
-                let items = api.get_effect_substances(&e, limit, offset).await?;
-                Ok(serde_json::to_value(&items)?)
-            }
-        }).await?;
+        let result = self
+            .cache
+            .get(cache_key, move || {
+                let api = api_ref.clone();
+                let e = effect_clone.clone();
+                async move {
+                    let items = api.get_effect_substances(&e, limit, offset).await?;
+                    Ok(serde_json::to_value(&items)?)
+                }
+            })
+            .await?;
 
         Ok(serde_json::from_value(result)?)
     }
@@ -114,14 +123,17 @@ impl PsychonautService {
         let api_ref = self.api.clone();
         let substance_clone = substance.to_string();
 
-        let result = self.cache.get(cache_key, move || {
-            let api = api_ref.clone();
-            let s = substance_clone.clone();
-            async move {
-                let items = api.get_substance_effects(&s, limit, offset).await?;
-                Ok(serde_json::to_value(&items)?)
-            }
-        }).await?;
+        let result = self
+            .cache
+            .get(cache_key, move || {
+                let api = api_ref.clone();
+                let s = substance_clone.clone();
+                async move {
+                    let items = api.get_substance_effects(&s, limit, offset).await?;
+                    Ok(serde_json::to_value(&items)?)
+                }
+            })
+            .await?;
 
         Ok(serde_json::from_value(result)?)
     }
@@ -137,13 +149,17 @@ impl PsychonautService {
     ) -> Result<Vec<Substance>, BifrostError> {
         let params = vec![&query, &effect, &chemical_class, &psychoactive_class];
         if params.iter().filter(|p| p.is_some()).count() >= 2 {
-            return Err(BifrostError::Parsing("Parameters are mutually exclusive".into()));
+            return Err(BifrostError::Parsing(
+                "Parameters are mutually exclusive".into(),
+            ));
         }
 
         let results = if let Some(c) = chemical_class {
-            self.cached_get_by_class("Chemical class", &c, limit, offset).await?
+            self.cached_get_by_class("Chemical class", &c, limit, offset)
+                .await?
         } else if let Some(p) = psychoactive_class {
-            self.cached_get_by_class("Psychoactive class", &p, limit, offset).await?
+            self.cached_get_by_class("Psychoactive class", &p, limit, offset)
+                .await?
         } else if let Some(e) = effect {
             self.cached_get_effect_substances(&e, limit, offset).await?
         } else {
@@ -155,21 +171,30 @@ impl PsychonautService {
                 format!(":{}]]|[[Category:Psychoactive substance", q)
             };
 
-            let mut res = self.cached_ask_query(&format!("[[{}]]", article_query), limit, offset).await?;
+            let mut res = self
+                .cached_ask_query(&format!("[[{}]]", article_query), limit, offset)
+                .await?;
 
             if res.is_empty() && !q.is_empty() {
-                res = self.cached_ask_query(
-                    &format!("[[common_name::{}]]|[[Category:Psychoactive substance]]", q),
-                    limit,
-                    offset,
-                ).await?;
+                res = self
+                    .cached_ask_query(
+                        &format!("[[common_name::{}]]|[[Category:Psychoactive substance]]", q),
+                        limit,
+                        offset,
+                    )
+                    .await?;
             }
             if res.is_empty() && !q.is_empty() {
-                res = self.cached_ask_query(
-                    &format!("[[systematic_name::{}]]|[[Category:Psychoactive substance]]", q),
-                    limit,
-                    offset,
-                ).await?;
+                res = self
+                    .cached_ask_query(
+                        &format!(
+                            "[[systematic_name::{}]]|[[Category:Psychoactive substance]]",
+                            q
+                        ),
+                        limit,
+                        offset,
+                    )
+                    .await?;
             }
             res
         };
@@ -259,7 +284,9 @@ impl PsychonautService {
         limit: i32,
         offset: i32,
     ) -> Result<Vec<Effect>, BifrostError> {
-        let results = self.cached_get_substance_effects(substance, limit, offset).await?;
+        let results = self
+            .cached_get_substance_effects(substance, limit, offset)
+            .await?;
         Ok(results
             .into_iter()
             .map(|r| Effect {
@@ -275,7 +302,9 @@ impl PsychonautService {
         limit: i32,
         offset: i32,
     ) -> Result<Vec<Substance>, BifrostError> {
-        let results = self.cached_get_effect_substances(effect, limit, offset).await?;
+        let results = self
+            .cached_get_effect_substances(effect, limit, offset)
+            .await?;
         Ok(results
             .into_iter()
             .map(|r| Substance {
@@ -286,48 +315,61 @@ impl PsychonautService {
             .collect())
     }
 
-    pub async fn get_substance_abstract(&self, substance: &str) -> Result<Option<String>, BifrostError> {
+    pub async fn get_substance_abstract(
+        &self,
+        substance: &str,
+    ) -> Result<Option<String>, BifrostError> {
         let cache_key = format!("abstract:{}", substance);
         let api_ref = self.api.clone();
         let name_clone = substance.to_string();
 
-        let text = self.cache.get(cache_key, move || {
-            let api = api_ref.clone();
-            let name = name_clone.clone();
-            async move {
-                let raw = api.parse_text(&name).await?;
-                let re = regex::Regex::new(r"<[^>]*>").unwrap();
-                let no_tags = re.replace_all(&raw, "").to_string();
-                let cleaned = no_tags.trim()
-                    .replace("[edit]", "")
-                    .lines()
-                    .map(|l| l.trim())
-                    .filter(|l| !l.is_empty())
-                    .take(2)
-                    .collect::<Vec<&str>>()
-                    .join(" ");
+        let text = self
+            .cache
+            .get(cache_key, move || {
+                let api = api_ref.clone();
+                let name = name_clone.clone();
+                async move {
+                    let raw = api.parse_text(&name).await?;
+                    let re = regex::Regex::new(r"<[^>]*>").unwrap();
+                    let no_tags = re.replace_all(&raw, "").to_string();
+                    let cleaned = no_tags
+                        .trim()
+                        .replace("[edit]", "")
+                        .lines()
+                        .map(|l| l.trim())
+                        .filter(|l| !l.is_empty())
+                        .take(2)
+                        .collect::<Vec<&str>>()
+                        .join(" ");
 
-                Ok(serde_json::Value::String(cleaned))
-            }
-        }).await?;
+                    Ok(serde_json::Value::String(cleaned))
+                }
+            })
+            .await?;
 
         Ok(text.as_str().map(|s| s.to_string()))
     }
 
-    pub async fn get_substance_images(&self, substance: &str) -> Result<Option<Vec<SubstanceImage>>, BifrostError> {
+    pub async fn get_substance_images(
+        &self,
+        substance: &str,
+    ) -> Result<Option<Vec<SubstanceImage>>, BifrostError> {
         let cache_key = format!("images:{}", substance);
         let api_ref = self.api.clone();
         let name_clone = substance.to_string();
         let config_ref = self.config.clone();
 
-        let images_json = self.cache.get(cache_key, move || {
-            let api = api_ref.clone();
-            let name = name_clone.clone();
-            async move {
-                let images = api.parse_images(&name).await?;
-                Ok(serde_json::to_value(images)?)
-            }
-        }).await?;
+        let images_json = self
+            .cache
+            .get(cache_key, move || {
+                let api = api_ref.clone();
+                let name = name_clone.clone();
+                async move {
+                    let images = api.parse_images(&name).await?;
+                    Ok(serde_json::to_value(images)?)
+                }
+            })
+            .await?;
 
         let images: Vec<String> = serde_json::from_value(images_json)?;
         if images.is_empty() {
@@ -337,19 +379,25 @@ impl PsychonautService {
         let thumb_size = config_ref.psychonaut.thumb_size;
         let cdn_url = config_ref.psychonaut.cdn_url;
 
-        let mapped = images.into_iter().map(|filename| {
-            let mut hasher = md5::Md5::new();
-            hasher.update(filename.as_bytes());
-            let hash = hasher.finalize();
-            let hash_hex = hex::encode(hash);
-            let a = &hash_hex[0..1];
-            let ab = &hash_hex[0..2];
+        let mapped = images
+            .into_iter()
+            .map(|filename| {
+                let mut hasher = md5::Md5::new();
+                hasher.update(filename.as_bytes());
+                let hash = hasher.finalize();
+                let hash_hex = hex::encode(hash);
+                let a = &hash_hex[0..1];
+                let ab = &hash_hex[0..2];
 
-            SubstanceImage {
-                thumb: Some(format!("{}w/thumb.php?f={}&width={}", cdn_url, filename, thumb_size)),
-                image: Some(format!("{}w/images/{}/{}/{}", cdn_url, a, ab, filename)),
-            }
-        }).collect();
+                SubstanceImage {
+                    thumb: Some(format!(
+                        "{}w/thumb.php?f={}&width={}",
+                        cdn_url, filename, thumb_size
+                    )),
+                    image: Some(format!("{}w/images/{}/{}/{}", cdn_url, a, ab, filename)),
+                }
+            })
+            .collect();
 
         Ok(Some(mapped))
     }

@@ -11,17 +11,23 @@ pub struct PlebisciteService {
 
 impl PlebisciteService {
     pub async fn new(config: &Config) -> Result<Self, BifrostError> {
-        let mongo_url = config.plebiscite.mongo_url.as_ref()
+        let mongo_url = config
+            .plebiscite
+            .mongo_url
+            .as_ref()
             .ok_or_else(|| BifrostError::Internal("Mongo URL not configured".to_string()))?;
 
         let mut client_options = ClientOptions::parse(mongo_url).await?;
         client_options.app_name = Some("Bifrost".to_string());
-        
+
         let client = Client::with_options(client_options)?;
         let db = client.database(&config.plebiscite.mongo_db);
         let collection = db.collection::<ErowidExperience>(&config.plebiscite.mongo_collection);
 
-        info!("Connected to MongoDB: {}/{}", config.plebiscite.mongo_db, config.plebiscite.mongo_collection);
+        info!(
+            "Connected to MongoDB: {}/{}",
+            config.plebiscite.mongo_db, config.plebiscite.mongo_collection
+        );
 
         Ok(Self { collection })
     }

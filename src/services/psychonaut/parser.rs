@@ -1,16 +1,19 @@
 use crate::error::BifrostError;
+use once_cell::sync::Lazy;
 use regex::Regex;
 use serde_json::{Map, Value};
 use std::collections::HashMap;
-use once_cell::sync::Lazy;
 
 static RANGE_DUR: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)(.*?)_(.*?)_(.*?)_time$").unwrap());
 static RANGE_DOSE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)(.*?)_(.*?)_(.*?)_dose$").unwrap());
 static DEF_DOSE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)(.*?)_(.*?)_dose$").unwrap());
-static DEF_BIO: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)(.*?)_(.*?)_bioavailability$").unwrap());
+static DEF_BIO: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"(?i)(.*?)_(.*?)_bioavailability$").unwrap());
 static DOSE_UNITS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)(.*?)_dose_units$").unwrap());
-static ROA_TIME_UNITS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)(.*?)_(.*?)_time_units$").unwrap());
-static META_TOLERANCE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)Time_to_(.*?)_tolerance$").unwrap());
+static ROA_TIME_UNITS: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"(?i)(.*?)_(.*?)_time_units$").unwrap());
+static META_TOLERANCE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"(?i)Time_to_(.*?)_tolerance$").unwrap());
 static WT_LINK: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)\[\[(.*?)\]\]").unwrap());
 static WT_NAMED_LINK: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)\[\[.*?\|(.*?)\]\]").unwrap());
 static WT_SUB_SUP: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)<su[bp]>(.*?)</su[bp]>").unwrap());
@@ -24,14 +27,16 @@ impl WikitextParser {
     }
 
     pub fn parse_smw(&self, smw_data: Value) -> Result<Value, BifrostError> {
-        let entities = smw_data.pointer("/query/data")
+        let entities = smw_data
+            .pointer("/query/data")
             .and_then(|v| v.as_array())
             .ok_or_else(|| BifrostError::Parsing("Invalid SMW data structure".into()))?;
 
         let mut proc_map = Value::Object(Map::new());
 
         for entity in entities {
-            let prop_name = entity.get("property")
+            let prop_name = entity
+                .get("property")
                 .and_then(|v| v.as_str())
                 .unwrap_or("")
                 .replace("_", " ");
@@ -39,10 +44,14 @@ impl WikitextParser {
             let prop_name_lower = prop_name.to_lowercase().replace(" ", "_");
 
             let data_items = entity.get("dataitem").and_then(|v| v.as_array());
-            if data_items.is_none() { continue; }
+            if data_items.is_none() {
+                continue;
+            }
 
             let val = self.extract_value(data_items.unwrap());
-            if val.is_null() { continue; }
+            if val.is_null() {
+                continue;
+            }
 
             self.dispatch_property(&mut proc_map, &prop_name_lower, val);
         }
@@ -65,31 +74,37 @@ impl WikitextParser {
     }
 
     fn extract_value(&self, items: &Vec<Value>) -> Value {
-        let processed: Vec<Value> = items.iter().map(|item| {
-            let type_id = item.get("type").and_then(|v| v.as_u64()).unwrap_or(0);
-            let val_item = item.get("item");
+        let processed: Vec<Value> = items
+            .iter()
+            .map(|item| {
+                let type_id = item.get("type").and_then(|v| v.as_u64()).unwrap_or(0);
+                let val_item = item.get("item");
 
-            match type_id {
-                1 => {
-                    if let Some(s) = val_item.and_then(|v| v.as_str()) {
-                        s.parse::<f64>().ok().map(Value::from).unwrap_or(Value::Null)
-                    } else if let Some(n) = val_item.and_then(|v| v.as_f64()) {
-                        Value::from(n)
-                    } else {
-                        Value::Null
+                match type_id {
+                    1 => {
+                        if let Some(s) = val_item.and_then(|v| v.as_str()) {
+                            s.parse::<f64>()
+                                .ok()
+                                .map(Value::from)
+                                .unwrap_or(Value::Null)
+                        } else if let Some(n) = val_item.and_then(|v| v.as_f64()) {
+                            Value::from(n)
+                        } else {
+                            Value::Null
+                        }
                     }
-                },
-                9 => {
-                    if let Some(s) = val_item.and_then(|v| v.as_str()) {
-                        let stripped = s.split('#').next().unwrap_or(s);
-                        Value::String(stripped.to_string())
-                    } else {
-                        Value::Null
+                    9 => {
+                        if let Some(s) = val_item.and_then(|v| v.as_str()) {
+                            let stripped = s.split('#').next().unwrap_or(s);
+                            Value::String(stripped.to_string())
+                        } else {
+                            Value::Null
+                        }
                     }
-                },
-                _ => val_item.cloned().unwrap_or(Value::Null),
-            }
-        }).collect();
+                    _ => val_item.cloned().unwrap_or(Value::Null),
+                }
+            })
+            .collect();
 
         if processed.is_empty() {
             Value::Null
@@ -102,11 +117,19 @@ impl WikitextParser {
 
     fn dispatch_property(&self, map: &mut Value, prop_name: &str, val: Value) {
         if let Some(caps) = RANGE_DUR.captures(prop_name) {
-            self.set_nested(map, &format!("roa.{}.duration.{}.{}", &caps[1], &caps[3], &caps[2]), val);
+            self.set_nested(
+                map,
+                &format!("roa.{}.duration.{}.{}", &caps[1], &caps[3], &caps[2]),
+                val,
+            );
             return;
         }
         if let Some(caps) = RANGE_DOSE.captures(prop_name) {
-            self.set_nested(map, &format!("roa.{}.dose.{}.{}", &caps[1], &caps[3], &caps[2]), val);
+            self.set_nested(
+                map,
+                &format!("roa.{}.dose.{}.{}", &caps[1], &caps[3], &caps[2]),
+                val,
+            );
             return;
         }
         if let Some(caps) = DEF_DOSE.captures(prop_name) {
@@ -114,7 +137,11 @@ impl WikitextParser {
             return;
         }
         if let Some(caps) = DEF_BIO.captures(prop_name) {
-            self.set_nested(map, &format!("roa.{}.bioavailability.{}", &caps[1], &caps[2]), val);
+            self.set_nested(
+                map,
+                &format!("roa.{}.bioavailability.{}", &caps[1], &caps[2]),
+                val,
+            );
             return;
         }
         if let Some(caps) = DOSE_UNITS.captures(prop_name) {
@@ -122,7 +149,11 @@ impl WikitextParser {
             return;
         }
         if let Some(caps) = ROA_TIME_UNITS.captures(prop_name) {
-            self.set_nested(map, &format!("roa.{}.duration.{}.units", &caps[1], &caps[2]), val);
+            self.set_nested(
+                map,
+                &format!("roa.{}.duration.{}.units", &caps[1], &caps[2]),
+                val,
+            );
             return;
         }
         if let Some(caps) = META_TOLERANCE.captures(prop_name) {
@@ -158,36 +189,45 @@ impl WikitextParser {
         match prop_name {
             "cross-tolerance" => {
                 if let Value::String(s) = &val {
-                    let matches: Vec<Value> = WT_LINK.captures_iter(s)
+                    let matches: Vec<Value> = WT_LINK
+                        .captures_iter(s)
                         .map(|c| Value::String(c[1].to_string()))
                         .collect();
                     self.set_nested(map, "crossTolerances", Value::Array(matches));
                 } else if let Value::Array(arr) = &val {
-                     let mut all_matches = Vec::new();
-                     for item in arr {
-                         if let Value::String(s) = item {
-                             for cap in WT_LINK.captures_iter(s) {
-                                 all_matches.push(Value::String(cap[1].to_string()));
-                             }
-                         }
-                     }
-                     self.set_nested(map, "crossTolerances", Value::Array(all_matches));
+                    let mut all_matches = Vec::new();
+                    for item in arr {
+                        if let Value::String(s) = item {
+                            for cap in WT_LINK.captures_iter(s) {
+                                all_matches.push(Value::String(cap[1].to_string()));
+                            }
+                        }
+                    }
+                    self.set_nested(map, "crossTolerances", Value::Array(all_matches));
                 }
-            },
+            }
             "featured" => {
-                let is_featured = if let Value::String(s) = &val { s == "t" } else { false };
+                let is_featured = if let Value::String(s) = &val {
+                    s == "t"
+                } else {
+                    false
+                };
                 self.set_nested(map, "featured", Value::Bool(is_featured));
-            },
+            }
             "toxicity" => {
-                let arr = if val.is_array() { val } else { Value::Array(vec![val]) };
+                let arr = if val.is_array() {
+                    val
+                } else {
+                    Value::Array(vec![val])
+                };
                 self.set_nested(map, "toxicity", self.sanitize_text_val(arr));
-            },
+            }
             "psychoactive_class" => {
                 self.set_nested(map, "class.psychoactive", self.clean_class(val));
-            },
+            }
             "chemical_class" => {
                 self.set_nested(map, "class.chemical", self.clean_class(val));
-            },
+            }
             _ => {}
         }
     }
@@ -198,7 +238,9 @@ impl WikitextParser {
     }
 
     fn insert_recursive(&self, current: &mut Value, parts: &[&str], val: Value) {
-        if parts.is_empty() { return; }
+        if parts.is_empty() {
+            return;
+        }
         let key = parts[0];
 
         if parts.len() == 1 {
@@ -250,7 +292,9 @@ impl WikitextParser {
     fn sanitize_text_val(&self, val: Value) -> Value {
         match val {
             Value::String(s) => Value::String(self.sanitize_text(&s)),
-            Value::Array(arr) => Value::Array(arr.into_iter().map(|v| self.sanitize_text_val(v)).collect()),
+            Value::Array(arr) => {
+                Value::Array(arr.into_iter().map(|v| self.sanitize_text_val(v)).collect())
+            }
             _ => val,
         }
     }

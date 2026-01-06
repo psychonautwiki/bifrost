@@ -1,3 +1,24 @@
+//! Cache module for bifrost.
+//!
+//! This module provides the complete caching infrastructure including:
+//! - In-memory snapshot with indexes for fast queries
+//! - Background revalidation with adaptive shaping
+//! - Disk persistence for crash recovery
+//! - Prometheus metrics integration
+//!
+//! The legacy StaleWhileRevalidateCache is preserved for migration purposes.
+
+pub mod persistence;
+pub mod revalidation;
+pub mod revalidator;
+pub mod shaping;
+pub mod snapshot;
+
+pub use persistence::{load_from_disk, persist_to_disk};
+pub use revalidator::{Revalidator, RevalidatorConfig};
+pub use snapshot::{SnapshotHolder, SubstanceSnapshot};
+
+// Legacy cache implementation (preserved for migration)
 use std::collections::HashMap;
 use std::hash::Hash;
 use std::sync::Arc;
@@ -91,10 +112,13 @@ where
         match fetcher().await {
             Ok(data) => {
                 let mut store_guard = self.store.write().await;
-                store_guard.insert(key.clone(), CacheEntry {
-                    data,
-                    fetched_at: Instant::now(),
-                });
+                store_guard.insert(
+                    key.clone(),
+                    CacheEntry {
+                        data,
+                        fetched_at: Instant::now(),
+                    },
+                );
                 debug!("Refreshed {:?}", key);
             }
             Err(e) => {
@@ -106,7 +130,11 @@ where
         inflight_guard.remove(&key);
     }
 
-    async fn fetch_coalesced<F, Fut>(&self, key: K, fetcher: F) -> Result<V, crate::error::BifrostError>
+    async fn fetch_coalesced<F, Fut>(
+        &self,
+        key: K,
+        fetcher: F,
+    ) -> Result<V, crate::error::BifrostError>
     where
         F: Fn() -> Fut + Send + Sync + 'static,
         Fut: std::future::Future<Output = Result<V, crate::error::BifrostError>> + Send,
@@ -126,10 +154,13 @@ where
                 match result {
                     Ok(data) => {
                         let mut store_guard = self.store.write().await;
-                        store_guard.insert(key.clone(), CacheEntry {
-                            data: data.clone(),
-                            fetched_at: Instant::now(),
-                        });
+                        store_guard.insert(
+                            key.clone(),
+                            CacheEntry {
+                                data: data.clone(),
+                                fetched_at: Instant::now(),
+                            },
+                        );
 
                         let inflight_guard = self.inflight.read().await;
                         if let Some(n) = inflight_guard.get(&key) {
@@ -158,7 +189,9 @@ where
         if let Some(entry) = read_guard.get(&key) {
             Ok(entry.data.clone())
         } else {
-            Err(crate::error::BifrostError::Upstream("Request coalescing failed (leader failed)".into()))
+            Err(crate::error::BifrostError::Upstream(
+                "Request coalescing failed (leader failed)".into(),
+            ))
         }
     }
 }
