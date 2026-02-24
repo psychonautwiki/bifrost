@@ -80,6 +80,17 @@ impl SubstanceAliases {
     /// Filters out case-only duplicates, subpages, talk pages, and botany suffixes.
     pub fn merge_redirects(&mut self, redirects: &HashMap<String, Vec<String>>) {
         let mut added = 0usize;
+        let mut skipped_curated = 0usize;
+
+        // Build a set of all aliases already claimed by curated data
+        // (across ALL substances). If a wiki redirect tries to map an alias
+        // to a different substance than the curated data says, skip it.
+        let mut curated_alias_to_target: HashMap<String, String> = HashMap::new();
+        for (substance, alias_list) in &self.aliases {
+            for alias in alias_list {
+                curated_alias_to_target.insert(alias.to_lowercase(), substance.clone());
+            }
+        }
 
         for (target, sources) in redirects {
             let target_lower = target.to_lowercase();
@@ -108,9 +119,18 @@ impl SubstanceAliases {
                     continue;
                 }
 
-                // Skip if already present (case-insensitive)
+                // Skip if already present in this target's alias list
                 if existing_lower.contains(&source_lower) {
                     continue;
+                }
+
+                // Skip if this alias is already curated for a DIFFERENT substance.
+                // Curated data always takes priority over wiki redirects.
+                if let Some(curated_target) = curated_alias_to_target.get(&source_lower) {
+                    if curated_target.to_lowercase() != target_lower {
+                        skipped_curated += 1;
+                        continue;
+                    }
                 }
 
                 existing.push(source.clone());
@@ -120,6 +140,7 @@ impl SubstanceAliases {
 
         info!(
             new_aliases = added,
+            skipped_curated_conflicts = skipped_curated,
             total_substances = self.aliases.len(),
             total_aliases = self.aliases.values().map(|v| v.len()).sum::<usize>(),
             "Merged wiki redirects into aliases"
@@ -254,7 +275,16 @@ impl SubstanceSnapshot {
         snapshot
     }
 
-    /// Rebuild all indexes from the substances list
+    /// Rebuild all indexes from the substances list.
+    ///
+    /// Index priority (highest first):
+    /// 1. Canonical substance names → `by_name` (always wins)
+    /// 2. Curated aliases from `alias_data` → `by_alias` (manual review, highest alias priority)
+    /// 3. `common_names` from wiki data → `by_alias` (only if slot not already taken)
+    /// 4. `systematic_name` from wiki data → `by_alias` (lowest priority)
+    ///
+    /// This ensures that manually curated aliases always take precedence over
+    /// automatically extracted wiki data (common_names, systematic_name).
     pub fn rebuild_indexes(&mut self) {
         self.by_name.clear();
         self.by_alias.clear();
@@ -262,37 +292,35 @@ impl SubstanceSnapshot {
         self.by_psychoactive_class.clear();
         self.by_effect.clear();
 
-        for idx in 0..self.substances.len() {
-            // Clone the substance to avoid borrow issues
-            let substance = self.substances[idx].clone();
-            self.index_substance(idx, &substance);
+        // Phase 1: Index all canonical names into by_name
+        for (idx, substance) in self.substances.iter().enumerate() {
+            if let Some(name) = &substance.name {
+                self.by_name.insert(name.to_lowercase(), idx);
+            }
         }
 
-        // Index curated aliases from the alias data
+        // Phase 2: Index curated aliases (highest priority for by_alias)
         let alias_data = self.alias_data.clone();
         for (substance_name, aliases) in &alias_data.aliases {
             if let Some(&idx) = self.by_name.get(&substance_name.to_lowercase()) {
                 for alias in aliases {
                     let alias_lower = alias.to_lowercase();
-                    // Don't overwrite existing entries (first one wins)
-                    if !self.by_alias.contains_key(&alias_lower)
-                        && !self.by_name.contains_key(&alias_lower)
-                    {
+                    // Don't overwrite canonical names
+                    if !self.by_name.contains_key(&alias_lower) {
+                        // Curated aliases ALWAYS win - overwrite any existing alias entry
                         self.by_alias.insert(alias_lower, idx);
                     }
                 }
             }
         }
-    }
 
-    /// Index a single substance
-    fn index_substance(&mut self, idx: usize, substance: &Substance) {
-        // Name index (lowercase for case-insensitive lookup)
-        if let Some(name) = &substance.name {
-            let name_lower = name.to_lowercase();
-            self.by_name.insert(name_lower.clone(), idx);
+        // Phase 3: Index common_names and systematic_name (lower priority, don't overwrite)
+        for (idx, substance) in self.substances.iter().enumerate() {
+            if substance.name.is_none() {
+                continue;
+            }
 
-            // Also index common names as aliases
+            // common_names → alias (only if slot not taken by curated alias or canonical name)
             if let Some(common_names) = &substance.common_names {
                 for cn in common_names {
                     let cn_lower = cn.to_lowercase();
@@ -304,7 +332,7 @@ impl SubstanceSnapshot {
                 }
             }
 
-            // Also index systematic name as alias (lower priority, don't overwrite)
+            // systematic_name → alias (lowest priority)
             if let Some(systematic) = &substance.systematic_name {
                 let sys_lower = systematic.to_lowercase();
                 if !self.by_alias.contains_key(&sys_lower)
@@ -315,36 +343,36 @@ impl SubstanceSnapshot {
             }
         }
 
-        // Chemical class index
-        if let Some(class) = &substance.class {
-            if let Some(chemicals) = &class.chemical {
-                for c in chemicals {
-                    self.by_chemical_class
-                        .entry(c.to_lowercase())
-                        .or_default()
-                        .push(idx);
+        // Phase 4: Index class and effect data
+        for (idx, substance) in self.substances.iter().enumerate() {
+            if let Some(class) = &substance.class {
+                if let Some(chemicals) = &class.chemical {
+                    for c in chemicals {
+                        self.by_chemical_class
+                            .entry(c.to_lowercase())
+                            .or_default()
+                            .push(idx);
+                    }
+                }
+
+                if let Some(psychoactives) = &class.psychoactive {
+                    for p in psychoactives {
+                        self.by_psychoactive_class
+                            .entry(p.to_lowercase())
+                            .or_default()
+                            .push(idx);
+                    }
                 }
             }
 
-            // Psychoactive class index
-            if let Some(psychoactives) = &class.psychoactive {
-                for p in psychoactives {
-                    self.by_psychoactive_class
-                        .entry(p.to_lowercase())
-                        .or_default()
-                        .push(idx);
-                }
-            }
-        }
-
-        // Effect index (inverted) - from pre-populated effects field
-        if let Some(effects) = &substance.effects_cache {
-            for effect in effects {
-                if let Some(name) = &effect.name {
-                    self.by_effect
-                        .entry(name.to_lowercase())
-                        .or_default()
-                        .push(idx);
+            if let Some(effects) = &substance.effects_cache {
+                for effect in effects {
+                    if let Some(name) = &effect.name {
+                        self.by_effect
+                            .entry(name.to_lowercase())
+                            .or_default()
+                            .push(idx);
+                    }
                 }
             }
         }
@@ -394,23 +422,18 @@ impl SubstanceSnapshot {
         let mut seen = std::collections::HashSet::new();
         let mut results = Vec::new();
 
-        // 1. Exact match on canonical name
+        // 1. Exact match on canonical name → return ONLY this substance
+        //    If the query matches a canonical substance name, that is the
+        //    definitive answer. We do NOT also check aliases because another
+        //    substance might have this string as a common_name/alias, and
+        //    we don't want to return both.
         if let Some(&idx) = self.by_name.get(&query_lower) {
-            if seen.insert(idx) {
-                results.push(&self.substances[idx]);
-            }
+            return vec![&self.substances[idx]];
         }
 
-        // 2. Exact match on alias
+        // 2. Exact match on alias → return ONLY the aliased substance
         if let Some(&idx) = self.by_alias.get(&query_lower) {
-            if seen.insert(idx) {
-                results.push(&self.substances[idx]);
-            }
-        }
-
-        // If we have an exact match, return just that - no prefix expansion
-        if !results.is_empty() {
-            return results;
+            return vec![&self.substances[idx]];
         }
 
         // 3. Prefix match on canonical names

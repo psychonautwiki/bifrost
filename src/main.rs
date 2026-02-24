@@ -14,12 +14,14 @@ mod metrics;
 mod services;
 mod utils;
 
+use crate::cache::selftest;
 use crate::cache::{
     load_from_disk, persist_to_disk, Revalidator, SnapshotHolder, SubstanceSnapshot,
 };
 use crate::cache::snapshot::SubstanceAliases;
 use crate::config::Config;
 use crate::graphql::create_schema;
+use crate::graphql::ReadinessFlag;
 use crate::metrics::{create_metrics, SharedMetrics};
 use crate::services::plebiscite::PlebisciteService;
 use crate::services::psychonaut::api::PsychonautApi;
@@ -30,6 +32,7 @@ use axum::{extract::State, http::header, response::IntoResponse, routing::get, R
 use clap::Parser;
 use futures::StreamExt;
 use std::net::SocketAddr;
+use std::sync::atomic::Ordering;
 use std::sync::Arc;
 use std::time::Instant;
 use tokio::sync::watch;
@@ -112,6 +115,38 @@ async fn main() -> anyhow::Result<()> {
     metrics
         .boot_duration_seconds
         .set(boot_start.elapsed().as_secs_f64());
+
+    // Create readiness gate (starts as NOT ready)
+    let ready: ReadinessFlag = Arc::new(std::sync::atomic::AtomicBool::new(false));
+
+    // Run search self-test against the snapshot
+    // The API will refuse all GraphQL queries until this passes.
+    {
+        let snapshot = snapshot_holder.get().await;
+        let test_result = selftest::run_self_test(&snapshot);
+        if test_result.is_pass() {
+            ready.store(true, Ordering::Release);
+            info!(
+                assertions = test_result.total_assertions,
+                passed = test_result.passed,
+                skipped = test_result.skipped,
+                duration_ms = test_result.duration_ms,
+                "Search self-test passed, API is ready to serve requests"
+            );
+        } else {
+            error!(
+                failed = test_result.failed,
+                total = test_result.total_assertions,
+                "Search self-test FAILED - API will refuse all GraphQL queries"
+            );
+            // Log failures (already logged by run_self_test, but emphasize here)
+            for failure in &test_result.failures {
+                error!(failure = %failure, "Self-test failure detail");
+            }
+            // Do NOT set ready=true. The server starts but refuses queries.
+            // This allows /health and /metrics to still be reachable for debugging.
+        }
+    }
 
     // Create shutdown channel
     let (shutdown_tx, shutdown_rx) = watch::channel(false);
@@ -211,14 +246,37 @@ async fn main() -> anyhow::Result<()> {
         plebiscite_service,
         reagent_data,
         metrics.clone(),
+        ready.clone(),
     );
 
     // Fetch wiki redirects in background (non-blocking, updates aliases after completion)
+    // After fetch completes, re-run the self-test since aliases may have changed.
     {
         let api_clone = api.clone();
         let snapshot_clone = snapshot_holder.clone();
+        let ready_clone = ready.clone();
         tokio::spawn(async move {
             fetch_and_cache_redirects(&api_clone, &snapshot_clone).await;
+
+            // Re-run self-test after alias update
+            let snapshot = snapshot_clone.get().await;
+            let test_result = selftest::run_self_test(&snapshot);
+            if test_result.is_pass() {
+                // Ensure readiness (may already be true from initial test)
+                ready_clone.store(true, Ordering::Release);
+                info!(
+                    assertions = test_result.total_assertions,
+                    "Post-redirect self-test passed"
+                );
+            } else {
+                // Redirect merge broke the index - revoke readiness
+                ready_clone.store(false, Ordering::Release);
+                error!(
+                    failed = test_result.failed,
+                    total = test_result.total_assertions,
+                    "Post-redirect self-test FAILED - API readiness revoked"
+                );
+            }
         });
     }
 
@@ -812,11 +870,19 @@ async fn health_handler(State(schema): State<graphql::BifrostSchema>) -> impl In
         .data::<SnapshotHolder>()
         .expect("Snapshot not found in schema");
 
+    let ready = schema
+        .data::<ReadinessFlag>()
+        .expect("ReadinessFlag not found in schema");
+
     let current = snapshot.get().await;
     let substance_count = current.substances.len();
+    let alias_count = current.meta.alias_count;
     let age_secs = current.meta.created_at.elapsed().as_secs();
+    let is_ready = ready.load(Ordering::Acquire);
 
-    let status = if substance_count > 0 {
+    let status = if !is_ready {
+        "not_ready"
+    } else if substance_count > 0 {
         "healthy"
     } else {
         "degraded"
@@ -824,12 +890,21 @@ async fn health_handler(State(schema): State<graphql::BifrostSchema>) -> impl In
 
     let body = serde_json::json!({
         "status": status,
+        "ready": is_ready,
         "substances": substance_count,
+        "aliases": alias_count,
         "snapshot_age_seconds": age_secs,
         "version": env!("CARGO_PKG_VERSION"),
     });
 
+    let status_code = if is_ready {
+        axum::http::StatusCode::OK
+    } else {
+        axum::http::StatusCode::SERVICE_UNAVAILABLE
+    };
+
     (
+        status_code,
         [(header::CONTENT_TYPE, "application/json")],
         body.to_string(),
     )

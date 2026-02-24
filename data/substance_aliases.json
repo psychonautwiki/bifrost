@@ -1059,7 +1059,9 @@
       "Meph"
     ],
     "Mescaline": [
-      "3,4,5-Trimethoxyphenethylamine"
+      "3,4,5-Trimethoxyphenethylamine",
+      "Peyote",
+      "San Pedro"
     ],
     "Methadone": [
       "Dolophine",
@@ -1414,8 +1416,7 @@
     ],
     "Salvinorin A": [
       "Sally D",
-      "Salvia",
-      "Salvia Divinorum"
+      "Salvia"
     ],
     "Salvinorin B methoxymethyl ether": [
       "2-MMSB",
@@ -1517,10 +1518,6 @@
     "TMA-6": [
       "Tma6"
     ],
-    "Tabernanthe iboga (botany)": [
-      "Iboga",
-      "Tabernanthe iboga"
-    ],
     "Tapentadol": [
       "Nucynta"
     ],
@@ -1593,6 +1590,11 @@
     ],
     "Δ-8-Tetrahydrocannabinol": [
       "Delta-8-THC"
+    ],
+    "Ibogaine": [
+      "Iboga",
+      "Tabernanthe iboga",
+      "12-Methoxyibogamine"
     ]
   }
 }

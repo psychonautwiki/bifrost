@@ -5,6 +5,7 @@
 
 use crate::cache::snapshot::SnapshotHolder;
 use crate::graphql::model::*;
+use crate::graphql::ReadinessFlag;
 use crate::metrics::SharedMetrics;
 use crate::services::plebiscite::PlebisciteService;
 use crate::services::reagents::ReagentDataHolder;
@@ -20,12 +21,14 @@ pub fn create_schema(
     plebiscite_service: Option<Arc<PlebisciteService>>,
     reagent_data: Option<ReagentDataHolder>,
     metrics: SharedMetrics,
+    ready: ReadinessFlag,
 ) -> BifrostSchema {
     Schema::build(QueryRoot, EmptyMutation, EmptySubscription)
         .data(snapshot)
         .data(plebiscite_service)
         .data(reagent_data)
         .data(metrics)
+        .data(ready)
         .finish()
 }
 

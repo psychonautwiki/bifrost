@@ -1,0 +1,3178 @@
+{
+  "_meta": {
+    "description": "Search self-test fixture. Auto-generated from substance_aliases.json. Used at boot to verify the search index is correct before serving requests.",
+    "generated_at": "2026-02-25",
+    "version": 3,
+    "exact_match_test_groups": 296,
+    "total_exact_queries": 1293,
+    "negative_test_count": 44,
+    "total_test_assertions": 1337
+  },
+  "exact_match_tests": [
+    {
+      "substance": "1,4-Butanediol",
+      "queries": [
+        "1,4-Butanediol",
+        "1,4 Butanediol",
+        "1,4-B",
+        "1,4-BD",
+        "14bdo",
+        "BD",
+        "BDO"
+      ]
+    },
+    {
+      "substance": "1P-ETH-LAD",
+      "queries": [
+        "1P-ETH-LAD",
+        "1P-ETHLAD",
+        "1PETHLAD"
+      ]
+    },
+    {
+      "substance": "1P-LSD",
+      "queries": [
+        "1P-LSD",
+        "1P-LAD",
+        "1PLAD",
+        "1plsd"
+      ]
+    },
+    {
+      "substance": "2,5-DMA",
+      "queries": [
+        "2,5-DMA",
+        "2,5-Dimethoxyamphetamine",
+        "DOH"
+      ]
+    },
+    {
+      "substance": "2-Aminoindane",
+      "queries": [
+        "2-Aminoindane",
+        "2-AI",
+        "2-Aminoindan",
+        "2AI"
+      ]
+    },
+    {
+      "substance": "2-FA",
+      "queries": [
+        "2-FA",
+        "2-Fluoroamphetamine",
+        "2fa",
+        "2fluoroamphetamine"
+      ]
+    },
+    {
+      "substance": "2-FEA",
+      "queries": [
+        "2-FEA",
+        "2-Fluoroethamphetamine",
+        "2fea"
+      ]
+    },
+    {
+      "substance": "2-FMA",
+      "queries": [
+        "2-FMA",
+        "2-Fluoromethamphetamine",
+        "2fluoromethamphetamine",
+        "2fma"
+      ]
+    },
+    {
+      "substance": "2-Fluorodeschloroketamine",
+      "queries": [
+        "2-Fluorodeschloroketamine",
+        "2-FDCK",
+        "2-FK",
+        "2-Fl-2'-Oxo-PCM",
+        "2-Fluoroketamine",
+        "2-Fluro-ketamine",
+        "2-Fluroketamine",
+        "2f-dck",
+        "2fdck",
+        "Fluoroketamine"
+      ]
+    },
+    {
+      "substance": "25B-NBOH",
+      "queries": [
+        "25B-NBOH",
+        "2C-B-NBOH",
+        "NBOH-2C-B",
+        "NBOH-2CB"
+      ]
+    },
+    {
+      "substance": "25B-NBOMe",
+      "queries": [
+        "25B-NBOMe",
+        "25B",
+        "25bnbome",
+        "2C-B-NBOMe",
+        "Cimbi-36",
+        "NBOMe-2C-B"
+      ]
+    },
+    {
+      "substance": "25C-NBOH",
+      "queries": [
+        "25C-NBOH",
+        "2C-C-NBOH",
+        "NBOH-2C-C"
+      ]
+    },
+    {
+      "substance": "25C-NBOMe",
+      "queries": [
+        "25C-NBOMe",
+        "25c",
+        "25cnbome",
+        "2C-C-NBOMe",
+        "Cimbi-82",
+        "NBOMe-2C-C"
+      ]
+    },
+    {
+      "substance": "25D-NBOMe",
+      "queries": [
+        "25D-NBOMe",
+        "25-d nbome",
+        "2C-D-NBOMe",
+        "NBOMe-2C-D"
+      ]
+    },
+    {
+      "substance": "25I-NBOH",
+      "queries": [
+        "25I-NBOH",
+        "2C-I-NBOH",
+        "Cimbi-27",
+        "NBOH-2C-I"
+      ]
+    },
+    {
+      "substance": "25I-NBOMe",
+      "queries": [
+        "25I-NBOMe",
+        "25i",
+        "25inbome",
+        "2C-I-NBOMe",
+        "Cimbi-5",
+        "NBOMe-2C-I"
+      ]
+    },
+    {
+      "substance": "25N-NBOMe",
+      "queries": [
+        "25N-NBOMe",
+        "25n",
+        "25nnbome",
+        "2C-N-NBOMe",
+        "NBOMe-2C-N"
+      ]
+    },
+    {
+      "substance": "25x-NBOMe",
+      "queries": [
+        "25x-NBOMe",
+        "Nbomb",
+        "NBOMe",
+        "NBOMes"
+      ]
+    },
+    {
+      "substance": "2C-B",
+      "queries": [
+        "2C-B",
+        "2-cb",
+        "2cb",
+        "4-Bromo-2,5-dimethoxyphenethylamine",
+        "BDMPEA",
+        "Bromodimethoxyphenethylamine"
+      ]
+    },
+    {
+      "substance": "2C-B-FLY",
+      "queries": [
+        "2C-B-FLY",
+        "2cbfly"
+      ]
+    },
+    {
+      "substance": "2C-C",
+      "queries": [
+        "2C-C",
+        "2cc"
+      ]
+    },
+    {
+      "substance": "2C-D",
+      "queries": [
+        "2C-D",
+        "2C-M",
+        "2cd",
+        "LE-25"
+      ]
+    },
+    {
+      "substance": "2C-E",
+      "queries": [
+        "2C-E",
+        "2CE"
+      ]
+    },
+    {
+      "substance": "2C-H",
+      "queries": [
+        "2C-H",
+        "2,5-dimethoxyphenethylamine",
+        "2ch"
+      ]
+    },
+    {
+      "substance": "2C-I",
+      "queries": [
+        "2C-I",
+        "2ci"
+      ]
+    },
+    {
+      "substance": "2C-P",
+      "queries": [
+        "2C-P",
+        "2CP"
+      ]
+    },
+    {
+      "substance": "2C-T-2",
+      "queries": [
+        "2C-T-2",
+        "2ct2"
+      ]
+    },
+    {
+      "substance": "2C-T-21",
+      "queries": [
+        "2C-T-21",
+        "2ct21"
+      ]
+    },
+    {
+      "substance": "2C-T-7",
+      "queries": [
+        "2C-T-7",
+        "2-C-T-7",
+        "2ct7"
+      ]
+    },
+    {
+      "substance": "2C-x",
+      "queries": [
+        "2C-x",
+        "2C-x family",
+        "2Cx"
+      ]
+    },
+    {
+      "substance": "2M2B",
+      "queries": [
+        "2M2B",
+        "2-Methyl-2-butanol",
+        "2-Methylbutan-2-ol",
+        "2methyl2butanol",
+        "Amylene hydrate",
+        "TAA",
+        "Tert-Amyl alcohol"
+      ]
+    },
+    {
+      "substance": "3,4-CTMP",
+      "queries": [
+        "3,4-CTMP",
+        "3,4-Dichloromethylphenidate"
+      ]
+    },
+    {
+      "substance": "3-FA",
+      "queries": [
+        "3-FA",
+        "3fa",
+        "3fluoroamphetamine"
+      ]
+    },
+    {
+      "substance": "3-FEA",
+      "queries": [
+        "3-FEA",
+        "3fea",
+        "3fluoroethamphetamine"
+      ]
+    },
+    {
+      "substance": "3-FPM",
+      "queries": [
+        "3-FPM",
+        "3-fluorophenmetrazine",
+        "3FPM",
+        "PAL-593"
+      ]
+    },
+    {
+      "substance": "3-HO-PCE",
+      "queries": [
+        "3-HO-PCE",
+        "3-Hydroxyeticyclidine",
+        "3hopce"
+      ]
+    },
+    {
+      "substance": "3-HO-PCP",
+      "queries": [
+        "3-HO-PCP",
+        "3-Hydroxyphencyclidine",
+        "3hopcp"
+      ]
+    },
+    {
+      "substance": "3-MMC",
+      "queries": [
+        "3-MMC",
+        "3-Methylmethcathinone",
+        "3MMC",
+        "Metaphedrone"
+      ]
+    },
+    {
+      "substance": "3-MeO-PCE",
+      "queries": [
+        "3-MeO-PCE",
+        "3-Methoxyeticyclidine",
+        "3meopce",
+        "Methoxieticyclidine"
+      ]
+    },
+    {
+      "substance": "3-MeO-PCMo",
+      "queries": [
+        "3-MeO-PCMo",
+        "3meopcmo"
+      ]
+    },
+    {
+      "substance": "3-MeO-PCP",
+      "queries": [
+        "3-MeO-PCP",
+        "3 MeO",
+        "3-Methoxyphencyclidine",
+        "3meopcp"
+      ]
+    },
+    {
+      "substance": "4-AcO-DET",
+      "queries": [
+        "4-AcO-DET",
+        "4-Acetoxy-N,N-diethyltryptamine",
+        "4acodet",
+        "Ethacetin",
+        "Ipracetin"
+      ]
+    },
+    {
+      "substance": "4-AcO-DMT",
+      "queries": [
+        "4-AcO-DMT",
+        "4 aco dmt",
+        "4-acetoxy-dmt",
+        "4-Acetoxy-N,N-dimethyltryptamine",
+        "4AcetoxyDMT",
+        "4aco",
+        "4acodmt",
+        "O-Acetylpsilocin",
+        "Psilacetin",
+        "Psilocetin"
+      ]
+    },
+    {
+      "substance": "4-AcO-DiPT",
+      "queries": [
+        "4-AcO-DiPT",
+        "4-Acetoxy-DiPT",
+        "4-Acetoxy-N,N-diisopropyltryptamine",
+        "4acodipt"
+      ]
+    },
+    {
+      "substance": "4-AcO-MET",
+      "queries": [
+        "4-AcO-MET",
+        "4-Acetoxy-MET",
+        "4-Acetoxy-N-ethyl-N-methyltryptamine",
+        "4acomet",
+        "Azomet",
+        "Metacetin"
+      ]
+    },
+    {
+      "substance": "4-AcO-MiPT",
+      "queries": [
+        "4-AcO-MiPT",
+        "4-Acetoxy-MiPT",
+        "4-Acetoxy-N-methyl-N-isopropyltryptamine",
+        "4acomipt",
+        "Mipracetin"
+      ]
+    },
+    {
+      "substance": "4-FA",
+      "queries": [
+        "4-FA",
+        "4-FMP",
+        "4FA",
+        "4fluoroamphetamine",
+        "4fmp",
+        "PAL-303",
+        "Para-fluoroamphetamine",
+        "Parafluoroamphetamine"
+      ]
+    },
+    {
+      "substance": "4-HO-DET",
+      "queries": [
+        "4-HO-DET",
+        "4-Hydroxy-N,N-diethyltryptamine",
+        "4hodet",
+        "CZ-74",
+        "Ethocin"
+      ]
+    },
+    {
+      "substance": "4-HO-DPT",
+      "queries": [
+        "4-HO-DPT",
+        "4-Hydroxy-N,N-dipropyltryptamine",
+        "4hodpt",
+        "Procin",
+        "Psiprocin"
+      ]
+    },
+    {
+      "substance": "4-HO-DiPT",
+      "queries": [
+        "4-HO-DiPT",
+        "4-Hydroxy-N,N-diisopropyltryptamine",
+        "4hodipt",
+        "Iprocin"
+      ]
+    },
+    {
+      "substance": "4-HO-EPT",
+      "queries": [
+        "4-HO-EPT",
+        "4-Hydroxy-N-ethyl-N-propyltryptamine",
+        "4hoept",
+        "Eprocin"
+      ]
+    },
+    {
+      "substance": "4-HO-MET",
+      "queries": [
+        "4-HO-MET",
+        "4-Hydroxy-N-methyl-N-ethyltryptamine",
+        "4homet",
+        "Methylcybin",
+        "Metocin"
+      ]
+    },
+    {
+      "substance": "4-HO-MPT",
+      "queries": [
+        "4-HO-MPT",
+        "4-Hydroxy-N-methyl-N-propyltryptamine",
+        "4hompt",
+        "Meprocin"
+      ]
+    },
+    {
+      "substance": "4-HO-MiPT",
+      "queries": [
+        "4-HO-MiPT",
+        "4-Hydroxy-N-methyl-N-isopropyltryptamine",
+        "4homipt",
+        "Miprocin"
+      ]
+    },
+    {
+      "substance": "4-MeO-PCP",
+      "queries": [
+        "4-MeO-PCP",
+        "4-Methoxyphencyclidine"
+      ]
+    },
+    {
+      "substance": "4F-EPH",
+      "queries": [
+        "4F-EPH",
+        "4-Fluoroethylphenidate",
+        "4feph"
+      ]
+    },
+    {
+      "substance": "4F-MPH",
+      "queries": [
+        "4F-MPH",
+        "4-Fluoromethylphenidate",
+        "4fmph"
+      ]
+    },
+    {
+      "substance": "5-APB",
+      "queries": [
+        "5-APB",
+        "5-(2-Aminopropyl)benzofuran",
+        "5abp",
+        "5apb"
+      ]
+    },
+    {
+      "substance": "5-Hydroxytryptophan",
+      "queries": [
+        "5-Hydroxytryptophan",
+        "5-HTP",
+        "Oxitriptan"
+      ]
+    },
+    {
+      "substance": "5-MAPB",
+      "queries": [
+        "5-MAPB",
+        "5-(2-Methylaminopropyl)benzofuran",
+        "5MAPB"
+      ]
+    },
+    {
+      "substance": "5-MeO-DALT",
+      "queries": [
+        "5-MeO-DALT",
+        "5meodalt"
+      ]
+    },
+    {
+      "substance": "5-MeO-DMT",
+      "queries": [
+        "5-MeO-DMT",
+        "5-Methoxy-N,N-dimethyltryptamine",
+        "5meodmt"
+      ]
+    },
+    {
+      "substance": "5-MeO-DiPT",
+      "queries": [
+        "5-MeO-DiPT",
+        "5-Methoxy-N,N-diisopropyltryptamine",
+        "5meodipt",
+        "Foxy"
+      ]
+    },
+    {
+      "substance": "5-MeO-MiPT",
+      "queries": [
+        "5-MeO-MiPT",
+        "5-Methoxy-N-methyl-N-isopropyltryptamine",
+        "5meomipt",
+        "Moxy"
+      ]
+    },
+    {
+      "substance": "5F-AKB48",
+      "queries": [
+        "5F-AKB48",
+        "5F-AKB-48",
+        "5F-APINACA",
+        "5fakb48",
+        "AKB-48F"
+      ]
+    },
+    {
+      "substance": "5F-PB-22",
+      "queries": [
+        "5F-PB-22",
+        "5F-QUPIC",
+        "5fpb22"
+      ]
+    },
+    {
+      "substance": "6-APB",
+      "queries": [
+        "6-APB",
+        "6-(2-Aminopropyl)benzofuran",
+        "6-ABP",
+        "6apb",
+        "Benzofury"
+      ]
+    },
+    {
+      "substance": "6-APDB",
+      "queries": [
+        "6-APDB",
+        "4-Desoxy-MDA",
+        "6-(2-Aminopropyl)-2,3-dihydrobenzofuran"
+      ]
+    },
+    {
+      "substance": "8-Chlorotheophylline",
+      "queries": [
+        "8-Chlorotheophylline",
+        "8-CTP"
+      ]
+    },
+    {
+      "substance": "A-PHP",
+      "queries": [
+        "A-PHP",
+        "Alpha-PHP",
+        "Alpha-Pyrrolidinohexiophenone",
+        "Aphp",
+        "PV-7",
+        "Α-PHP"
+      ]
+    },
+    {
+      "substance": "A-PVP",
+      "queries": [
+        "A-PVP",
+        "Alpha-PVP",
+        "Apvp",
+        "Flakka",
+        "Α-PVP"
+      ]
+    },
+    {
+      "substance": "AB-FUBINACA",
+      "queries": [
+        "AB-FUBINACA",
+        "Abfubinaca"
+      ]
+    },
+    {
+      "substance": "AL-LAD",
+      "queries": [
+        "AL-LAD",
+        "AL-LSD",
+        "Allad"
+      ]
+    },
+    {
+      "substance": "ALD-52",
+      "queries": [
+        "ALD-52",
+        "1A-LAD",
+        "1A-LSD",
+        "Ald52",
+        "Orange Sunshine"
+      ]
+    },
+    {
+      "substance": "APICA",
+      "queries": [
+        "APICA",
+        "2NE1",
+        "SDB-001"
+      ]
+    },
+    {
+      "substance": "Adrafinil",
+      "queries": [
+        "Adrafinil",
+        "Olmifon"
+      ]
+    },
+    {
+      "substance": "Alcohol",
+      "queries": [
+        "Alcohol",
+        "Alcohol abuse",
+        "Alcohol dependence",
+        "Alcohol use disorder",
+        "Alcoholic beverage",
+        "Alcoholism",
+        "Beer",
+        "Booze",
+        "Corn beer",
+        "Drink",
+        "Ethanol",
+        "Ethyl alcohol",
+        "Liquor",
+        "Spirits",
+        "Vitis",
+        "Wine"
+      ]
+    },
+    {
+      "substance": "Allylescaline",
+      "queries": [
+        "Allylescaline",
+        "4-Allyloxy-3,5-dimethoxyphenethylamine",
+        "AL"
+      ]
+    },
+    {
+      "substance": "Alpha-GPC",
+      "queries": [
+        "Alpha-GPC",
+        "A-GPC",
+        "Alpha GPC",
+        "Alpha-glycerophosphocholine",
+        "Choline alfoscerate",
+        "L-alpha-Glycerophosphocholine"
+      ]
+    },
+    {
+      "substance": "Alprazolam",
+      "queries": [
+        "Alprazolam",
+        "Bars",
+        "Footballs",
+        "Hulks",
+        "Ladders",
+        "Niravam",
+        "Sticks",
+        "Xanax",
+        "Xans",
+        "Zanax",
+        "Zannies"
+      ]
+    },
+    {
+      "substance": "Amanita muscaria",
+      "queries": [
+        "Amanita muscaria",
+        "Fly agaric",
+        "Fly amanita",
+        "Muscimol"
+      ]
+    },
+    {
+      "substance": "Amphetamine",
+      "queries": [
+        "Amphetamine",
+        "Adderall",
+        "Addies",
+        "Amfetamine",
+        "Bennies",
+        "Dl-amphetamine",
+        "Evekeo",
+        "Pep",
+        "Speed",
+        "Uppers"
+      ]
+    },
+    {
+      "substance": "Anadenanthera peregrina",
+      "queries": [
+        "Anadenanthera peregrina",
+        "Jopo",
+        "Yopo"
+      ]
+    },
+    {
+      "substance": "Aniracetam",
+      "queries": [
+        "Aniracetam",
+        "Ampamet",
+        "Draganon",
+        "Memodrin",
+        "N-anisoyl-2-pyrrolidinone",
+        "Referan",
+        "Sarpul"
+      ]
+    },
+    {
+      "substance": "Antidepressants",
+      "queries": [
+        "Antidepressants",
+        "Antidepressant",
+        "Tricyclic antidepressant",
+        "Tricyclic antidepressants"
+      ]
+    },
+    {
+      "substance": "Antihistamine",
+      "queries": [
+        "Antihistamine",
+        "Anti-histamine",
+        "Anti-histamines",
+        "Antihistamines"
+      ]
+    },
+    {
+      "substance": "Antipsychotic",
+      "queries": [
+        "Antipsychotic",
+        "Anti-psychotic",
+        "Antipsychotics",
+        "Neuroleptic",
+        "Neuroleptics"
+      ]
+    },
+    {
+      "substance": "Armodafinil",
+      "queries": [
+        "Armodafinil",
+        "Artvigil",
+        "R-Modafinil",
+        "Waklert"
+      ]
+    },
+    {
+      "substance": "Arylcyclohexylamines",
+      "queries": [
+        "Arylcyclohexylamines",
+        "Arylcyclohexylamine",
+        "Substituted arylcyclohexylamine"
+      ]
+    },
+    {
+      "substance": "Ayahuasca",
+      "queries": [
+        "Ayahuasca",
+        "Aya",
+        "Pharmahuasca",
+        "Yagé"
+      ]
+    },
+    {
+      "substance": "Banisteriopsis caapi",
+      "queries": [
+        "Banisteriopsis caapi",
+        "B caapi",
+        "B. caapi"
+      ]
+    },
+    {
+      "substance": "Barbiturates",
+      "queries": [
+        "Barbiturates",
+        "Barbiturate"
+      ]
+    },
+    {
+      "substance": "Benzodiazepines",
+      "queries": [
+        "Benzodiazepines",
+        "Benzo",
+        "Benzodiazepine",
+        "Benzos"
+      ]
+    },
+    {
+      "substance": "Benzydamine",
+      "queries": [
+        "Benzydamine",
+        "Difflam",
+        "Tantum Rosa",
+        "Tantum Verde"
+      ]
+    },
+    {
+      "substance": "Beta-Carboline",
+      "queries": [
+        "Beta-Carboline",
+        "Beta-Carbolines",
+        "Β-Carbolines"
+      ]
+    },
+    {
+      "substance": "Bromantane",
+      "queries": [
+        "Bromantane",
+        "Ladasten"
+      ]
+    },
+    {
+      "substance": "Bromo-DragonFLY",
+      "queries": [
+        "Bromo-DragonFLY",
+        "DOB-DFLY",
+        "DOB-DragonFLY"
+      ]
+    },
+    {
+      "substance": "Bufotenin",
+      "queries": [
+        "Bufotenin",
+        "5-HO-DMT",
+        "5hodmt",
+        "Bufotenine",
+        "N,N-Dimethylserotonin"
+      ]
+    },
+    {
+      "substance": "Buprenorphine",
+      "queries": [
+        "Buprenorphine",
+        "Buprenex",
+        "Subutex",
+        "Temgesic"
+      ]
+    },
+    {
+      "substance": "Butylone",
+      "queries": [
+        "Butylone",
+        "Bk-MBDB"
+      ]
+    },
+    {
+      "substance": "Caffeine",
+      "queries": [
+        "Caffeine",
+        "Caff",
+        "Coffee"
+      ]
+    },
+    {
+      "substance": "Cannabidiol",
+      "queries": [
+        "Cannabidiol",
+        "CBD",
+        "Epidiolex"
+      ]
+    },
+    {
+      "substance": "Cannabinoid",
+      "queries": [
+        "Cannabinoid",
+        "Cannabinoid receptor type 1",
+        "Cannabinoid receptors",
+        "Cannabinoids",
+        "CB1",
+        "CB2",
+        "Phytocannabinoid"
+      ]
+    },
+    {
+      "substance": "Cannabis",
+      "queries": [
+        "Cannabis",
+        "Bud",
+        "Cannabichromene",
+        "Cannabichromevarin",
+        "Cannabicyclol",
+        "Cannabidivarin",
+        "Cannabigerol",
+        "Cannabigerovarin",
+        "Cannabinol",
+        "Cannabivarin",
+        "CBC",
+        "CBCV",
+        "CBDV",
+        "CBG",
+        "CBGM",
+        "CBGV",
+        "CBL",
+        "CBN",
+        "CBV",
+        "Charas",
+        "Dope",
+        "Dronabinol",
+        "Ganja",
+        "Grass",
+        "Green",
+        "Hash",
+        "Hashish",
+        "Herb",
+        "Keif",
+        "Kief",
+        "Marihuana",
+        "Marijuana",
+        "Mary Jane",
+        "Pot",
+        "Reefer",
+        "Tetrahydrocannabivarin",
+        "THC",
+        "THCV",
+        "Weed",
+        "Δ9-THC",
+        "∆9-tetrahydrocannabinol"
+      ]
+    },
+    {
+      "substance": "Choline bitartrate",
+      "queries": [
+        "Choline bitartrate",
+        "Choline"
+      ]
+    },
+    {
+      "substance": "Citicoline",
+      "queries": [
+        "Citicoline",
+        "CDP Choline",
+        "CDP-Choline"
+      ]
+    },
+    {
+      "substance": "Classical psychedelics",
+      "queries": [
+        "Classical psychedelics",
+        "Classic psychedelic",
+        "Classical psychedelic"
+      ]
+    },
+    {
+      "substance": "Clonazepam",
+      "queries": [
+        "Clonazepam",
+        "Klonopin",
+        "Rivotril"
+      ]
+    },
+    {
+      "substance": "Clonazolam",
+      "queries": [
+        "Clonazolam",
+        "Clonitrazolam"
+      ]
+    },
+    {
+      "substance": "Clonidine",
+      "queries": [
+        "Clonidine",
+        "Catapres"
+      ]
+    },
+    {
+      "substance": "Cocaine",
+      "queries": [
+        "Cocaine",
+        "Benzoylmethylecgonine",
+        "Blow",
+        "Cocaine base",
+        "Cocaine freebase",
+        "Cocaine paste",
+        "Coke",
+        "Crack",
+        "Crack-cocaine",
+        "Free base cocaine",
+        "Free-base cocaine",
+        "Nose candy",
+        "Powder",
+        "Snow",
+        "Yayo"
+      ]
+    },
+    {
+      "substance": "Cocoa",
+      "queries": [
+        "Cocoa",
+        "Cocao",
+        "Cocoa powder",
+        "Cocoa solid",
+        "Cocoa solids"
+      ]
+    },
+    {
+      "substance": "Codeine",
+      "queries": [
+        "Codeine",
+        "3-Methylmorphine",
+        "Codiene",
+        "Lean",
+        "Purple drank",
+        "Sizzurp"
+      ]
+    },
+    {
+      "substance": "Coluracetam",
+      "queries": [
+        "Coluracetam",
+        "BCI-540",
+        "MKC-231"
+      ]
+    },
+    {
+      "substance": "Cyclazodone",
+      "queries": [
+        "Cyclazodone",
+        "N-Cyclopropylpemoline"
+      ]
+    },
+    {
+      "substance": "DET",
+      "queries": [
+        "DET",
+        "Diethyltryptamine",
+        "N,N-DET"
+      ]
+    },
+    {
+      "substance": "DMT",
+      "queries": [
+        "DMT",
+        "Acacia Confusa",
+        "Acacia confusa rootbark",
+        "Deems",
+        "Dimethyltryptamine",
+        "Dimitri",
+        "Mimosa hostillis rootbark",
+        "N,N-Dimethyltryptamine",
+        "N,N-DMT",
+        "The spirit molecule"
+      ]
+    },
+    {
+      "substance": "DOM",
+      "queries": [
+        "DOM",
+        "STP"
+      ]
+    },
+    {
+      "substance": "DPT",
+      "queries": [
+        "DPT",
+        "Dipropyltryptamine",
+        "N,N-Dipropyltryptamine"
+      ]
+    },
+    {
+      "substance": "Datura",
+      "queries": [
+        "Datura",
+        "Atropine",
+        "Devil's trumpet",
+        "Devil's weed",
+        "Hell's bells",
+        "Hyoscine",
+        "Hyoscyamine",
+        "Jimsonweed",
+        "Moonflower",
+        "Scopolamine",
+        "Thorn-apple"
+      ]
+    },
+    {
+      "substance": "Deliriant",
+      "queries": [
+        "Deliriant",
+        "Anticholinergics",
+        "Deliriants"
+      ]
+    },
+    {
+      "substance": "Depressant",
+      "queries": [
+        "Depressant",
+        "Depressants"
+      ]
+    },
+    {
+      "substance": "Deschloroketamine",
+      "queries": [
+        "Deschloroketamine",
+        "2'-Oxo-PCM",
+        "2-Oxo-PCM",
+        "DCK",
+        "DXE",
+        "O-PCM"
+      ]
+    },
+    {
+      "substance": "Desomorphine",
+      "queries": [
+        "Desomorphine",
+        "Crocodile",
+        "Dihydrodesoxymorphine",
+        "Krokodil",
+        "Permonid"
+      ]
+    },
+    {
+      "substance": "Desoxypipradrol",
+      "queries": [
+        "Desoxypipradrol",
+        "2-Diphenylmethylpiperidine",
+        "2-DPMP",
+        "2dpmp",
+        "Ivory Wave"
+      ]
+    },
+    {
+      "substance": "Dextroamphetamine",
+      "queries": [
+        "Dextroamphetamine",
+        "D-amphetamine",
+        "Dexamphetamine",
+        "Dexedrine"
+      ]
+    },
+    {
+      "substance": "Dextromethorphan",
+      "queries": [
+        "Dextromethorphan",
+        "Dex",
+        "Dextrorphan",
+        "DM",
+        "DXM",
+        "DXO",
+        "Robo",
+        "Robotripping",
+        "Triple C"
+      ]
+    },
+    {
+      "substance": "Dextropropoxyphene",
+      "queries": [
+        "Dextropropoxyphene",
+        "Darvocet",
+        "Darvon",
+        "Propoxyphene"
+      ]
+    },
+    {
+      "substance": "DiPT",
+      "queries": [
+        "DiPT",
+        "Diisopropyltryptamine",
+        "N,N-Diisopropyltryptamine"
+      ]
+    },
+    {
+      "substance": "Diarylethylamines",
+      "queries": [
+        "Diarylethylamines",
+        "Diarylethylamine"
+      ]
+    },
+    {
+      "substance": "Diazepam",
+      "queries": [
+        "Diazepam",
+        "Diastat",
+        "Valium",
+        "Vals",
+        "Valtoco",
+        "Vazepam",
+        "Zetran"
+      ]
+    },
+    {
+      "substance": "Dichloropane",
+      "queries": [
+        "Dichloropane",
+        "O-401",
+        "RTI-111"
+      ]
+    },
+    {
+      "substance": "Diclazepam",
+      "queries": [
+        "Diclazepam",
+        "Chlorodiazepam",
+        "Diclaz"
+      ]
+    },
+    {
+      "substance": "Dihydrocodeine",
+      "queries": [
+        "Dihydrocodeine",
+        "DHC",
+        "Paracodeine",
+        "Paracodin"
+      ]
+    },
+    {
+      "substance": "Diphenhydramine",
+      "queries": [
+        "Diphenhydramine",
+        "Aviomarin",
+        "Benadryl",
+        "Dimenhydrinate",
+        "DMH",
+        "DPH",
+        "Nytol",
+        "ZzzQuil"
+      ]
+    },
+    {
+      "substance": "Dissociatives",
+      "queries": [
+        "Dissociatives",
+        "Dissociative"
+      ]
+    },
+    {
+      "substance": "EPT",
+      "queries": [
+        "EPT",
+        "Ethylpropyltryptamine",
+        "N-Ethyl-N-propyltryptamine"
+      ]
+    },
+    {
+      "substance": "ETH-CAT",
+      "queries": [
+        "ETH-CAT",
+        "Ethcat",
+        "Ethcathinone",
+        "Ethylcathinone",
+        "Ethylpropion"
+      ]
+    },
+    {
+      "substance": "ETH-LAD",
+      "queries": [
+        "ETH-LAD",
+        "Ethlad"
+      ]
+    },
+    {
+      "substance": "Efavirenz",
+      "queries": [
+        "Efavirenz",
+        "Sustiva"
+      ]
+    },
+    {
+      "substance": "Entactogen",
+      "queries": [
+        "Entactogen",
+        "Empathogen",
+        "Empathogenic",
+        "Empathogens",
+        "Entactogenic",
+        "Entactogens"
+      ]
+    },
+    {
+      "substance": "Entheogen",
+      "queries": [
+        "Entheogen",
+        "Entheogenic",
+        "Entheogens"
+      ]
+    },
+    {
+      "substance": "Ephenidine",
+      "queries": [
+        "Ephenidine",
+        "EPE",
+        "NEDPA"
+      ]
+    },
+    {
+      "substance": "Ephylone",
+      "queries": [
+        "Ephylone",
+        "Bk-EBDP",
+        "N-Ethylpentylone"
+      ]
+    },
+    {
+      "substance": "Escaline",
+      "queries": [
+        "Escaline",
+        "3,5-Dimethoxy-4-ethoxyphenethylamine"
+      ]
+    },
+    {
+      "substance": "Ethylmorphine",
+      "queries": [
+        "Ethylmorphine",
+        "Codethyline",
+        "Dionine"
+      ]
+    },
+    {
+      "substance": "Ethylone",
+      "queries": [
+        "Ethylone",
+        "MDEC"
+      ]
+    },
+    {
+      "substance": "Ethylphenidate",
+      "queries": [
+        "Ethylphenidate",
+        "EPH"
+      ]
+    },
+    {
+      "substance": "Etizolam",
+      "queries": [
+        "Etizolam",
+        "Etilaam",
+        "Etizest"
+      ]
+    },
+    {
+      "substance": "Eugeroics",
+      "queries": [
+        "Eugeroics",
+        "Eugeroic"
+      ]
+    },
+    {
+      "substance": "F-Phenibut",
+      "queries": [
+        "F-Phenibut",
+        "4-Fluorophenibut",
+        "CGP-11130",
+        "Flourobut",
+        "Fluorobut",
+        "Fluorophenibut",
+        "Fphenibut"
+      ]
+    },
+    {
+      "substance": "Fenethylline",
+      "queries": [
+        "Fenethylline",
+        "Amfetyline",
+        "Amphetamin​oethyl​theophylline",
+        "Biocapton",
+        "Captagon",
+        "Fitton",
+        "Phenethylline"
+      ]
+    },
+    {
+      "substance": "Fentanyl",
+      "queries": [
+        "Fentanyl",
+        "Actiq",
+        "Duragesic",
+        "Fent",
+        "Fentanil",
+        "Fentora",
+        "Sublimaze"
+      ]
+    },
+    {
+      "substance": "Flualprazolam",
+      "queries": [
+        "Flualprazolam",
+        "Flualp"
+      ]
+    },
+    {
+      "substance": "GBL",
+      "queries": [
+        "GBL",
+        "Gamma-butyrolactone"
+      ]
+    },
+    {
+      "substance": "GHB",
+      "queries": [
+        "GHB",
+        "Fantasy",
+        "G",
+        "Liquid ecstasy",
+        "Liquid G"
+      ]
+    },
+    {
+      "substance": "Gabapentin",
+      "queries": [
+        "Gabapentin",
+        "Gabba",
+        "Gabbies",
+        "Neurontin"
+      ]
+    },
+    {
+      "substance": "Galantamine",
+      "queries": [
+        "Galantamine",
+        "Lycoremine",
+        "Nivalin",
+        "Razadyne",
+        "Razadyne ER",
+        "Reminyl"
+      ]
+    },
+    {
+      "substance": "HXE",
+      "queries": [
+        "HXE",
+        "Hydroxetamine"
+      ]
+    },
+    {
+      "substance": "Hallucinogens",
+      "queries": [
+        "Hallucinogens",
+        "Hallucinogen",
+        "Hallucinogenic"
+      ]
+    },
+    {
+      "substance": "Haloperidol",
+      "queries": [
+        "Haloperidol",
+        "Haldol"
+      ]
+    },
+    {
+      "substance": "Harmala alkaloid",
+      "queries": [
+        "Harmala alkaloid",
+        "Harmala alkaloids",
+        "Harmaline",
+        "Harman",
+        "Harmane",
+        "Harmine",
+        "Tetrahydroharmine"
+      ]
+    },
+    {
+      "substance": "Heroin",
+      "queries": [
+        "Heroin",
+        "6-MAM",
+        "6-Monoacetylmorphine",
+        "Black tar",
+        "Black tar heroin",
+        "China white",
+        "Diacetylmorphine",
+        "Diamorphine",
+        "H",
+        "Heroine",
+        "Horse",
+        "Junk",
+        "Skag",
+        "Smack"
+      ]
+    },
+    {
+      "substance": "Hydrocodone",
+      "queries": [
+        "Hydrocodone",
+        "Hysingla",
+        "Lortab",
+        "Vicodin",
+        "Zohydro"
+      ]
+    },
+    {
+      "substance": "Hydromorphone",
+      "queries": [
+        "Hydromorphone",
+        "Dihydromorphinone",
+        "Dilaudid",
+        "Hydromorph",
+        "Hydrostat",
+        "Palladone"
+      ]
+    },
+    {
+      "substance": "Hyoscyamus niger (botany)",
+      "queries": [
+        "Hyoscyamus niger (botany)",
+        "Henbane"
+      ]
+    },
+    {
+      "substance": "Hypnotic",
+      "queries": [
+        "Hypnotic",
+        "Hypnotics"
+      ]
+    },
+    {
+      "substance": "Ibogaine",
+      "queries": [
+        "Ibogaine",
+        "Iboga",
+        "Tabernanthe iboga",
+        "12-Methoxyibogamine"
+      ]
+    },
+    {
+      "substance": "Inhalants",
+      "queries": [
+        "Inhalants",
+        "Acetone",
+        "Butane",
+        "Chloroform",
+        "Diethyl ether",
+        "Ether",
+        "Freon",
+        "Gasoline",
+        "Toluene",
+        "Xenon"
+      ]
+    },
+    {
+      "substance": "Isopropylphenidate",
+      "queries": [
+        "Isopropylphenidate",
+        "IPH",
+        "IPPD",
+        "IPPH"
+      ]
+    },
+    {
+      "substance": "JWH-018",
+      "queries": [
+        "JWH-018",
+        "AM-678",
+        "Jwh018"
+      ]
+    },
+    {
+      "substance": "Ketamine",
+      "queries": [
+        "Ketamine",
+        "Arketamine",
+        "Esketamine",
+        "K",
+        "Ket",
+        "Ketalar",
+        "Ketanest",
+        "Ketaset",
+        "Kit Kat",
+        "R-Ketamine",
+        "S-Ketamine",
+        "Special K",
+        "Vitamin K"
+      ]
+    },
+    {
+      "substance": "Kratom",
+      "queries": [
+        "Kratom",
+        "Biak",
+        "Ketum",
+        "Mitragyna speciosa"
+      ]
+    },
+    {
+      "substance": "LSA",
+      "queries": [
+        "LSA",
+        "Ergine",
+        "Hawaiian baby woodrose",
+        "LA-111",
+        "Lysergic acid amide"
+      ]
+    },
+    {
+      "substance": "LSD",
+      "queries": [
+        "LSD",
+        "Acid",
+        "Blotter",
+        "Cid",
+        "Doses",
+        "LSD-25",
+        "Lucy",
+        "Lysergic acid diethylamide",
+        "Microdots",
+        "Tabs"
+      ]
+    },
+    {
+      "substance": "LSM-775",
+      "queries": [
+        "LSM-775",
+        "Lsm775"
+      ]
+    },
+    {
+      "substance": "Lisdexamfetamine",
+      "queries": [
+        "Lisdexamfetamine",
+        "Elvanse",
+        "Lis",
+        "Lisdexamfetamine dimesylate",
+        "Lisdexamphetamine",
+        "Lisdextroamphetamine",
+        "Tyvense",
+        "Vyvanse"
+      ]
+    },
+    {
+      "substance": "Lorazepam",
+      "queries": [
+        "Lorazepam",
+        "Ativan",
+        "Tavor",
+        "Temesta"
+      ]
+    },
+    {
+      "substance": "Lysergamides",
+      "queries": [
+        "Lysergamides",
+        "Ergoline derivative",
+        "Ergoline derivatives",
+        "Ergolines",
+        "Lysergamide",
+        "Substituted lysergamide"
+      ]
+    },
+    {
+      "substance": "MAOI",
+      "queries": [
+        "MAOI",
+        "MAO inhibitor",
+        "MAOI inhibitors",
+        "MAOIs",
+        "Monoamine oxidase inhibitor",
+        "Monoamine oxidase inhibitors"
+      ]
+    },
+    {
+      "substance": "MCPP",
+      "queries": [
+        "MCPP",
+        "Meta-Chlorophenylpiperazine"
+      ]
+    },
+    {
+      "substance": "MDA",
+      "queries": [
+        "MDA",
+        "3,4-Methylenedioxyamphetamine",
+        "Tenamfetamine"
+      ]
+    },
+    {
+      "substance": "MDAI",
+      "queries": [
+        "MDAI",
+        "5,6-Methylenedioxy-2-aminoindane"
+      ]
+    },
+    {
+      "substance": "MDEA",
+      "queries": [
+        "MDEA",
+        "3,4-Methylenedioxy-N-ethylamphetamine",
+        "Eve",
+        "MDE"
+      ]
+    },
+    {
+      "substance": "MDMA",
+      "queries": [
+        "MDMA",
+        "3,4-Methylenedioxymethamphetamine",
+        "E",
+        "Ecstasy",
+        "Emma",
+        "Mandy",
+        "Methylenedioxymethamphetamine",
+        "Midomafetamine",
+        "Molly",
+        "X",
+        "XTC"
+      ]
+    },
+    {
+      "substance": "MDPV",
+      "queries": [
+        "MDPV",
+        "Methylenedioxypyrovalerone"
+      ]
+    },
+    {
+      "substance": "MET",
+      "queries": [
+        "MET",
+        "Methylethyltryptamine",
+        "N-Ethyl-N-methyltryptamine"
+      ]
+    },
+    {
+      "substance": "MPT",
+      "queries": [
+        "MPT",
+        "Methylpropyltryptamine",
+        "N-Methyl-N-propyltryptamine"
+      ]
+    },
+    {
+      "substance": "MXiPr",
+      "queries": [
+        "MXiPr",
+        "Methoxisopropamine"
+      ]
+    },
+    {
+      "substance": "Melatonin",
+      "queries": [
+        "Melatonin",
+        "N-Acetyl-5-methoxytryptamine"
+      ]
+    },
+    {
+      "substance": "Memantine",
+      "queries": [
+        "Memantine",
+        "Ebixa",
+        "Namenda"
+      ]
+    },
+    {
+      "substance": "Mephedrone",
+      "queries": [
+        "Mephedrone",
+        "4-Methylmethcathinone",
+        "4-MMC",
+        "4mmc",
+        "Drone",
+        "M-CAT",
+        "MCAT",
+        "Meow meow",
+        "Meph"
+      ]
+    },
+    {
+      "substance": "Mescaline",
+      "queries": [
+        "Mescaline",
+        "3,4,5-Trimethoxyphenethylamine",
+        "Peyote",
+        "San Pedro"
+      ]
+    },
+    {
+      "substance": "Methadone",
+      "queries": [
+        "Methadone",
+        "Dolophine",
+        "Methadose",
+        "Symoron"
+      ]
+    },
+    {
+      "substance": "Methallylescaline",
+      "queries": [
+        "Methallylescaline",
+        "MAL"
+      ]
+    },
+    {
+      "substance": "Methamphetamine",
+      "queries": [
+        "Methamphetamine",
+        "Crank",
+        "Crystal",
+        "Crystal meth",
+        "D-methamphetamine",
+        "Desoxyn",
+        "Dextromethamphetamine",
+        "Glass",
+        "Ice",
+        "Meth",
+        "Tina"
+      ]
+    },
+    {
+      "substance": "Methaqualone",
+      "queries": [
+        "Methaqualone",
+        "Ludes",
+        "Mandrax",
+        "Quaalude",
+        "Quaaludes",
+        "Quacks",
+        "Sopor"
+      ]
+    },
+    {
+      "substance": "Methcathinone",
+      "queries": [
+        "Methcathinone",
+        "Ephedrone"
+      ]
+    },
+    {
+      "substance": "Methiopropamine",
+      "queries": [
+        "Methiopropamine",
+        "MPA"
+      ]
+    },
+    {
+      "substance": "Methoxetamine",
+      "queries": [
+        "Methoxetamine",
+        "3-MeO-2'-Oxo-PCE",
+        "MXE"
+      ]
+    },
+    {
+      "substance": "Methoxphenidine",
+      "queries": [
+        "Methoxphenidine",
+        "MXP"
+      ]
+    },
+    {
+      "substance": "Methylnaphthidate",
+      "queries": [
+        "Methylnaphthidate",
+        "HDMP-28",
+        "Hdmp28"
+      ]
+    },
+    {
+      "substance": "Methylone",
+      "queries": [
+        "Methylone",
+        "Bk-MDMA",
+        "Bkmdma"
+      ]
+    },
+    {
+      "substance": "Methylphenidate",
+      "queries": [
+        "Methylphenidate",
+        "Concerta",
+        "Dexmethylphenidate",
+        "MPD",
+        "MPH",
+        "Rita",
+        "Ritalin"
+      ]
+    },
+    {
+      "substance": "Metizolam",
+      "queries": [
+        "Metizolam",
+        "Desmethyletizolam"
+      ]
+    },
+    {
+      "substance": "MiPLA",
+      "queries": [
+        "MiPLA",
+        "Methylisopropyllysergamide"
+      ]
+    },
+    {
+      "substance": "MiPT",
+      "queries": [
+        "MiPT",
+        "Methylisopropyltryptamine",
+        "N-Methyl-N-isopropyltryptamine"
+      ]
+    },
+    {
+      "substance": "Mirtazapine",
+      "queries": [
+        "Mirtazapine",
+        "Avanza",
+        "Axit",
+        "Mirtaz",
+        "Mirtazon",
+        "Remeron",
+        "Zispin"
+      ]
+    },
+    {
+      "substance": "Modafinil",
+      "queries": [
+        "Modafinil",
+        "Alertec",
+        "Moda",
+        "Modavigil",
+        "Provigil"
+      ]
+    },
+    {
+      "substance": "Morphine",
+      "queries": [
+        "Morphine",
+        "Avinza",
+        "Kapanol",
+        "MS Contin",
+        "Oramorph",
+        "Roxanol",
+        "Statex"
+      ]
+    },
+    {
+      "substance": "Myristicin",
+      "queries": [
+        "Myristicin",
+        "Elemicin",
+        "Nutmeg"
+      ]
+    },
+    {
+      "substance": "N-Acetylcysteine",
+      "queries": [
+        "N-Acetylcysteine",
+        "Acetylcysteine",
+        "N-Acetyl-L-cysteine",
+        "NAC"
+      ]
+    },
+    {
+      "substance": "N-Ethylhexedrone",
+      "queries": [
+        "N-Ethylhexedrone",
+        "Ethyl-Hex",
+        "Ethyl-Hexedrone",
+        "Ethylhexedrone",
+        "Hex-En",
+        "Hexen",
+        "N-ethyl-hexedrone",
+        "N-Ethyl-nor-hexedrone",
+        "NEH"
+      ]
+    },
+    {
+      "substance": "N-Methylbisfluoromodafinil",
+      "queries": [
+        "N-Methylbisfluoromodafinil",
+        "Dehydroxyfluorafinil",
+        "Modafiendz",
+        "N-Methyl-4,4'-difluoro-modafinil"
+      ]
+    },
+    {
+      "substance": "NEP",
+      "queries": [
+        "NEP",
+        "Ethyl-Pentedrone",
+        "Ethylpentedrone",
+        "N-Ethyl-(nor)-Pentedrone",
+        "N-Ethyl-Nor-Pentedrone",
+        "N-ethyl-pentedrone",
+        "N-Ethylpentedrone"
+      ]
+    },
+    {
+      "substance": "NM-2-AI",
+      "queries": [
+        "NM-2-AI",
+        "2NMAI",
+        "N-methyl-2-AI",
+        "N-methyl-2-aminoindane",
+        "NM2AI"
+      ]
+    },
+    {
+      "substance": "Naloxone",
+      "queries": [
+        "Naloxone",
+        "Evzio",
+        "Nalaxone",
+        "Nalone",
+        "Narcan",
+        "Narcanti"
+      ]
+    },
+    {
+      "substance": "Nicotine",
+      "queries": [
+        "Nicotine",
+        "Cigarette",
+        "Cigs",
+        "Dipping tobacco",
+        "Nic",
+        "Nicotiana rustica",
+        "Smokeless tobacco",
+        "Tobacco",
+        "Vape"
+      ]
+    },
+    {
+      "substance": "Nitrous",
+      "queries": [
+        "Nitrous",
+        "Balloons",
+        "Hippy crack",
+        "Laughing gas",
+        "N2O",
+        "Nangs",
+        "Nitrous Oxide",
+        "NOS",
+        "Whippet",
+        "Whippets",
+        "Whippit",
+        "Whippits"
+      ]
+    },
+    {
+      "substance": "Nootropic",
+      "queries": [
+        "Nootropic",
+        "Nootropics"
+      ]
+    },
+    {
+      "substance": "O-Desmethyltramadol",
+      "queries": [
+        "O-Desmethyltramadol",
+        "Desmetramadol",
+        "O-DSMT",
+        "Odsmt"
+      ]
+    },
+    {
+      "substance": "O-PCE",
+      "queries": [
+        "O-PCE",
+        "2'-Oxo-PCE",
+        "2-Oxo-PCE",
+        "2oxopce",
+        "Eticyclidone",
+        "Opce"
+      ]
+    },
+    {
+      "substance": "Omberacetam",
+      "queries": [
+        "Omberacetam",
+        "GVS-111",
+        "Noopept"
+      ]
+    },
+    {
+      "substance": "Opioids",
+      "queries": [
+        "Opioids",
+        "D-opioid",
+        "K-opioid",
+        "Opiate",
+        "Opiates",
+        "Opiod",
+        "Opioid",
+        "Κ-opioid",
+        "Μ-opioid",
+        "Μ-opioid receptors"
+      ]
+    },
+    {
+      "substance": "Oxiracetam",
+      "queries": [
+        "Oxiracetam",
+        "ISF 2522"
+      ]
+    },
+    {
+      "substance": "Oxycodone",
+      "queries": [
+        "Oxycodone",
+        "Endone",
+        "Hillbilly heroin",
+        "Oxecta",
+        "Oxy",
+        "Oxycodon",
+        "OxyContin",
+        "OxyIR",
+        "OxyNEO",
+        "OxyNorm",
+        "Oxys",
+        "Percocet",
+        "Roxicodone"
+      ]
+    },
+    {
+      "substance": "Oxymorphone",
+      "queries": [
+        "Oxymorphone",
+        "Numorphan",
+        "Numorphone",
+        "Opana"
+      ]
+    },
+    {
+      "substance": "PARGY-LAD",
+      "queries": [
+        "PARGY-LAD",
+        "Pargylad"
+      ]
+    },
+    {
+      "substance": "PCE",
+      "queries": [
+        "PCE",
+        "CI-400",
+        "Eticyclidine"
+      ]
+    },
+    {
+      "substance": "PCP",
+      "queries": [
+        "PCP",
+        "Angel dust",
+        "Dust",
+        "Phencyclidine",
+        "Sherm",
+        "Wet"
+      ]
+    },
+    {
+      "substance": "PMA",
+      "queries": [
+        "PMA",
+        "4-Methoxyamphetamine",
+        "Para-Methoxyamphetamine"
+      ]
+    },
+    {
+      "substance": "PMMA",
+      "queries": [
+        "PMMA",
+        "4-Methoxymethamphetamine",
+        "Para-Methoxymethamphetamine"
+      ]
+    },
+    {
+      "substance": "PRO-LAD",
+      "queries": [
+        "PRO-LAD",
+        "Prolad"
+      ]
+    },
+    {
+      "substance": "Peganum harmala",
+      "queries": [
+        "Peganum harmala",
+        "African rue",
+        "Esfand",
+        "Harmel",
+        "Syrian Rue",
+        "Wild rue"
+      ]
+    },
+    {
+      "substance": "Pentobarbital",
+      "queries": [
+        "Pentobarbital",
+        "Nembutal",
+        "Pentobarbitone"
+      ]
+    },
+    {
+      "substance": "Pethidine",
+      "queries": [
+        "Pethidine",
+        "Demerol",
+        "Meperidine"
+      ]
+    },
+    {
+      "substance": "Phenethylamine (compound)",
+      "queries": [
+        "Phenethylamine (compound)",
+        "PEA"
+      ]
+    },
+    {
+      "substance": "Phenibut",
+      "queries": [
+        "Phenibut",
+        "Citrocard",
+        "Fenibut",
+        "Noofen",
+        "Pheni",
+        "Phenybut"
+      ]
+    },
+    {
+      "substance": "Phenobarbital",
+      "queries": [
+        "Phenobarbital",
+        "Luminal",
+        "Phenobarbitone"
+      ]
+    },
+    {
+      "substance": "Phenylpiracetam",
+      "queries": [
+        "Phenylpiracetam",
+        "Carphedon",
+        "Phenotropil"
+      ]
+    },
+    {
+      "substance": "Poppers",
+      "queries": [
+        "Poppers",
+        "Alkyl nitrites",
+        "Amyl nitrite",
+        "Jungle juice",
+        "Rush"
+      ]
+    },
+    {
+      "substance": "Pramiracetam",
+      "queries": [
+        "Pramiracetam",
+        "Pramistar"
+      ]
+    },
+    {
+      "substance": "Pregabalin",
+      "queries": [
+        "Pregabalin",
+        "Lyrica",
+        "Pregab"
+      ]
+    },
+    {
+      "substance": "Prochlorperazine",
+      "queries": [
+        "Prochlorperazine",
+        "Buccastem",
+        "Compazine",
+        "Phenotil",
+        "Stemetil",
+        "Stemzine"
+      ]
+    },
+    {
+      "substance": "Prolintane",
+      "queries": [
+        "Prolintane",
+        "1-Phenyl-2-pyrrolidinylpentane",
+        "Catovit",
+        "Promotil",
+        "Villescon"
+      ]
+    },
+    {
+      "substance": "Propylhexedrine",
+      "queries": [
+        "Propylhexedrine",
+        "Benzedrex",
+        "Obesin"
+      ]
+    },
+    {
+      "substance": "Proscaline",
+      "queries": [
+        "Proscaline",
+        "4-Propyloxy-3,5-dimethoxyphenethylamine"
+      ]
+    },
+    {
+      "substance": "Psilocin",
+      "queries": [
+        "Psilocin",
+        "4-HO-DMT",
+        "4-Hydroxy-N,N-dimethyltryptamine",
+        "4-OH-DMT",
+        "4hodmt"
+      ]
+    },
+    {
+      "substance": "Psilocybin mushrooms",
+      "queries": [
+        "Psilocybin mushrooms",
+        "4-PO-DMT",
+        "Boomers",
+        "Cubes",
+        "Golden teachers",
+        "Hallucinogenic mushrooms",
+        "Liberty caps",
+        "Magic mushroom",
+        "Magic mushrooms",
+        "Mushrooms",
+        "Psilocybe Mushroom",
+        "Psilocybin",
+        "Psilocybin mushroom",
+        "Psychedelic mushrooms",
+        "Shrooms"
+      ]
+    },
+    {
+      "substance": "Psychedelic",
+      "queries": [
+        "Psychedelic",
+        "Psychedelic drug",
+        "Psychedelic drugs",
+        "Psychedelics"
+      ]
+    },
+    {
+      "substance": "Quetiapine",
+      "queries": [
+        "Quetiapine",
+        "Ketipinor",
+        "Seroquel",
+        "Xeroquel"
+      ]
+    },
+    {
+      "substance": "RIMA",
+      "queries": [
+        "RIMA",
+        "RIMAs"
+      ]
+    },
+    {
+      "substance": "Racetams",
+      "queries": [
+        "Racetams",
+        "Racetam"
+      ]
+    },
+    {
+      "substance": "Risperidone",
+      "queries": [
+        "Risperidone",
+        "Risperdal"
+      ]
+    },
+    {
+      "substance": "SAM-e",
+      "queries": [
+        "SAM-e",
+        "Ademethionine",
+        "S-Adenosyl methionine",
+        "S-Adenosyl-L-methionine",
+        "SAMe"
+      ]
+    },
+    {
+      "substance": "STS-135",
+      "queries": [
+        "STS-135",
+        "5F-APICA",
+        "Sts135"
+      ]
+    },
+    {
+      "substance": "Salvinorin A",
+      "queries": [
+        "Salvinorin A",
+        "Sally D",
+        "Salvia"
+      ]
+    },
+    {
+      "substance": "Salvinorin B methoxymethyl ether",
+      "queries": [
+        "Salvinorin B methoxymethyl ether",
+        "2-MMSB",
+        "2-O-methoxymethylsalvinorin B",
+        "Salvinorin B"
+      ]
+    },
+    {
+      "substance": "Secobarbital",
+      "queries": [
+        "Secobarbital",
+        "Secobarbitone",
+        "Seconal"
+      ]
+    },
+    {
+      "substance": "Sedative",
+      "queries": [
+        "Sedative",
+        "Sedatives"
+      ]
+    },
+    {
+      "substance": "Selective serotonin reuptake inhibitor",
+      "queries": [
+        "Selective serotonin reuptake inhibitor",
+        "Lustral",
+        "Selective serotonin re-uptake inhibitors",
+        "Selective serotonin reuptake inhibitors",
+        "SSRI",
+        "SSRIs",
+        "Zoloft"
+      ]
+    },
+    {
+      "substance": "Serotonergic psychedelic",
+      "queries": [
+        "Serotonergic psychedelic",
+        "Serotonergic hallucinogens",
+        "Serotonergic psychedelics"
+      ]
+    },
+    {
+      "substance": "Serotonin",
+      "queries": [
+        "Serotonin",
+        "5-HT",
+        "5-HT receptors",
+        "5-HT2A receptor",
+        "5-Hydroxytryptamine",
+        "Serotonergic",
+        "Serotonin releasers"
+      ]
+    },
+    {
+      "substance": "Serotonin-norepinephrine reuptake inhibitor",
+      "queries": [
+        "Serotonin-norepinephrine reuptake inhibitor",
+        "Serotonin-norepinephrine reuptake inhibitors",
+        "SNRI"
+      ]
+    },
+    {
+      "substance": "Stimulants",
+      "queries": [
+        "Stimulants",
+        "Stimulant"
+      ]
+    },
+    {
+      "substance": "Substituted aminorexes",
+      "queries": [
+        "Substituted aminorexes",
+        "Aminorexes",
+        "Substituted aminorex"
+      ]
+    },
+    {
+      "substance": "Substituted amphetamines",
+      "queries": [
+        "Substituted amphetamines",
+        "Amphetamines",
+        "Substituted Amphetamine"
+      ]
+    },
+    {
+      "substance": "Substituted cathinones",
+      "queries": [
+        "Substituted cathinones",
+        "Cathinones",
+        "Substituted cathinone"
+      ]
+    },
+    {
+      "substance": "Substituted morphinans",
+      "queries": [
+        "Substituted morphinans",
+        "Morphinan",
+        "Morphinans",
+        "Substituted morphinan"
+      ]
+    },
+    {
+      "substance": "Substituted phenethylamines",
+      "queries": [
+        "Substituted phenethylamines",
+        "Benzeneethanamine",
+        "Phenethylamine",
+        "Phenethylamines",
+        "Phenylethylamine",
+        "Phenylethylamines",
+        "Substituted Phenethylamine"
+      ]
+    },
+    {
+      "substance": "Substituted phenidates",
+      "queries": [
+        "Substituted phenidates",
+        "Phenidate",
+        "Phenidates",
+        "Substituted phenidate"
+      ]
+    },
+    {
+      "substance": "Substituted tryptamines",
+      "queries": [
+        "Substituted tryptamines",
+        "Base Tryptamines",
+        "Substituted Tryptamine",
+        "Tryptamine",
+        "Tryptamines"
+      ]
+    },
+    {
+      "substance": "Sufentanil",
+      "queries": [
+        "Sufentanil",
+        "Chronogesic",
+        "Dsuvia",
+        "Sufenta",
+        "Sufentanyl"
+      ]
+    },
+    {
+      "substance": "Synthetic cannabinoid",
+      "queries": [
+        "Synthetic cannabinoid",
+        "K2",
+        "Noid",
+        "Spice",
+        "Synthetic cannabinoids"
+      ]
+    },
+    {
+      "substance": "THJ-018",
+      "queries": [
+        "THJ-018",
+        "Thj",
+        "Thj018"
+      ]
+    },
+    {
+      "substance": "THJ-2201",
+      "queries": [
+        "THJ-2201",
+        "Thj2201"
+      ]
+    },
+    {
+      "substance": "TMA-2",
+      "queries": [
+        "TMA-2",
+        "Tma2"
+      ]
+    },
+    {
+      "substance": "TMA-6",
+      "queries": [
+        "TMA-6",
+        "Tma6"
+      ]
+    },
+    {
+      "substance": "Tapentadol",
+      "queries": [
+        "Tapentadol",
+        "Nucynta"
+      ]
+    },
+    {
+      "substance": "Temazepam",
+      "queries": [
+        "Temazepam",
+        "Restoril"
+      ]
+    },
+    {
+      "substance": "Tetrahydrocannabihexol",
+      "queries": [
+        "Tetrahydrocannabihexol",
+        "THCH"
+      ]
+    },
+    {
+      "substance": "Tetrahydrocannabiphorol",
+      "queries": [
+        "Tetrahydrocannabiphorol",
+        "THCP"
+      ]
+    },
+    {
+      "substance": "Tetrahydrocannabutol",
+      "queries": [
+        "Tetrahydrocannabutol",
+        "THCB"
+      ]
+    },
+    {
+      "substance": "Theacrine",
+      "queries": [
+        "Theacrine",
+        "Teacrine"
+      ]
+    },
+    {
+      "substance": "Theanine",
+      "queries": [
+        "Theanine",
+        "L-Theanine"
+      ]
+    },
+    {
+      "substance": "Thienodiazepines",
+      "queries": [
+        "Thienodiazepines",
+        "Substituted thienodiazepine",
+        "Thienodiazepine",
+        "Thienzodiazepines"
+      ]
+    },
+    {
+      "substance": "Tianeptine",
+      "queries": [
+        "Tianeptine",
+        "Coaxil",
+        "Stablon"
+      ]
+    },
+    {
+      "substance": "Tramadol",
+      "queries": [
+        "Tramadol",
+        "Ralivia",
+        "Tramal",
+        "Ultram"
+      ]
+    },
+    {
+      "substance": "Tyrosine",
+      "queries": [
+        "Tyrosine",
+        "4-Hydroxyphenylalanine",
+        "L-Tyrosine"
+      ]
+    },
+    {
+      "substance": "Xanthines",
+      "queries": [
+        "Xanthines",
+        "Substituted xanthine",
+        "Xanthine"
+      ]
+    },
+    {
+      "substance": "Zolpidem",
+      "queries": [
+        "Zolpidem",
+        "Ambien",
+        "Edluar",
+        "Intermezzo",
+        "Stilnox",
+        "Sublinox",
+        "Zolpimist"
+      ]
+    },
+    {
+      "substance": "Zopiclone",
+      "queries": [
+        "Zopiclone",
+        "Imovane",
+        "Zimovane"
+      ]
+    },
+    {
+      "substance": "ΑMT",
+      "queries": [
+        "ΑMT",
+        "Alpha-Methyltryptamine",
+        "AMT",
+        "Indopan",
+        "Α-Methyltryptamine",
+        "Α-MT"
+      ]
+    },
+    {
+      "substance": "Βk-2C-B",
+      "queries": [
+        "Βk-2C-B",
+        "Bk-2C-B",
+        "Bk2cb",
+        "SSk-2C-B"
+      ]
+    },
+    {
+      "substance": "Δ-10-Tetrahydrocannabinol",
+      "queries": [
+        "Δ-10-Tetrahydrocannabinol",
+        "Delta-10-THC"
+      ]
+    },
+    {
+      "substance": "Δ-8-Tetrahydrocannabinol",
+      "queries": [
+        "Δ-8-Tetrahydrocannabinol",
+        "Delta-8-THC"
+      ]
+    }
+  ],
+  "negative_tests": [
+    {
+      "query": "2cb",
+      "expected": "2C-B",
+      "excluded": [
+        "2C-C",
+        "2C-D",
+        "2C-E",
+        "2C-I",
+        "2C-P",
+        "2C-T-2",
+        "2C-T-7",
+        "2C-T-21",
+        "2C-H",
+        "2C-B-FLY",
+        "2C-x"
+      ]
+    },
+    {
+      "query": "2-cb",
+      "expected": "2C-B",
+      "excluded": [
+        "2C-C",
+        "2C-D",
+        "2C-E",
+        "2C-I",
+        "2C-P"
+      ]
+    },
+    {
+      "query": "2C-B",
+      "expected": "2C-B",
+      "excluded": [
+        "2C-C",
+        "2C-D",
+        "2C-E",
+        "2C-I"
+      ]
+    },
+    {
+      "query": "2C-C",
+      "expected": "2C-C",
+      "excluded": [
+        "2C-B",
+        "2C-D",
+        "2C-E",
+        "2C-I"
+      ]
+    },
+    {
+      "query": "2C-D",
+      "expected": "2C-D",
+      "excluded": [
+        "2C-B",
+        "2C-C",
+        "2C-E",
+        "2C-I"
+      ]
+    },
+    {
+      "query": "2C-E",
+      "expected": "2C-E",
+      "excluded": [
+        "2C-B",
+        "2C-C",
+        "2C-D",
+        "2C-I"
+      ]
+    },
+    {
+      "query": "2C-I",
+      "expected": "2C-I",
+      "excluded": [
+        "2C-B",
+        "2C-C",
+        "2C-D",
+        "2C-E"
+      ]
+    },
+    {
+      "query": "LSD",
+      "expected": "LSD",
+      "excluded": [
+        "LSA",
+        "LSM-775",
+        "1P-LSD",
+        "AL-LAD",
+        "ALD-52",
+        "ETH-LAD"
+      ]
+    },
+    {
+      "query": "lsd",
+      "expected": "LSD",
+      "excluded": [
+        "LSA",
+        "LSM-775"
+      ]
+    },
+    {
+      "query": "Acid",
+      "expected": "LSD",
+      "excluded": [
+        "LSA",
+        "GHB",
+        "GBL"
+      ]
+    },
+    {
+      "query": "LSD-25",
+      "expected": "LSD",
+      "excluded": [
+        "25I-NBOMe",
+        "25B-NBOMe",
+        "25C-NBOMe"
+      ]
+    },
+    {
+      "query": "Lucy",
+      "expected": "LSD",
+      "excluded": [
+        "LSA"
+      ]
+    },
+    {
+      "query": "MDMA",
+      "expected": "MDMA",
+      "excluded": [
+        "MDA",
+        "MDEA",
+        "Methylone",
+        "MDPV"
+      ]
+    },
+    {
+      "query": "Molly",
+      "expected": "MDMA",
+      "excluded": [
+        "MDA",
+        "MDEA",
+        "Methylone"
+      ]
+    },
+    {
+      "query": "Ecstasy",
+      "expected": "MDMA",
+      "excluded": [
+        "MDA",
+        "MDEA",
+        "Methylone"
+      ]
+    },
+    {
+      "query": "XTC",
+      "expected": "MDMA",
+      "excluded": [
+        "MDA",
+        "MDEA"
+      ]
+    },
+    {
+      "query": "DMT",
+      "expected": "DMT",
+      "excluded": [
+        "5-MeO-DMT",
+        "4-AcO-DMT",
+        "DPT",
+        "DET",
+        "DiPT"
+      ]
+    },
+    {
+      "query": "dmt",
+      "expected": "DMT",
+      "excluded": [
+        "5-MeO-DMT",
+        "4-AcO-DMT"
+      ]
+    },
+    {
+      "query": "Dimethyltryptamine",
+      "expected": "DMT",
+      "excluded": [
+        "5-MeO-DMT"
+      ]
+    },
+    {
+      "query": "Ketamine",
+      "expected": "Ketamine",
+      "excluded": [
+        "Methoxetamine",
+        "Deschloroketamine",
+        "2-Fluorodeschloroketamine"
+      ]
+    },
+    {
+      "query": "Ket",
+      "expected": "Ketamine",
+      "excluded": [
+        "Methoxetamine",
+        "Deschloroketamine"
+      ]
+    },
+    {
+      "query": "Special K",
+      "expected": "Ketamine",
+      "excluded": [
+        "Methoxetamine"
+      ]
+    },
+    {
+      "query": "Amphetamine",
+      "expected": "Amphetamine",
+      "excluded": [
+        "Methamphetamine",
+        "Dextroamphetamine",
+        "Lisdexamfetamine"
+      ]
+    },
+    {
+      "query": "Speed",
+      "expected": "Amphetamine",
+      "excluded": [
+        "Methamphetamine"
+      ]
+    },
+    {
+      "query": "Adderall",
+      "expected": "Amphetamine",
+      "excluded": [
+        "Methamphetamine",
+        "Methylphenidate"
+      ]
+    },
+    {
+      "query": "Heroin",
+      "expected": "Heroin",
+      "excluded": [
+        "Morphine",
+        "Codeine",
+        "Oxycodone",
+        "Hydrocodone"
+      ]
+    },
+    {
+      "query": "Smack",
+      "expected": "Heroin",
+      "excluded": [
+        "Morphine",
+        "Fentanyl"
+      ]
+    },
+    {
+      "query": "Diacetylmorphine",
+      "expected": "Heroin",
+      "excluded": [
+        "Morphine"
+      ]
+    },
+    {
+      "query": "GHB",
+      "expected": "GHB",
+      "excluded": [
+        "GBL",
+        "1,4-Butanediol"
+      ]
+    },
+    {
+      "query": "GBL",
+      "expected": "GBL",
+      "excluded": [
+        "GHB",
+        "1,4-Butanediol"
+      ]
+    },
+    {
+      "query": "Psilocybin mushrooms",
+      "expected": "Psilocybin mushrooms",
+      "excluded": [
+        "Psilocin",
+        "4-AcO-DMT",
+        "Amanita muscaria"
+      ]
+    },
+    {
+      "query": "Shrooms",
+      "expected": "Psilocybin mushrooms",
+      "excluded": [
+        "Psilocin",
+        "4-AcO-DMT"
+      ]
+    },
+    {
+      "query": "Magic mushrooms",
+      "expected": "Psilocybin mushrooms",
+      "excluded": [
+        "Psilocin",
+        "Amanita muscaria"
+      ]
+    },
+    {
+      "query": "Alprazolam",
+      "expected": "Alprazolam",
+      "excluded": [
+        "Diazepam",
+        "Clonazepam",
+        "Lorazepam"
+      ]
+    },
+    {
+      "query": "Xanax",
+      "expected": "Alprazolam",
+      "excluded": [
+        "Diazepam",
+        "Clonazepam"
+      ]
+    },
+    {
+      "query": "Diazepam",
+      "expected": "Diazepam",
+      "excluded": [
+        "Alprazolam",
+        "Clonazepam"
+      ]
+    },
+    {
+      "query": "Valium",
+      "expected": "Diazepam",
+      "excluded": [
+        "Alprazolam"
+      ]
+    },
+    {
+      "query": "25I-NBOMe",
+      "expected": "25I-NBOMe",
+      "excluded": [
+        "25B-NBOMe",
+        "25C-NBOMe",
+        "25D-NBOMe"
+      ]
+    },
+    {
+      "query": "25B-NBOMe",
+      "expected": "25B-NBOMe",
+      "excluded": [
+        "25I-NBOMe",
+        "25C-NBOMe"
+      ]
+    },
+    {
+      "query": "Mescaline",
+      "expected": "Mescaline",
+      "excluded": [
+        "Escaline",
+        "Proscaline"
+      ]
+    },
+    {
+      "query": "Peyote",
+      "expected": "Mescaline",
+      "excluded": [
+        "Escaline"
+      ]
+    },
+    {
+      "query": "DXM",
+      "expected": "Dextromethorphan",
+      "excluded": [
+        "DMT",
+        "DPT",
+        "DET"
+      ]
+    },
+    {
+      "query": "PCP",
+      "expected": "PCP",
+      "excluded": [
+        "PCE",
+        "3-MeO-PCP",
+        "3-MeO-PCE"
+      ]
+    },
+    {
+      "query": "MDA",
+      "expected": "MDA",
+      "excluded": [
+        "MDMA",
+        "MDEA",
+        "MDPV"
+      ]
+    }
+  ]
+}

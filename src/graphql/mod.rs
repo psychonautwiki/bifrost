@@ -5,17 +5,57 @@ use async_graphql::Request;
 use async_graphql_axum::{GraphQLRequest, GraphQLResponse};
 use axum::{
     extract::{RawQuery, State},
+    http::StatusCode,
     response::{Html, IntoResponse, Response},
 };
+use std::sync::atomic::Ordering;
 pub use schema::BifrostSchema;
 
 pub use schema::create_schema;
 
+/// Shared readiness gate. The API refuses all GraphQL queries until
+/// the search self-test passes at boot.
+pub type ReadinessFlag = std::sync::Arc<std::sync::atomic::AtomicBool>;
+
+/// Check if the API is ready to serve requests.
+/// Returns an error response if the self-test has not passed.
+fn check_readiness(schema: &BifrostSchema) -> Option<Response> {
+    let ready = schema
+        .data::<ReadinessFlag>()
+        .expect("ReadinessFlag not found in schema");
+
+    if !ready.load(Ordering::Acquire) {
+        let error_response = serde_json::json!({
+            "errors": [{
+                "message": "Service not ready: search self-test has not passed. The API cannot serve requests until the search index is verified.",
+                "extensions": {
+                    "code": "SERVICE_NOT_READY"
+                }
+            }]
+        });
+
+        let response = (
+            StatusCode::SERVICE_UNAVAILABLE,
+            [(axum::http::header::CONTENT_TYPE, "application/json")],
+            error_response.to_string(),
+        )
+            .into_response();
+
+        return Some(response);
+    }
+
+    None
+}
+
 pub async fn graphql_post_handler(
     State(schema): State<BifrostSchema>,
     req: GraphQLRequest,
-) -> GraphQLResponse {
-    schema.execute(req.into_inner()).await.into()
+) -> Response {
+    if let Some(err_response) = check_readiness(&schema) {
+        return err_response;
+    }
+    let response: GraphQLResponse = schema.execute(req.into_inner()).await.into();
+    response.into_response()
 }
 
 /// Combined handler for GET requests - serves GraphiQL UI if no query param, otherwise executes GraphQL
@@ -24,7 +64,7 @@ pub async fn graphql_or_graphiql(
     raw_query: RawQuery,
 ) -> Response {
     // Check if there's a query string with a 'query' parameter
-    if let Some(query_string) = raw_query.0 {
+    if let Some(query_string) = &raw_query.0 {
         // Parse query string manually to extract the query parameter
         let params: std::collections::HashMap<String, String> = query_string
             .split('&')
@@ -42,6 +82,11 @@ pub async fn graphql_or_graphiql(
 
         // If there's a 'query' parameter, execute the GraphQL request
         if let Some(query) = params.get("query") {
+            // Check readiness before executing GraphQL queries
+            if let Some(err_response) = check_readiness(&schema) {
+                return err_response;
+            }
+
             let mut request = Request::new(query.clone());
 
             if let Some(vars) = params.get("variables") {

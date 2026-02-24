@@ -11,6 +11,7 @@
 pub mod persistence;
 pub mod revalidation;
 pub mod revalidator;
+pub mod selftest;
 pub mod shaping;
 pub mod snapshot;
 
