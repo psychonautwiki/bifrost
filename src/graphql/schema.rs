@@ -4,7 +4,6 @@
 //! The snapshot is kept fresh by the background revalidator.
 
 use crate::cache::snapshot::SnapshotHolder;
-use crate::config::CacheConfig;
 use crate::graphql::model::*;
 use crate::metrics::SharedMetrics;
 use crate::services::plebiscite::PlebisciteService;
@@ -21,14 +20,12 @@ pub fn create_schema(
     plebiscite_service: Option<Arc<PlebisciteService>>,
     reagent_data: Option<ReagentDataHolder>,
     metrics: SharedMetrics,
-    cache_config: CacheConfig,
 ) -> BifrostSchema {
     Schema::build(QueryRoot, EmptyMutation, EmptySubscription)
         .data(snapshot)
         .data(plebiscite_service)
         .data(reagent_data)
         .data(metrics)
-        .data(cache_config)
         .finish()
 }
 
@@ -51,7 +48,6 @@ impl QueryRoot {
         let start = Instant::now();
         let snapshot_holder = ctx.data::<SnapshotHolder>()?;
         let metrics = ctx.data::<SharedMetrics>()?;
-        let config = ctx.data::<CacheConfig>()?;
 
         // Validate mutual exclusivity
         let params = [&effect, &query, &chemical_class, &psychoactive_class];
@@ -97,9 +93,9 @@ impl QueryRoot {
                     .cloned()
                     .collect()
             } else {
-                // Fuzzy search using trigram index
+                // Exact + prefix search against names and aliases
                 snapshot
-                    .search(&q, config.trigram_threshold)
+                    .search(&q)
                     .into_iter()
                     .skip(offset)
                     .take(limit)
@@ -469,24 +465,17 @@ impl Effect {
 impl SubstanceReagents {
     /// Get the linked PsychonautWiki substance for this reagent entry.
     ///
-    /// Uses fuzzy matching to find the best matching substance in the
+    /// Uses exact name/alias matching to find the substance in the
     /// PsychonautWiki database. Returns None if no match is found.
     async fn pw_substance(
         &self,
         ctx: &Context<'_>,
     ) -> async_graphql::Result<Option<Substance>> {
         let snapshot_holder = ctx.data::<SnapshotHolder>()?;
-        let config = ctx.data::<CacheConfig>()?;
         let snapshot = snapshot_holder.get().await;
 
-        // Try exact match first
-        if let Some(s) = snapshot.get_by_name(&self.substance_name) {
-            return Ok(Some(s.clone()));
-        }
-
-        // Try fuzzy search
-        let results = snapshot.search(&self.substance_name, config.trigram_threshold);
-        if let Some(s) = results.into_iter().next() {
+        // Try exact name or alias match
+        if let Some(s) = snapshot.get_by_name_or_alias(&self.substance_name) {
             return Ok(Some(s.clone()));
         }
 
@@ -498,36 +487,23 @@ impl SubstanceReagents {
 impl ReagentQueryResult {
     /// Get the linked PsychonautWiki substance for this query result.
     ///
-    /// Uses the original query string to fuzzy match against the
-    /// PsychonautWiki substance database. This preserves the user's
-    /// original intent even if the reagent database has a different
-    /// canonical name.
+    /// Uses the original query string for exact name/alias matching against the
+    /// PsychonautWiki substance database. Falls back to the matched reagent
+    /// database name if the original query doesn't match.
     async fn pw_substance(
         &self,
         ctx: &Context<'_>,
     ) -> async_graphql::Result<Option<Substance>> {
         let snapshot_holder = ctx.data::<SnapshotHolder>()?;
-        let config = ctx.data::<CacheConfig>()?;
         let snapshot = snapshot_holder.get().await;
 
         // Try the original query first (what the user typed)
-        if let Some(s) = snapshot.get_by_name(&self.query) {
-            return Ok(Some(s.clone()));
-        }
-
-        // Try fuzzy search with the query
-        let results = snapshot.search(&self.query, config.trigram_threshold);
-        if let Some(s) = results.into_iter().next() {
+        if let Some(s) = snapshot.get_by_name_or_alias(&self.query) {
             return Ok(Some(s.clone()));
         }
 
         // Fallback: try the matched reagent database name
-        if let Some(s) = snapshot.get_by_name(&self.matched_name) {
-            return Ok(Some(s.clone()));
-        }
-
-        let results = snapshot.search(&self.matched_name, config.trigram_threshold);
-        if let Some(s) = results.into_iter().next() {
+        if let Some(s) = snapshot.get_by_name_or_alias(&self.matched_name) {
             return Ok(Some(s.clone()));
         }
 

@@ -1,0 +1,1598 @@
+{
+  "_meta": {
+    "description": "Substance alternative names for search matching. Maps canonical PsychonautWiki substance names to their known aliases (street names, brand names, chemical names, abbreviations). Used for exact (case-insensitive) search matching to replace fuzzy trigram search.",
+    "source": "PsychonautWiki redirect data + manual curation",
+    "generated_at": "2026-02-24T22:29:04Z",
+    "total_substances_with_aliases": 296,
+    "total_aliases": 995
+  },
+  "aliases": {
+    "1,4-Butanediol": [
+      "1,4 Butanediol",
+      "1,4-B",
+      "1,4-BD",
+      "14bdo",
+      "BD",
+      "BDO"
+    ],
+    "1P-ETH-LAD": [
+      "1P-ETHLAD",
+      "1PETHLAD"
+    ],
+    "1P-LSD": [
+      "1P-LAD",
+      "1PLAD",
+      "1plsd"
+    ],
+    "2,5-DMA": [
+      "2,5-Dimethoxyamphetamine",
+      "DOH"
+    ],
+    "2-Aminoindane": [
+      "2-AI",
+      "2-Aminoindan",
+      "2AI"
+    ],
+    "2-FA": [
+      "2-Fluoroamphetamine",
+      "2fa",
+      "2fluoroamphetamine"
+    ],
+    "2-FEA": [
+      "2-Fluoroethamphetamine",
+      "2fea"
+    ],
+    "2-FMA": [
+      "2-Fluoromethamphetamine",
+      "2fluoromethamphetamine",
+      "2fma"
+    ],
+    "2-Fluorodeschloroketamine": [
+      "2-FDCK",
+      "2-FK",
+      "2-Fl-2'-Oxo-PCM",
+      "2-Fluoroketamine",
+      "2-Fluro-ketamine",
+      "2-Fluroketamine",
+      "2f-dck",
+      "2fdck",
+      "Fluoroketamine"
+    ],
+    "25B-NBOH": [
+      "2C-B-NBOH",
+      "NBOH-2C-B",
+      "NBOH-2CB"
+    ],
+    "25B-NBOMe": [
+      "25B",
+      "25bnbome",
+      "2C-B-NBOMe",
+      "Cimbi-36",
+      "NBOMe-2C-B"
+    ],
+    "25C-NBOH": [
+      "2C-C-NBOH",
+      "NBOH-2C-C"
+    ],
+    "25C-NBOMe": [
+      "25c",
+      "25cnbome",
+      "2C-C-NBOMe",
+      "Cimbi-82",
+      "NBOMe-2C-C"
+    ],
+    "25D-NBOMe": [
+      "25-d nbome",
+      "2C-D-NBOMe",
+      "NBOMe-2C-D"
+    ],
+    "25I-NBOH": [
+      "2C-I-NBOH",
+      "Cimbi-27",
+      "NBOH-2C-I"
+    ],
+    "25I-NBOMe": [
+      "25i",
+      "25inbome",
+      "2C-I-NBOMe",
+      "Cimbi-5",
+      "NBOMe-2C-I"
+    ],
+    "25N-NBOMe": [
+      "25n",
+      "25nnbome",
+      "2C-N-NBOMe",
+      "NBOMe-2C-N"
+    ],
+    "25x-NBOMe": [
+      "Nbomb",
+      "NBOMe",
+      "NBOMes"
+    ],
+    "2C-B": [
+      "2-cb",
+      "2cb",
+      "4-Bromo-2,5-dimethoxyphenethylamine",
+      "BDMPEA",
+      "Bromodimethoxyphenethylamine"
+    ],
+    "2C-B-FLY": [
+      "2cbfly"
+    ],
+    "2C-C": [
+      "2cc"
+    ],
+    "2C-D": [
+      "2C-M",
+      "2cd",
+      "LE-25"
+    ],
+    "2C-E": [
+      "2CE"
+    ],
+    "2C-H": [
+      "2,5-dimethoxyphenethylamine",
+      "2ch"
+    ],
+    "2C-I": [
+      "2ci"
+    ],
+    "2C-P": [
+      "2CP"
+    ],
+    "2C-T-2": [
+      "2ct2"
+    ],
+    "2C-T-21": [
+      "2ct21"
+    ],
+    "2C-T-7": [
+      "2-C-T-7",
+      "2ct7"
+    ],
+    "2C-x": [
+      "2C-x family",
+      "2Cx"
+    ],
+    "2M2B": [
+      "2-Methyl-2-butanol",
+      "2-Methylbutan-2-ol",
+      "2methyl2butanol",
+      "Amylene hydrate",
+      "TAA",
+      "Tert-Amyl alcohol"
+    ],
+    "3,4-CTMP": [
+      "3,4-Dichloromethylphenidate"
+    ],
+    "3-FA": [
+      "3fa",
+      "3fluoroamphetamine"
+    ],
+    "3-FEA": [
+      "3fea",
+      "3fluoroethamphetamine"
+    ],
+    "3-FPM": [
+      "3-fluorophenmetrazine",
+      "3FPM",
+      "PAL-593"
+    ],
+    "3-HO-PCE": [
+      "3-Hydroxyeticyclidine",
+      "3hopce"
+    ],
+    "3-HO-PCP": [
+      "3-Hydroxyphencyclidine",
+      "3hopcp"
+    ],
+    "3-MMC": [
+      "3-Methylmethcathinone",
+      "3MMC",
+      "Metaphedrone"
+    ],
+    "3-MeO-PCE": [
+      "3-Methoxyeticyclidine",
+      "3meopce",
+      "Methoxieticyclidine"
+    ],
+    "3-MeO-PCMo": [
+      "3meopcmo"
+    ],
+    "3-MeO-PCP": [
+      "3 MeO",
+      "3-Methoxyphencyclidine",
+      "3meopcp"
+    ],
+    "4-AcO-DET": [
+      "4-Acetoxy-N,N-diethyltryptamine",
+      "4acodet",
+      "Ethacetin",
+      "Ipracetin"
+    ],
+    "4-AcO-DMT": [
+      "4 aco dmt",
+      "4-acetoxy-dmt",
+      "4-Acetoxy-N,N-dimethyltryptamine",
+      "4AcetoxyDMT",
+      "4aco",
+      "4acodmt",
+      "O-Acetylpsilocin",
+      "Psilacetin",
+      "Psilocetin"
+    ],
+    "4-AcO-DiPT": [
+      "4-Acetoxy-DiPT",
+      "4-Acetoxy-N,N-diisopropyltryptamine",
+      "4acodipt"
+    ],
+    "4-AcO-MET": [
+      "4-Acetoxy-MET",
+      "4-Acetoxy-N-ethyl-N-methyltryptamine",
+      "4acomet",
+      "Azomet",
+      "Metacetin"
+    ],
+    "4-AcO-MiPT": [
+      "4-Acetoxy-MiPT",
+      "4-Acetoxy-N-methyl-N-isopropyltryptamine",
+      "4acomipt",
+      "Mipracetin"
+    ],
+    "4-FA": [
+      "4-FMP",
+      "4FA",
+      "4fluoroamphetamine",
+      "4fmp",
+      "PAL-303",
+      "Para-fluoroamphetamine",
+      "Parafluoroamphetamine"
+    ],
+    "4-HO-DET": [
+      "4-Hydroxy-N,N-diethyltryptamine",
+      "4hodet",
+      "CZ-74",
+      "Ethocin"
+    ],
+    "4-HO-DPT": [
+      "4-Hydroxy-N,N-dipropyltryptamine",
+      "4hodpt",
+      "Procin",
+      "Psiprocin"
+    ],
+    "4-HO-DiPT": [
+      "4-Hydroxy-N,N-diisopropyltryptamine",
+      "4hodipt",
+      "Iprocin"
+    ],
+    "4-HO-EPT": [
+      "4-Hydroxy-N-ethyl-N-propyltryptamine",
+      "4hoept",
+      "Eprocin"
+    ],
+    "4-HO-MET": [
+      "4-Hydroxy-N-methyl-N-ethyltryptamine",
+      "4homet",
+      "Methylcybin",
+      "Metocin"
+    ],
+    "4-HO-MPT": [
+      "4-Hydroxy-N-methyl-N-propyltryptamine",
+      "4hompt",
+      "Meprocin"
+    ],
+    "4-HO-MiPT": [
+      "4-Hydroxy-N-methyl-N-isopropyltryptamine",
+      "4homipt",
+      "Miprocin"
+    ],
+    "4-MeO-PCP": [
+      "4-Methoxyphencyclidine"
+    ],
+    "4F-EPH": [
+      "4-Fluoroethylphenidate",
+      "4feph"
+    ],
+    "4F-MPH": [
+      "4-Fluoromethylphenidate",
+      "4fmph"
+    ],
+    "5-APB": [
+      "5-(2-Aminopropyl)benzofuran",
+      "5abp",
+      "5apb"
+    ],
+    "5-Hydroxytryptophan": [
+      "5-HTP",
+      "Oxitriptan"
+    ],
+    "5-MAPB": [
+      "5-(2-Methylaminopropyl)benzofuran",
+      "5MAPB"
+    ],
+    "5-MeO-DALT": [
+      "5meodalt"
+    ],
+    "5-MeO-DMT": [
+      "5-Methoxy-N,N-dimethyltryptamine",
+      "5meodmt"
+    ],
+    "5-MeO-DiPT": [
+      "5-Methoxy-N,N-diisopropyltryptamine",
+      "5meodipt",
+      "Foxy"
+    ],
+    "5-MeO-MiPT": [
+      "5-Methoxy-N-methyl-N-isopropyltryptamine",
+      "5meomipt",
+      "Moxy"
+    ],
+    "5F-AKB48": [
+      "5F-AKB-48",
+      "5F-APINACA",
+      "5fakb48",
+      "AKB-48F"
+    ],
+    "5F-PB-22": [
+      "5F-QUPIC",
+      "5fpb22"
+    ],
+    "6-APB": [
+      "6-(2-Aminopropyl)benzofuran",
+      "6-ABP",
+      "6apb",
+      "Benzofury"
+    ],
+    "6-APDB": [
+      "4-Desoxy-MDA",
+      "6-(2-Aminopropyl)-2,3-dihydrobenzofuran"
+    ],
+    "8-Chlorotheophylline": [
+      "8-CTP"
+    ],
+    "A-PHP": [
+      "Alpha-PHP",
+      "Alpha-Pyrrolidinohexiophenone",
+      "Aphp",
+      "PV-7",
+      "Α-PHP"
+    ],
+    "A-PVP": [
+      "Alpha-PVP",
+      "Apvp",
+      "Flakka",
+      "Α-PVP"
+    ],
+    "AB-FUBINACA": [
+      "Abfubinaca"
+    ],
+    "AL-LAD": [
+      "AL-LSD",
+      "Allad"
+    ],
+    "ALD-52": [
+      "1A-LAD",
+      "1A-LSD",
+      "Ald52",
+      "Orange Sunshine"
+    ],
+    "APICA": [
+      "2NE1",
+      "SDB-001"
+    ],
+    "Adrafinil": [
+      "Olmifon"
+    ],
+    "Alcohol": [
+      "Alcohol abuse",
+      "Alcohol dependence",
+      "Alcohol use disorder",
+      "Alcoholic beverage",
+      "Alcoholism",
+      "Beer",
+      "Booze",
+      "Corn beer",
+      "Drink",
+      "Ethanol",
+      "Ethyl alcohol",
+      "Liquor",
+      "Spirits",
+      "Vitis",
+      "Wine"
+    ],
+    "Allylescaline": [
+      "4-Allyloxy-3,5-dimethoxyphenethylamine",
+      "AL"
+    ],
+    "Alpha-GPC": [
+      "A-GPC",
+      "Alpha GPC",
+      "Alpha-glycerophosphocholine",
+      "Choline alfoscerate",
+      "L-alpha-Glycerophosphocholine"
+    ],
+    "Alprazolam": [
+      "Bars",
+      "Footballs",
+      "Hulks",
+      "Ladders",
+      "Niravam",
+      "Sticks",
+      "Xanax",
+      "Xans",
+      "Zanax",
+      "Zannies"
+    ],
+    "Amanita muscaria": [
+      "Fly agaric",
+      "Fly amanita",
+      "Muscimol"
+    ],
+    "Amphetamine": [
+      "Adderall",
+      "Addies",
+      "Amfetamine",
+      "Bennies",
+      "Dl-amphetamine",
+      "Evekeo",
+      "Pep",
+      "Speed",
+      "Uppers"
+    ],
+    "Anadenanthera peregrina": [
+      "Jopo",
+      "Yopo"
+    ],
+    "Aniracetam": [
+      "Ampamet",
+      "Draganon",
+      "Memodrin",
+      "N-anisoyl-2-pyrrolidinone",
+      "Referan",
+      "Sarpul"
+    ],
+    "Antidepressants": [
+      "Antidepressant",
+      "Tricyclic antidepressant",
+      "Tricyclic antidepressants"
+    ],
+    "Antihistamine": [
+      "Anti-histamine",
+      "Anti-histamines",
+      "Antihistamines"
+    ],
+    "Antipsychotic": [
+      "Anti-psychotic",
+      "Antipsychotics",
+      "Neuroleptic",
+      "Neuroleptics"
+    ],
+    "Armodafinil": [
+      "Artvigil",
+      "R-Modafinil",
+      "Waklert"
+    ],
+    "Arylcyclohexylamines": [
+      "Arylcyclohexylamine",
+      "Substituted arylcyclohexylamine"
+    ],
+    "Ayahuasca": [
+      "Aya",
+      "Pharmahuasca",
+      "Yagé"
+    ],
+    "Banisteriopsis caapi": [
+      "B caapi",
+      "B. caapi"
+    ],
+    "Barbiturates": [
+      "Barbiturate"
+    ],
+    "Benzodiazepines": [
+      "Benzo",
+      "Benzodiazepine",
+      "Benzos"
+    ],
+    "Benzydamine": [
+      "Difflam",
+      "Tantum Rosa",
+      "Tantum Verde"
+    ],
+    "Beta-Carboline": [
+      "Beta-Carbolines",
+      "Β-Carbolines"
+    ],
+    "Bromantane": [
+      "Ladasten"
+    ],
+    "Bromo-DragonFLY": [
+      "DOB-DFLY",
+      "DOB-DragonFLY"
+    ],
+    "Bufotenin": [
+      "5-HO-DMT",
+      "5hodmt",
+      "Bufotenine",
+      "N,N-Dimethylserotonin"
+    ],
+    "Buprenorphine": [
+      "Buprenex",
+      "Subutex",
+      "Temgesic"
+    ],
+    "Butylone": [
+      "Bk-MBDB"
+    ],
+    "Caffeine": [
+      "Caff",
+      "Coffee"
+    ],
+    "Cannabidiol": [
+      "CBD",
+      "Epidiolex"
+    ],
+    "Cannabinoid": [
+      "Cannabinoid receptor type 1",
+      "Cannabinoid receptors",
+      "Cannabinoids",
+      "CB1",
+      "CB2",
+      "Phytocannabinoid"
+    ],
+    "Cannabis": [
+      "Bud",
+      "Cannabichromene",
+      "Cannabichromevarin",
+      "Cannabicyclol",
+      "Cannabidivarin",
+      "Cannabigerol",
+      "Cannabigerovarin",
+      "Cannabinol",
+      "Cannabivarin",
+      "CBC",
+      "CBCV",
+      "CBDV",
+      "CBG",
+      "CBGM",
+      "CBGV",
+      "CBL",
+      "CBN",
+      "CBV",
+      "Charas",
+      "Dope",
+      "Dronabinol",
+      "Ganja",
+      "Grass",
+      "Green",
+      "Hash",
+      "Hashish",
+      "Herb",
+      "Keif",
+      "Kief",
+      "Marihuana",
+      "Marijuana",
+      "Mary Jane",
+      "Pot",
+      "Reefer",
+      "Tetrahydrocannabivarin",
+      "THC",
+      "THCV",
+      "Weed",
+      "Δ9-THC",
+      "∆9-tetrahydrocannabinol"
+    ],
+    "Choline bitartrate": [
+      "Choline"
+    ],
+    "Citicoline": [
+      "CDP Choline",
+      "CDP-Choline"
+    ],
+    "Classical psychedelics": [
+      "Classic psychedelic",
+      "Classical psychedelic"
+    ],
+    "Clonazepam": [
+      "Klonopin",
+      "Rivotril"
+    ],
+    "Clonazolam": [
+      "Clonitrazolam"
+    ],
+    "Clonidine": [
+      "Catapres"
+    ],
+    "Cocaine": [
+      "Benzoylmethylecgonine",
+      "Blow",
+      "Cocaine base",
+      "Cocaine freebase",
+      "Cocaine paste",
+      "Coke",
+      "Crack",
+      "Crack-cocaine",
+      "Free base cocaine",
+      "Free-base cocaine",
+      "Nose candy",
+      "Powder",
+      "Snow",
+      "Yayo"
+    ],
+    "Cocoa": [
+      "Cocao",
+      "Cocoa powder",
+      "Cocoa solid",
+      "Cocoa solids"
+    ],
+    "Codeine": [
+      "3-Methylmorphine",
+      "Codiene",
+      "Lean",
+      "Purple drank",
+      "Sizzurp"
+    ],
+    "Coluracetam": [
+      "BCI-540",
+      "MKC-231"
+    ],
+    "Cyclazodone": [
+      "N-Cyclopropylpemoline"
+    ],
+    "DET": [
+      "Diethyltryptamine",
+      "N,N-DET"
+    ],
+    "DMT": [
+      "Acacia Confusa",
+      "Acacia confusa rootbark",
+      "Deems",
+      "Dimethyltryptamine",
+      "Dimitri",
+      "Mimosa hostillis rootbark",
+      "N,N-Dimethyltryptamine",
+      "N,N-DMT",
+      "The spirit molecule"
+    ],
+    "DOM": [
+      "STP"
+    ],
+    "DPT": [
+      "Dipropyltryptamine",
+      "N,N-Dipropyltryptamine"
+    ],
+    "Datura": [
+      "Atropine",
+      "Devil's trumpet",
+      "Devil's weed",
+      "Hell's bells",
+      "Hyoscine",
+      "Hyoscyamine",
+      "Jimsonweed",
+      "Moonflower",
+      "Scopolamine",
+      "Thorn-apple"
+    ],
+    "Deliriant": [
+      "Anticholinergics",
+      "Deliriants"
+    ],
+    "Depressant": [
+      "Depressants"
+    ],
+    "Deschloroketamine": [
+      "2'-Oxo-PCM",
+      "2-Oxo-PCM",
+      "DCK",
+      "DXE",
+      "O-PCM"
+    ],
+    "Desomorphine": [
+      "Crocodile",
+      "Dihydrodesoxymorphine",
+      "Krokodil",
+      "Permonid"
+    ],
+    "Desoxypipradrol": [
+      "2-Diphenylmethylpiperidine",
+      "2-DPMP",
+      "2dpmp",
+      "Ivory Wave"
+    ],
+    "Dextroamphetamine": [
+      "D-amphetamine",
+      "Dexamphetamine",
+      "Dexedrine"
+    ],
+    "Dextromethorphan": [
+      "Dex",
+      "Dextrorphan",
+      "DM",
+      "DXM",
+      "DXO",
+      "Robo",
+      "Robotripping",
+      "Triple C"
+    ],
+    "Dextropropoxyphene": [
+      "Darvocet",
+      "Darvon",
+      "Propoxyphene"
+    ],
+    "DiPT": [
+      "Diisopropyltryptamine",
+      "N,N-Diisopropyltryptamine"
+    ],
+    "Diarylethylamines": [
+      "Diarylethylamine"
+    ],
+    "Diazepam": [
+      "Diastat",
+      "Valium",
+      "Vals",
+      "Valtoco",
+      "Vazepam",
+      "Zetran"
+    ],
+    "Dichloropane": [
+      "O-401",
+      "RTI-111"
+    ],
+    "Diclazepam": [
+      "Chlorodiazepam",
+      "Diclaz"
+    ],
+    "Dihydrocodeine": [
+      "DHC",
+      "Paracodeine",
+      "Paracodin"
+    ],
+    "Diphenhydramine": [
+      "Aviomarin",
+      "Benadryl",
+      "Dimenhydrinate",
+      "DMH",
+      "DPH",
+      "Nytol",
+      "ZzzQuil"
+    ],
+    "Dissociatives": [
+      "Dissociative"
+    ],
+    "EPT": [
+      "Ethylpropyltryptamine",
+      "N-Ethyl-N-propyltryptamine"
+    ],
+    "ETH-CAT": [
+      "Ethcat",
+      "Ethcathinone",
+      "Ethylcathinone",
+      "Ethylpropion"
+    ],
+    "ETH-LAD": [
+      "Ethlad"
+    ],
+    "Efavirenz": [
+      "Sustiva"
+    ],
+    "Entactogen": [
+      "Empathogen",
+      "Empathogenic",
+      "Empathogens",
+      "Entactogenic",
+      "Entactogens"
+    ],
+    "Entheogen": [
+      "Entheogenic",
+      "Entheogens"
+    ],
+    "Ephenidine": [
+      "EPE",
+      "NEDPA"
+    ],
+    "Ephylone": [
+      "Bk-EBDP",
+      "N-Ethylpentylone"
+    ],
+    "Escaline": [
+      "3,5-Dimethoxy-4-ethoxyphenethylamine"
+    ],
+    "Ethylmorphine": [
+      "Codethyline",
+      "Dionine"
+    ],
+    "Ethylone": [
+      "MDEC"
+    ],
+    "Ethylphenidate": [
+      "EPH"
+    ],
+    "Etizolam": [
+      "Etilaam",
+      "Etizest"
+    ],
+    "Eugeroics": [
+      "Eugeroic"
+    ],
+    "F-Phenibut": [
+      "4-Fluorophenibut",
+      "CGP-11130",
+      "Flourobut",
+      "Fluorobut",
+      "Fluorophenibut",
+      "Fphenibut"
+    ],
+    "Fenethylline": [
+      "Amfetyline",
+      "Amphetamin​oethyl​theophylline",
+      "Biocapton",
+      "Captagon",
+      "Fitton",
+      "Phenethylline"
+    ],
+    "Fentanyl": [
+      "Actiq",
+      "Duragesic",
+      "Fent",
+      "Fentanil",
+      "Fentora",
+      "Sublimaze"
+    ],
+    "Flualprazolam": [
+      "Flualp"
+    ],
+    "GBL": [
+      "Gamma-butyrolactone"
+    ],
+    "GHB": [
+      "Fantasy",
+      "G",
+      "Liquid ecstasy",
+      "Liquid G"
+    ],
+    "Gabapentin": [
+      "Gabba",
+      "Gabbies",
+      "Neurontin"
+    ],
+    "Galantamine": [
+      "Lycoremine",
+      "Nivalin",
+      "Razadyne",
+      "Razadyne ER",
+      "Reminyl"
+    ],
+    "HXE": [
+      "Hydroxetamine"
+    ],
+    "Hallucinogens": [
+      "Hallucinogen",
+      "Hallucinogenic"
+    ],
+    "Haloperidol": [
+      "Haldol"
+    ],
+    "Harmala alkaloid": [
+      "Harmala alkaloids",
+      "Harmaline",
+      "Harman",
+      "Harmane",
+      "Harmine",
+      "Tetrahydroharmine"
+    ],
+    "Heroin": [
+      "6-MAM",
+      "6-Monoacetylmorphine",
+      "Black tar",
+      "Black tar heroin",
+      "China white",
+      "Diacetylmorphine",
+      "Diamorphine",
+      "H",
+      "Heroine",
+      "Horse",
+      "Junk",
+      "Skag",
+      "Smack"
+    ],
+    "Hydrocodone": [
+      "Hysingla",
+      "Lortab",
+      "Vicodin",
+      "Zohydro"
+    ],
+    "Hydromorphone": [
+      "Dihydromorphinone",
+      "Dilaudid",
+      "Hydromorph",
+      "Hydrostat",
+      "Palladone"
+    ],
+    "Hyoscyamus niger (botany)": [
+      "Henbane"
+    ],
+    "Hypnotic": [
+      "Hypnotics"
+    ],
+    "Inhalants": [
+      "Acetone",
+      "Butane",
+      "Chloroform",
+      "Diethyl ether",
+      "Ether",
+      "Freon",
+      "Gasoline",
+      "Toluene",
+      "Xenon"
+    ],
+    "Isopropylphenidate": [
+      "IPH",
+      "IPPD",
+      "IPPH"
+    ],
+    "JWH-018": [
+      "AM-678",
+      "Jwh018"
+    ],
+    "Ketamine": [
+      "Arketamine",
+      "Esketamine",
+      "K",
+      "Ket",
+      "Ketalar",
+      "Ketanest",
+      "Ketaset",
+      "Kit Kat",
+      "R-Ketamine",
+      "S-Ketamine",
+      "Special K",
+      "Vitamin K"
+    ],
+    "Kratom": [
+      "Biak",
+      "Ketum",
+      "Mitragyna speciosa"
+    ],
+    "LSA": [
+      "Ergine",
+      "Hawaiian baby woodrose",
+      "LA-111",
+      "Lysergic acid amide"
+    ],
+    "LSD": [
+      "Acid",
+      "Blotter",
+      "Cid",
+      "Doses",
+      "LSD-25",
+      "Lucy",
+      "Lysergic acid diethylamide",
+      "Microdots",
+      "Tabs"
+    ],
+    "LSM-775": [
+      "Lsm775"
+    ],
+    "Lisdexamfetamine": [
+      "Elvanse",
+      "Lis",
+      "Lisdexamfetamine dimesylate",
+      "Lisdexamphetamine",
+      "Lisdextroamphetamine",
+      "Tyvense",
+      "Vyvanse"
+    ],
+    "Lorazepam": [
+      "Ativan",
+      "Tavor",
+      "Temesta"
+    ],
+    "Lysergamides": [
+      "Ergoline derivative",
+      "Ergoline derivatives",
+      "Ergolines",
+      "Lysergamide",
+      "Substituted lysergamide"
+    ],
+    "MAOI": [
+      "MAO inhibitor",
+      "MAOI inhibitors",
+      "MAOIs",
+      "Monoamine oxidase inhibitor",
+      "Monoamine oxidase inhibitors"
+    ],
+    "MCPP": [
+      "Meta-Chlorophenylpiperazine"
+    ],
+    "MDA": [
+      "3,4-Methylenedioxyamphetamine",
+      "Tenamfetamine"
+    ],
+    "MDAI": [
+      "5,6-Methylenedioxy-2-aminoindane"
+    ],
+    "MDEA": [
+      "3,4-Methylenedioxy-N-ethylamphetamine",
+      "Eve",
+      "MDE"
+    ],
+    "MDMA": [
+      "3,4-Methylenedioxymethamphetamine",
+      "E",
+      "Ecstasy",
+      "Emma",
+      "Mandy",
+      "Methylenedioxymethamphetamine",
+      "Midomafetamine",
+      "Molly",
+      "X",
+      "XTC"
+    ],
+    "MDPV": [
+      "Methylenedioxypyrovalerone"
+    ],
+    "MET": [
+      "Methylethyltryptamine",
+      "N-Ethyl-N-methyltryptamine"
+    ],
+    "MPT": [
+      "Methylpropyltryptamine",
+      "N-Methyl-N-propyltryptamine"
+    ],
+    "MXiPr": [
+      "Methoxisopropamine"
+    ],
+    "Melatonin": [
+      "N-Acetyl-5-methoxytryptamine"
+    ],
+    "Memantine": [
+      "Ebixa",
+      "Namenda"
+    ],
+    "Mephedrone": [
+      "4-Methylmethcathinone",
+      "4-MMC",
+      "4mmc",
+      "Drone",
+      "M-CAT",
+      "MCAT",
+      "Meow meow",
+      "Meph"
+    ],
+    "Mescaline": [
+      "3,4,5-Trimethoxyphenethylamine"
+    ],
+    "Methadone": [
+      "Dolophine",
+      "Methadose",
+      "Symoron"
+    ],
+    "Methallylescaline": [
+      "MAL"
+    ],
+    "Methamphetamine": [
+      "Crank",
+      "Crystal",
+      "Crystal meth",
+      "D-methamphetamine",
+      "Desoxyn",
+      "Dextromethamphetamine",
+      "Glass",
+      "Ice",
+      "Meth",
+      "Tina"
+    ],
+    "Methaqualone": [
+      "Ludes",
+      "Mandrax",
+      "Quaalude",
+      "Quaaludes",
+      "Quacks",
+      "Sopor"
+    ],
+    "Methcathinone": [
+      "Ephedrone"
+    ],
+    "Methiopropamine": [
+      "MPA"
+    ],
+    "Methoxetamine": [
+      "3-MeO-2'-Oxo-PCE",
+      "MXE"
+    ],
+    "Methoxphenidine": [
+      "MXP"
+    ],
+    "Methylnaphthidate": [
+      "HDMP-28",
+      "Hdmp28"
+    ],
+    "Methylone": [
+      "Bk-MDMA",
+      "Bkmdma"
+    ],
+    "Methylphenidate": [
+      "Concerta",
+      "Dexmethylphenidate",
+      "MPD",
+      "MPH",
+      "Rita",
+      "Ritalin"
+    ],
+    "Metizolam": [
+      "Desmethyletizolam"
+    ],
+    "MiPLA": [
+      "Methylisopropyllysergamide"
+    ],
+    "MiPT": [
+      "Methylisopropyltryptamine",
+      "N-Methyl-N-isopropyltryptamine"
+    ],
+    "Mirtazapine": [
+      "Avanza",
+      "Axit",
+      "Mirtaz",
+      "Mirtazon",
+      "Remeron",
+      "Zispin"
+    ],
+    "Modafinil": [
+      "Alertec",
+      "Moda",
+      "Modavigil",
+      "Provigil"
+    ],
+    "Morphine": [
+      "Avinza",
+      "Kapanol",
+      "MS Contin",
+      "Oramorph",
+      "Roxanol",
+      "Statex"
+    ],
+    "Myristicin": [
+      "Elemicin",
+      "Nutmeg"
+    ],
+    "N-Acetylcysteine": [
+      "Acetylcysteine",
+      "N-Acetyl-L-cysteine",
+      "NAC"
+    ],
+    "N-Ethylhexedrone": [
+      "Ethyl-Hex",
+      "Ethyl-Hexedrone",
+      "Ethylhexedrone",
+      "Hex-En",
+      "Hexen",
+      "N-ethyl-hexedrone",
+      "N-Ethyl-nor-hexedrone",
+      "NEH"
+    ],
+    "N-Methylbisfluoromodafinil": [
+      "Dehydroxyfluorafinil",
+      "Modafiendz",
+      "N-Methyl-4,4'-difluoro-modafinil"
+    ],
+    "NEP": [
+      "Ethyl-Pentedrone",
+      "Ethylpentedrone",
+      "N-Ethyl-(nor)-Pentedrone",
+      "N-Ethyl-Nor-Pentedrone",
+      "N-ethyl-pentedrone",
+      "N-Ethylpentedrone"
+    ],
+    "NM-2-AI": [
+      "2NMAI",
+      "N-methyl-2-AI",
+      "N-methyl-2-aminoindane",
+      "NM2AI"
+    ],
+    "Naloxone": [
+      "Evzio",
+      "Nalaxone",
+      "Nalone",
+      "Narcan",
+      "Narcanti"
+    ],
+    "Nicotine": [
+      "Cigarette",
+      "Cigs",
+      "Dipping tobacco",
+      "Nic",
+      "Nicotiana rustica",
+      "Smokeless tobacco",
+      "Tobacco",
+      "Vape"
+    ],
+    "Nitrous": [
+      "Balloons",
+      "Hippy crack",
+      "Laughing gas",
+      "N2O",
+      "Nangs",
+      "Nitrous Oxide",
+      "NOS",
+      "Whippet",
+      "Whippets",
+      "Whippit",
+      "Whippits"
+    ],
+    "Nootropic": [
+      "Nootropics"
+    ],
+    "O-Desmethyltramadol": [
+      "Desmetramadol",
+      "O-DSMT",
+      "Odsmt"
+    ],
+    "O-PCE": [
+      "2'-Oxo-PCE",
+      "2-Oxo-PCE",
+      "2oxopce",
+      "Eticyclidone",
+      "Opce"
+    ],
+    "Omberacetam": [
+      "GVS-111",
+      "Noopept"
+    ],
+    "Opioids": [
+      "D-opioid",
+      "K-opioid",
+      "Opiate",
+      "Opiates",
+      "Opiod",
+      "Opioid",
+      "Κ-opioid",
+      "Μ-opioid",
+      "Μ-opioid receptors"
+    ],
+    "Oxiracetam": [
+      "ISF 2522"
+    ],
+    "Oxycodone": [
+      "Endone",
+      "Hillbilly heroin",
+      "Oxecta",
+      "Oxy",
+      "Oxycodon",
+      "OxyContin",
+      "OxyIR",
+      "OxyNEO",
+      "OxyNorm",
+      "Oxys",
+      "Percocet",
+      "Roxicodone"
+    ],
+    "Oxymorphone": [
+      "Numorphan",
+      "Numorphone",
+      "Opana"
+    ],
+    "PARGY-LAD": [
+      "Pargylad"
+    ],
+    "PCE": [
+      "CI-400",
+      "Eticyclidine"
+    ],
+    "PCP": [
+      "Angel dust",
+      "Dust",
+      "Phencyclidine",
+      "Sherm",
+      "Wet"
+    ],
+    "PMA": [
+      "4-Methoxyamphetamine",
+      "Para-Methoxyamphetamine"
+    ],
+    "PMMA": [
+      "4-Methoxymethamphetamine",
+      "Para-Methoxymethamphetamine"
+    ],
+    "PRO-LAD": [
+      "Prolad"
+    ],
+    "Peganum harmala": [
+      "African rue",
+      "Esfand",
+      "Harmel",
+      "Syrian Rue",
+      "Wild rue"
+    ],
+    "Pentobarbital": [
+      "Nembutal",
+      "Pentobarbitone"
+    ],
+    "Pethidine": [
+      "Demerol",
+      "Meperidine"
+    ],
+    "Phenethylamine (compound)": [
+      "PEA"
+    ],
+    "Phenibut": [
+      "Citrocard",
+      "Fenibut",
+      "Noofen",
+      "Pheni",
+      "Phenybut"
+    ],
+    "Phenobarbital": [
+      "Luminal",
+      "Phenobarbitone"
+    ],
+    "Phenylpiracetam": [
+      "Carphedon",
+      "Phenotropil"
+    ],
+    "Poppers": [
+      "Alkyl nitrites",
+      "Amyl nitrite",
+      "Jungle juice",
+      "Rush"
+    ],
+    "Pramiracetam": [
+      "Pramistar"
+    ],
+    "Pregabalin": [
+      "Lyrica",
+      "Pregab"
+    ],
+    "Prochlorperazine": [
+      "Buccastem",
+      "Compazine",
+      "Phenotil",
+      "Stemetil",
+      "Stemzine"
+    ],
+    "Prolintane": [
+      "1-Phenyl-2-pyrrolidinylpentane",
+      "Catovit",
+      "Promotil",
+      "Villescon"
+    ],
+    "Propylhexedrine": [
+      "Benzedrex",
+      "Obesin"
+    ],
+    "Proscaline": [
+      "4-Propyloxy-3,5-dimethoxyphenethylamine"
+    ],
+    "Psilocin": [
+      "4-HO-DMT",
+      "4-Hydroxy-N,N-dimethyltryptamine",
+      "4-OH-DMT",
+      "4hodmt"
+    ],
+    "Psilocybin mushrooms": [
+      "4-PO-DMT",
+      "Boomers",
+      "Cubes",
+      "Golden teachers",
+      "Hallucinogenic mushrooms",
+      "Liberty caps",
+      "Magic mushroom",
+      "Magic mushrooms",
+      "Mushrooms",
+      "Psilocybe Mushroom",
+      "Psilocybin",
+      "Psilocybin mushroom",
+      "Psychedelic mushrooms",
+      "Shrooms"
+    ],
+    "Psychedelic": [
+      "Psychedelic drug",
+      "Psychedelic drugs",
+      "Psychedelics"
+    ],
+    "Quetiapine": [
+      "Ketipinor",
+      "Seroquel",
+      "Xeroquel"
+    ],
+    "RIMA": [
+      "RIMAs"
+    ],
+    "Racetams": [
+      "Racetam"
+    ],
+    "Risperidone": [
+      "Risperdal"
+    ],
+    "SAM-e": [
+      "Ademethionine",
+      "S-Adenosyl methionine",
+      "S-Adenosyl-L-methionine",
+      "SAMe"
+    ],
+    "STS-135": [
+      "5F-APICA",
+      "Sts135"
+    ],
+    "Salvinorin A": [
+      "Sally D",
+      "Salvia",
+      "Salvia Divinorum"
+    ],
+    "Salvinorin B methoxymethyl ether": [
+      "2-MMSB",
+      "2-O-methoxymethylsalvinorin B",
+      "Salvinorin B"
+    ],
+    "Secobarbital": [
+      "Secobarbitone",
+      "Seconal"
+    ],
+    "Sedative": [
+      "Sedatives"
+    ],
+    "Selective serotonin reuptake inhibitor": [
+      "Lustral",
+      "Selective serotonin re-uptake inhibitors",
+      "Selective serotonin reuptake inhibitors",
+      "SSRI",
+      "SSRIs",
+      "Zoloft"
+    ],
+    "Serotonergic psychedelic": [
+      "Serotonergic hallucinogens",
+      "Serotonergic psychedelics"
+    ],
+    "Serotonin": [
+      "5-HT",
+      "5-HT receptors",
+      "5-HT2A receptor",
+      "5-Hydroxytryptamine",
+      "Serotonergic",
+      "Serotonin releasers"
+    ],
+    "Serotonin-norepinephrine reuptake inhibitor": [
+      "Serotonin-norepinephrine reuptake inhibitors",
+      "SNRI"
+    ],
+    "Stimulants": [
+      "Stimulant"
+    ],
+    "Substituted aminorexes": [
+      "Aminorexes",
+      "Substituted aminorex"
+    ],
+    "Substituted amphetamines": [
+      "Amphetamines",
+      "Substituted Amphetamine"
+    ],
+    "Substituted cathinones": [
+      "Cathinones",
+      "Substituted cathinone"
+    ],
+    "Substituted morphinans": [
+      "Morphinan",
+      "Morphinans",
+      "Substituted morphinan"
+    ],
+    "Substituted phenethylamines": [
+      "Benzeneethanamine",
+      "Phenethylamine",
+      "Phenethylamines",
+      "Phenylethylamine",
+      "Phenylethylamines",
+      "Substituted Phenethylamine"
+    ],
+    "Substituted phenidates": [
+      "Phenidate",
+      "Phenidates",
+      "Substituted phenidate"
+    ],
+    "Substituted tryptamines": [
+      "Base Tryptamines",
+      "Substituted Tryptamine",
+      "Tryptamine",
+      "Tryptamines"
+    ],
+    "Sufentanil": [
+      "Chronogesic",
+      "Dsuvia",
+      "Sufenta",
+      "Sufentanyl"
+    ],
+    "Synthetic cannabinoid": [
+      "K2",
+      "Noid",
+      "Spice",
+      "Synthetic cannabinoids"
+    ],
+    "THJ-018": [
+      "Thj",
+      "Thj018"
+    ],
+    "THJ-2201": [
+      "Thj2201"
+    ],
+    "TMA-2": [
+      "Tma2"
+    ],
+    "TMA-6": [
+      "Tma6"
+    ],
+    "Tabernanthe iboga (botany)": [
+      "Iboga",
+      "Tabernanthe iboga"
+    ],
+    "Tapentadol": [
+      "Nucynta"
+    ],
+    "Temazepam": [
+      "Restoril"
+    ],
+    "Tetrahydrocannabihexol": [
+      "THCH"
+    ],
+    "Tetrahydrocannabiphorol": [
+      "THCP"
+    ],
+    "Tetrahydrocannabutol": [
+      "THCB"
+    ],
+    "Theacrine": [
+      "Teacrine"
+    ],
+    "Theanine": [
+      "L-Theanine"
+    ],
+    "Thienodiazepines": [
+      "Substituted thienodiazepine",
+      "Thienodiazepine",
+      "Thienzodiazepines"
+    ],
+    "Tianeptine": [
+      "Coaxil",
+      "Stablon"
+    ],
+    "Tramadol": [
+      "Ralivia",
+      "Tramal",
+      "Ultram"
+    ],
+    "Tyrosine": [
+      "4-Hydroxyphenylalanine",
+      "L-Tyrosine"
+    ],
+    "Xanthines": [
+      "Substituted xanthine",
+      "Xanthine"
+    ],
+    "Zolpidem": [
+      "Ambien",
+      "Edluar",
+      "Intermezzo",
+      "Stilnox",
+      "Sublinox",
+      "Zolpimist"
+    ],
+    "Zopiclone": [
+      "Imovane",
+      "Zimovane"
+    ],
+    "ΑMT": [
+      "Alpha-Methyltryptamine",
+      "AMT",
+      "Indopan",
+      "Α-Methyltryptamine",
+      "Α-MT"
+    ],
+    "Βk-2C-B": [
+      "Bk-2C-B",
+      "Bk2cb",
+      "SSk-2C-B"
+    ],
+    "Δ-10-Tetrahydrocannabinol": [
+      "Delta-10-THC"
+    ],
+    "Δ-8-Tetrahydrocannabinol": [
+      "Delta-8-THC"
+    ]
+  }
+}

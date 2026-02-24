@@ -22,7 +22,7 @@ pub struct Metrics {
     pub cache_index_by_chemical_class_size: Gauge,
     pub cache_index_by_psychoactive_class_size: Gauge,
     pub cache_index_by_effect_size: Gauge,
-    pub cache_index_trigrams_total: Gauge,
+    pub cache_index_aliases_total: Gauge,
 
     // Query metrics
     pub query_duration_seconds: HistogramVec,
@@ -113,11 +113,11 @@ impl Metrics {
         ))?;
         registry.register(Box::new(cache_index_by_effect_size.clone()))?;
 
-        let cache_index_trigrams_total = Gauge::with_opts(Opts::new(
-            "bifrost_cache_index_trigrams_total",
-            "Number of trigrams indexed",
+        let cache_index_aliases_total = Gauge::with_opts(Opts::new(
+            "bifrost_cache_index_aliases_total",
+            "Number of aliases indexed for substance search",
         ))?;
-        registry.register(Box::new(cache_index_trigrams_total.clone()))?;
+        registry.register(Box::new(cache_index_aliases_total.clone()))?;
 
         // Query metrics
         let query_duration_seconds = HistogramVec::new(
@@ -297,7 +297,7 @@ impl Metrics {
             cache_index_by_chemical_class_size,
             cache_index_by_psychoactive_class_size,
             cache_index_by_effect_size,
-            cache_index_trigrams_total,
+            cache_index_aliases_total,
             query_duration_seconds,
             query_results_total,
             query_total,
@@ -392,8 +392,8 @@ impl Metrics {
             .set(snapshot.by_psychoactive_class.len() as f64);
         self.cache_index_by_effect_size
             .set(snapshot.by_effect.len() as f64);
-        self.cache_index_trigrams_total
-            .set(snapshot.trigram_index.len() as f64);
+        self.cache_index_aliases_total
+            .set(snapshot.by_alias.len() as f64);
     }
 
     /// Update queue metrics

@@ -17,6 +17,7 @@ mod utils;
 use crate::cache::{
     load_from_disk, persist_to_disk, Revalidator, SnapshotHolder, SubstanceSnapshot,
 };
+use crate::cache::snapshot::SubstanceAliases;
 use crate::config::Config;
 use crate::graphql::create_schema;
 use crate::metrics::{create_metrics, SharedMetrics};
@@ -210,8 +211,16 @@ async fn main() -> anyhow::Result<()> {
         plebiscite_service,
         reagent_data,
         metrics.clone(),
-        config.cache.clone(),
     );
+
+    // Fetch wiki redirects in background (non-blocking, updates aliases after completion)
+    {
+        let api_clone = api.clone();
+        let snapshot_clone = snapshot_holder.clone();
+        tokio::spawn(async move {
+            fetch_and_cache_redirects(&api_clone, &snapshot_clone).await;
+        });
+    }
 
     // App state (currently unused but kept for future expansion)
     let _app_state = AppState {
@@ -279,6 +288,75 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
+/// Load substance aliases from the curated JSON file, then merge in
+/// cached wiki redirect data if available.
+fn load_substance_aliases() -> SubstanceAliases {
+    // 1. Load curated aliases
+    let alias_path = std::path::Path::new("data/substance_aliases.json");
+    let mut aliases = if alias_path.exists() {
+        match SubstanceAliases::load_from_file(alias_path) {
+            Ok(a) => a,
+            Err(e) => {
+                warn!(error = %e, "Failed to load substance aliases, search will use names only");
+                SubstanceAliases::empty()
+            }
+        }
+    } else {
+        info!("No substance aliases file found at data/substance_aliases.json, search will use names only");
+        SubstanceAliases::empty()
+    };
+
+    // 2. Merge cached wiki redirects if available
+    let redirect_cache_path = std::path::Path::new("data/wiki_redirects.json");
+    if redirect_cache_path.exists() {
+        match SubstanceAliases::load_redirect_cache(redirect_cache_path) {
+            Ok(redirects) => {
+                aliases.merge_redirects(&redirects);
+            }
+            Err(e) => {
+                warn!(error = %e, "Failed to load cached wiki redirects");
+            }
+        }
+    }
+
+    aliases
+}
+
+/// Fetch wiki redirects in background and update the snapshot's alias data.
+/// This runs after the server is up so it doesn't block startup.
+async fn fetch_and_cache_redirects(
+    api: &PsychonautApi,
+    snapshot_holder: &SnapshotHolder,
+) {
+    info!("Fetching wiki redirects in background...");
+
+    let redirect_cache_path = std::path::Path::new("data/wiki_redirects.json");
+
+    match api.fetch_all_redirects().await {
+        Ok(redirects) => {
+            // Cache to disk for next boot
+            if let Err(e) = SubstanceAliases::save_redirect_cache(&redirects, redirect_cache_path) {
+                warn!(error = %e, "Failed to cache wiki redirects to disk");
+            }
+
+            // Merge into the live snapshot's alias data
+            snapshot_holder
+                .modify(|snapshot| {
+                    snapshot.alias_data.merge_redirects(&redirects);
+                    snapshot.rebuild_indexes();
+                    info!(
+                        aliases = snapshot.by_alias.len(),
+                        "Snapshot alias index rebuilt with fresh wiki redirects"
+                    );
+                })
+                .await;
+        }
+        Err(e) => {
+            warn!(error = %e, "Failed to fetch wiki redirects, using cached/curated data only");
+        }
+    }
+}
+
 /// Initialize the snapshot from disk or perform cold start
 async fn initialize_snapshot(
     config: &Config,
@@ -288,6 +366,9 @@ async fn initialize_snapshot(
 ) -> anyhow::Result<(SnapshotHolder, &'static str)> {
     let cache_path = &config.cache.cache_path;
 
+    // Load substance aliases for search matching
+    let alias_data = load_substance_aliases();
+
     // Try to load from disk
     match load_from_disk(cache_path).await {
         Ok(snapshot) => {
@@ -295,6 +376,12 @@ async fn initialize_snapshot(
                 substances = snapshot.substances.len(),
                 path = %cache_path.display(),
                 "Loaded snapshot from disk cache"
+            );
+
+            // Re-build snapshot with alias data (disk cache doesn't store aliases)
+            let snapshot = SubstanceSnapshot::build_with_aliases(
+                snapshot.substances,
+                alias_data,
             );
 
             let holder = SnapshotHolder::new(snapshot);
@@ -337,7 +424,7 @@ async fn initialize_snapshot(
                 "Full snapshot fetched, building indexes"
             );
 
-            let snapshot = SubstanceSnapshot::build(substances);
+            let snapshot = SubstanceSnapshot::build_with_aliases(substances, alias_data);
 
             // Persist to disk
             if let Err(e) = persist_to_disk(&snapshot, cache_path).await {

@@ -2,8 +2,9 @@ use crate::error::BifrostError;
 use reqwest::Client;
 use serde::Deserialize;
 use serde_json::Value;
+use std::collections::HashMap;
 use std::time::{Duration, Instant};
-use tracing::{debug, instrument, trace, warn};
+use tracing::{debug, info, instrument, trace, warn};
 
 const MAX_RETRIES: u32 = 3;
 const INITIAL_BACKOFF_MS: u64 = 100;
@@ -303,5 +304,166 @@ impl PsychonautApi {
 
         debug!(image_count = images.len(), "Found images");
         Ok(images)
+    }
+
+    /// Fetch all redirects in namespace 0 (main) using the allredirects API.
+    ///
+    /// Phase 1: Get (fromid, target_title) pairs with pagination.
+    /// Phase 2: Resolve fromids to source page titles in batches of 50.
+    ///
+    /// Returns a map of target_title -> Vec<source_title> (redirect aliases).
+    #[instrument(skip(self), fields(query_type = "allredirects"))]
+    pub async fn fetch_all_redirects(
+        &self,
+    ) -> Result<HashMap<String, Vec<String>>, BifrostError> {
+        info!("Fetching all wiki redirects (Phase 1: allredirects)...");
+
+        // Phase 1: Get all redirect entries (fromid -> target_title)
+        let mut entries: Vec<(u64, String)> = Vec::new();
+        let mut arcontinue: Option<String> = None;
+        let mut batch = 0u32;
+
+        loop {
+            batch += 1;
+            let mut params: Vec<(&str, &str)> = vec![
+                ("action", "query"),
+                ("list", "allredirects"),
+                ("arprop", "ids|title"),
+                ("arnamespace", "0"),
+                ("arlimit", "max"),
+            ];
+
+            let arcontinue_val;
+            let continue_val;
+            if let Some(ref cont) = arcontinue {
+                arcontinue_val = cont.clone();
+                continue_val = "-||".to_string();
+                params.push(("arcontinue", &arcontinue_val));
+                params.push(("continue", &continue_val));
+            }
+
+            let json = self.get_with_retry(&params).await?;
+
+            if let Some(redirects) = json
+                .pointer("/query/allredirects")
+                .and_then(|v| v.as_array())
+            {
+                for entry in redirects {
+                    if let (Some(fromid), Some(title)) = (
+                        entry.get("fromid").and_then(|v| v.as_u64()),
+                        entry.get("title").and_then(|v| v.as_str()),
+                    ) {
+                        entries.push((fromid, title.to_string()));
+                    }
+                }
+            }
+
+            debug!(
+                batch = batch,
+                entries = entries.len(),
+                "Fetched redirect batch"
+            );
+
+            // Check for continuation
+            if let Some(cont) = json.get("continue") {
+                if let Some(next) = cont.get("arcontinue").and_then(|v| v.as_str()) {
+                    arcontinue = Some(next.to_string());
+                    // Rate limiting: 500ms between paginated requests
+                    tokio::time::sleep(Duration::from_millis(500)).await;
+                    continue;
+                }
+            }
+            break;
+        }
+
+        info!(
+            total_entries = entries.len(),
+            "Phase 1 complete, resolving page IDs..."
+        );
+
+        // Phase 2: Resolve fromids to source page titles
+        let unique_ids: Vec<u64> = {
+            let mut ids: Vec<u64> = entries.iter().map(|(id, _)| *id).collect();
+            ids.sort_unstable();
+            ids.dedup();
+            ids
+        };
+
+        let mut id_to_title: HashMap<u64, String> = HashMap::new();
+        let batch_size = 50;
+
+        for (i, chunk) in unique_ids.chunks(batch_size).enumerate() {
+            let ids_str: String = chunk
+                .iter()
+                .map(|id| id.to_string())
+                .collect::<Vec<_>>()
+                .join("|");
+
+            let params: Vec<(&str, &str)> = vec![
+                ("action", "query"),
+                ("pageids", &ids_str),
+                ("prop", "info"),
+            ];
+
+            let json = self.get_with_retry(&params).await?;
+
+            if let Some(pages) = json
+                .pointer("/query/pages")
+                .and_then(|v| v.as_object())
+            {
+                for (pid_str, page_info) in pages {
+                    if let (Ok(pid), Some(title)) = (
+                        pid_str.parse::<u64>(),
+                        page_info.get("title").and_then(|v| v.as_str()),
+                    ) {
+                        id_to_title.insert(pid, title.to_string());
+                    }
+                }
+            }
+
+            if (i + 1) % 20 == 0 {
+                debug!(
+                    resolved = id_to_title.len(),
+                    total = unique_ids.len(),
+                    "Resolving page IDs..."
+                );
+            }
+
+            // Rate limiting: 300ms between batches
+            tokio::time::sleep(Duration::from_millis(300)).await;
+        }
+
+        info!(
+            resolved = id_to_title.len(),
+            "Phase 2 complete, building redirect map..."
+        );
+
+        // Build the redirect map: target_title -> Vec<source_title>
+        let mut redirect_map: HashMap<String, Vec<String>> = HashMap::new();
+
+        for (fromid, target_title) in &entries {
+            if let Some(source_title) = id_to_title.get(fromid) {
+                if source_title != target_title {
+                    redirect_map
+                        .entry(target_title.clone())
+                        .or_default()
+                        .push(source_title.clone());
+                }
+            }
+        }
+
+        // Deduplicate and sort
+        for sources in redirect_map.values_mut() {
+            sources.sort();
+            sources.dedup();
+        }
+
+        info!(
+            targets = redirect_map.len(),
+            total_redirects = redirect_map.values().map(|v| v.len()).sum::<usize>(),
+            "Redirect map built"
+        );
+
+        Ok(redirect_map)
     }
 }

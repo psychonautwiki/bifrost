@@ -18,9 +18,6 @@ const DEFAULT_RECONCILIATION_INTERVAL_SECS: u64 = 6 * 60 * 60;
 /// Default baseline latency for adaptive shaping (milliseconds)
 const DEFAULT_BASELINE_LATENCY_MS: u64 = 500;
 
-/// Default trigram search threshold
-const DEFAULT_TRIGRAM_THRESHOLD: f32 = 0.3;
-
 #[derive(Debug, Clone)]
 pub struct ServerConfig {
     pub port: u16,
@@ -61,8 +58,6 @@ pub struct CacheConfig {
     pub reconciliation_interval_secs: u64,
     /// Baseline latency for adaptive shaping (milliseconds)
     pub baseline_latency_ms: u64,
-    /// Trigram search match threshold (0.0-1.0)
-    pub trigram_threshold: f32,
 }
 
 impl Default for CacheConfig {
@@ -74,7 +69,6 @@ impl Default for CacheConfig {
             poll_interval_ms: DEFAULT_POLL_INTERVAL_MS,
             reconciliation_interval_secs: DEFAULT_RECONCILIATION_INTERVAL_SECS,
             baseline_latency_ms: DEFAULT_BASELINE_LATENCY_MS,
-            trigram_threshold: DEFAULT_TRIGRAM_THRESHOLD,
         }
     }
 }
@@ -134,11 +128,6 @@ impl Config {
             .and_then(|v| v.parse().ok())
             .unwrap_or(DEFAULT_BASELINE_LATENCY_MS);
 
-        let trigram_threshold = env::var("TRIGRAM_THRESHOLD")
-            .ok()
-            .and_then(|v| v.parse().ok())
-            .unwrap_or(DEFAULT_TRIGRAM_THRESHOLD);
-
         Ok(Self {
             server: ServerConfig {
                 port: env::var("PORT")
@@ -165,7 +154,6 @@ impl Config {
                 poll_interval_ms,
                 reconciliation_interval_secs,
                 baseline_latency_ms,
-                trigram_threshold,
             },
             debug_requests: false, // Set by CLI args in main.rs
         })

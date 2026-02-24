@@ -2,6 +2,10 @@
 //!
 //! This module provides the core data structures for holding a complete snapshot
 //! of all substances with efficient indexing for all query patterns.
+//!
+//! Substance search uses exact and prefix matching against canonical names,
+//! common names, and curated aliases (loaded from data/substance_aliases.json).
+//! No fuzzy/trigram matching is used for the top-level substance query.
 
 use crate::graphql::model::{Effect, Substance, SubstanceImage};
 use std::collections::HashMap;
@@ -21,96 +25,157 @@ pub struct SnapshotMeta {
     pub build_duration_ms: u64,
     /// Number of effects indexed
     pub effect_count: usize,
-    /// Number of trigrams indexed
-    pub trigram_count: usize,
+    /// Number of aliases indexed
+    pub alias_count: usize,
 }
 
-/// Trigram index for fuzzy text search
-#[derive(Debug, Clone)]
-pub struct TrigramIndex {
-    /// Trigram -> list of (substance_index, score_boost)
-    trigrams: HashMap<String, Vec<(usize, f32)>>,
+/// Alias data loaded from substance_aliases.json
+/// Maps canonical substance name -> list of alternative names
+#[derive(Debug, Clone, Default)]
+pub struct SubstanceAliases {
+    /// Canonical substance name -> list of aliases
+    pub aliases: HashMap<String, Vec<String>>,
 }
 
-impl TrigramIndex {
-    /// Create a new empty trigram index
-    pub fn new() -> Self {
-        Self {
-            trigrams: HashMap::new(),
-        }
-    }
+impl SubstanceAliases {
+    /// Load aliases from a JSON file
+    pub fn load_from_file(path: &std::path::Path) -> anyhow::Result<Self> {
+        let content = std::fs::read_to_string(path)?;
+        let parsed: serde_json::Value = serde_json::from_str(&content)?;
 
-    /// Extract trigrams from a string with padding for edge matching
-    fn extract_trigrams(s: &str) -> Vec<String> {
-        let normalized = s.to_lowercase();
-        // Pad with spaces for edge trigrams
-        let padded = format!("  {}  ", normalized);
-        let chars: Vec<char> = padded.chars().collect();
+        let mut aliases = HashMap::new();
 
-        if chars.len() < 3 {
-            return vec![];
-        }
-
-        chars.windows(3).map(|w| w.iter().collect()).collect()
-    }
-
-    /// Insert a text entry into the index
-    pub fn insert(&mut self, text: &str, idx: usize) {
-        self.insert_with_boost(text, idx, 1.0);
-    }
-
-    /// Insert a text entry with a custom score boost
-    pub fn insert_with_boost(&mut self, text: &str, idx: usize, boost: f32) {
-        for trigram in Self::extract_trigrams(text) {
-            self.trigrams.entry(trigram).or_default().push((idx, boost));
-        }
-    }
-
-    /// Search for entries matching the query
-    /// Returns (index, score) pairs sorted by score descending
-    pub fn search(&self, query: &str, threshold: f32) -> Vec<(usize, f32)> {
-        let query_trigrams = Self::extract_trigrams(query);
-        if query_trigrams.is_empty() {
-            return vec![];
-        }
-
-        let query_len = query_trigrams.len() as f32;
-        let mut scores: HashMap<usize, f32> = HashMap::new();
-
-        for trigram in &query_trigrams {
-            if let Some(matches) = self.trigrams.get(trigram) {
-                for (idx, boost) in matches {
-                    *scores.entry(*idx).or_default() += boost;
+        if let Some(alias_map) = parsed.get("aliases").and_then(|v| v.as_object()) {
+            for (substance_name, alias_list) in alias_map {
+                if let Some(arr) = alias_list.as_array() {
+                    let names: Vec<String> = arr
+                        .iter()
+                        .filter_map(|v| v.as_str().map(|s| s.to_string()))
+                        .collect();
+                    if !names.is_empty() {
+                        aliases.insert(substance_name.clone(), names);
+                    }
                 }
             }
         }
 
-        // Normalize by query length and filter by threshold
-        let mut results: Vec<(usize, f32)> = scores
-            .into_iter()
-            .map(|(idx, score)| (idx, score / query_len))
-            .filter(|(_, score)| *score >= threshold)
-            .collect();
+        info!(
+            substances_with_aliases = aliases.len(),
+            total_aliases = aliases.values().map(|v| v.len()).sum::<usize>(),
+            "Loaded substance aliases"
+        );
 
-        // Sort by score descending
-        results.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
-        results
+        Ok(Self { aliases })
     }
 
-    /// Get the total number of trigrams indexed
-    pub fn len(&self) -> usize {
-        self.trigrams.len()
+    /// Create empty aliases (no file available)
+    pub fn empty() -> Self {
+        Self {
+            aliases: HashMap::new(),
+        }
     }
 
-    /// Check if the index is empty
-    pub fn is_empty(&self) -> bool {
-        self.trigrams.is_empty()
-    }
-}
+    /// Merge wiki redirect data into this alias set.
+    /// Redirects are added as aliases only if they don't already exist.
+    /// Filters out case-only duplicates, subpages, talk pages, and botany suffixes.
+    pub fn merge_redirects(&mut self, redirects: &HashMap<String, Vec<String>>) {
+        let mut added = 0usize;
 
-impl Default for TrigramIndex {
-    fn default() -> Self {
-        Self::new()
+        for (target, sources) in redirects {
+            let target_lower = target.to_lowercase();
+            let existing = self.aliases.entry(target.clone()).or_default();
+            let existing_lower: std::collections::HashSet<String> =
+                existing.iter().map(|a| a.to_lowercase()).collect();
+
+            for source in sources {
+                // Skip problematic entries
+                if source.starts_with("Talk:")
+                    || source.starts_with("File:")
+                    || source.starts_with("Project talk:")
+                    || source.contains('/')
+                    || source.ends_with("(Botany)")
+                    || source.ends_with("(botany)")
+                    || source.ends_with("(Mycology)")
+                    || source.ends_with("(mycology)")
+                {
+                    continue;
+                }
+
+                let source_lower = source.to_lowercase();
+
+                // Skip case-only duplicates of the target
+                if source_lower == target_lower {
+                    continue;
+                }
+
+                // Skip if already present (case-insensitive)
+                if existing_lower.contains(&source_lower) {
+                    continue;
+                }
+
+                existing.push(source.clone());
+                added += 1;
+            }
+        }
+
+        info!(
+            new_aliases = added,
+            total_substances = self.aliases.len(),
+            total_aliases = self.aliases.values().map(|v| v.len()).sum::<usize>(),
+            "Merged wiki redirects into aliases"
+        );
+    }
+
+    /// Save the merged alias data to a cache file for faster subsequent loads
+    pub fn save_redirect_cache(
+        redirects: &HashMap<String, Vec<String>>,
+        path: &std::path::Path,
+    ) -> anyhow::Result<()> {
+        let output = serde_json::json!({
+            "_meta": {
+                "description": "Cached PsychonautWiki redirect mappings",
+                "cached_at": chrono::Utc::now().to_rfc3339(),
+                "total_targets": redirects.len(),
+                "total_redirects": redirects.values().map(|v| v.len()).sum::<usize>(),
+            },
+            "redirects": redirects,
+        });
+        let content = serde_json::to_string_pretty(&output)?;
+        std::fs::write(path, content)?;
+        info!(path = %path.display(), "Saved redirect cache");
+        Ok(())
+    }
+
+    /// Load cached redirect data
+    pub fn load_redirect_cache(
+        path: &std::path::Path,
+    ) -> anyhow::Result<HashMap<String, Vec<String>>> {
+        let content = std::fs::read_to_string(path)?;
+        let parsed: serde_json::Value = serde_json::from_str(&content)?;
+
+        let mut redirects = HashMap::new();
+        if let Some(redirect_map) = parsed.get("redirects").and_then(|v| v.as_object()) {
+            for (target, sources) in redirect_map {
+                if let Some(arr) = sources.as_array() {
+                    let names: Vec<String> = arr
+                        .iter()
+                        .filter_map(|v| v.as_str().map(|s| s.to_string()))
+                        .collect();
+                    if !names.is_empty() {
+                        redirects.insert(target.clone(), names);
+                    }
+                }
+            }
+        }
+
+        info!(
+            targets = redirects.len(),
+            total_redirects = redirects.values().map(|v| v.len()).sum::<usize>(),
+            path = %path.display(),
+            "Loaded redirect cache"
+        );
+
+        Ok(redirects)
     }
 }
 
@@ -123,6 +188,10 @@ pub struct SubstanceSnapshot {
     /// Substance name -> index (case-insensitive)
     pub by_name: HashMap<String, usize>,
 
+    /// Alias -> index (case-insensitive). Maps alternative names/abbreviations
+    /// to substance indices. Populated from substance_aliases.json + common_names.
+    pub by_alias: HashMap<String, usize>,
+
     /// Chemical class -> sorted indices
     pub by_chemical_class: HashMap<String, Vec<usize>>,
 
@@ -132,32 +201,38 @@ pub struct SubstanceSnapshot {
     /// Effect name -> sorted indices (inverted index from substance.effects)
     pub by_effect: HashMap<String, Vec<usize>>,
 
-    /// Trigram index for fuzzy name search
-    pub trigram_index: TrigramIndex,
+    /// Curated alias data (kept for rebuilding indexes)
+    pub alias_data: SubstanceAliases,
 
     /// Snapshot metadata
     pub meta: SnapshotMeta,
 }
 
 impl SubstanceSnapshot {
-    /// Build a new snapshot from a list of substances
+    /// Build a new snapshot from a list of substances with alias data
     pub fn build(substances: Vec<Substance>) -> Self {
+        Self::build_with_aliases(substances, SubstanceAliases::empty())
+    }
+
+    /// Build a new snapshot from a list of substances with curated aliases
+    pub fn build_with_aliases(substances: Vec<Substance>, alias_data: SubstanceAliases) -> Self {
         let start = Instant::now();
         let substance_count = substances.len();
 
         let mut snapshot = Self {
             substances,
             by_name: HashMap::new(),
+            by_alias: HashMap::new(),
             by_chemical_class: HashMap::new(),
             by_psychoactive_class: HashMap::new(),
             by_effect: HashMap::new(),
-            trigram_index: TrigramIndex::new(),
+            alias_data,
             meta: SnapshotMeta {
                 created_at: start,
                 substance_count,
                 build_duration_ms: 0,
                 effect_count: 0,
-                trigram_count: 0,
+                alias_count: 0,
             },
         };
 
@@ -166,12 +241,12 @@ impl SubstanceSnapshot {
         let build_duration = start.elapsed();
         snapshot.meta.build_duration_ms = build_duration.as_millis() as u64;
         snapshot.meta.effect_count = snapshot.by_effect.len();
-        snapshot.meta.trigram_count = snapshot.trigram_index.len();
+        snapshot.meta.alias_count = snapshot.by_alias.len();
 
         info!(
             substances = substance_count,
             effects = snapshot.meta.effect_count,
-            trigrams = snapshot.meta.trigram_count,
+            aliases = snapshot.meta.alias_count,
             duration_ms = snapshot.meta.build_duration_ms,
             "Snapshot built"
         );
@@ -182,15 +257,31 @@ impl SubstanceSnapshot {
     /// Rebuild all indexes from the substances list
     pub fn rebuild_indexes(&mut self) {
         self.by_name.clear();
+        self.by_alias.clear();
         self.by_chemical_class.clear();
         self.by_psychoactive_class.clear();
         self.by_effect.clear();
-        self.trigram_index = TrigramIndex::new();
 
         for idx in 0..self.substances.len() {
             // Clone the substance to avoid borrow issues
             let substance = self.substances[idx].clone();
             self.index_substance(idx, &substance);
+        }
+
+        // Index curated aliases from the alias data
+        let alias_data = self.alias_data.clone();
+        for (substance_name, aliases) in &alias_data.aliases {
+            if let Some(&idx) = self.by_name.get(&substance_name.to_lowercase()) {
+                for alias in aliases {
+                    let alias_lower = alias.to_lowercase();
+                    // Don't overwrite existing entries (first one wins)
+                    if !self.by_alias.contains_key(&alias_lower)
+                        && !self.by_name.contains_key(&alias_lower)
+                    {
+                        self.by_alias.insert(alias_lower, idx);
+                    }
+                }
+            }
         }
     }
 
@@ -201,19 +292,26 @@ impl SubstanceSnapshot {
             let name_lower = name.to_lowercase();
             self.by_name.insert(name_lower.clone(), idx);
 
-            // Primary name gets higher boost
-            self.trigram_index.insert_with_boost(name, idx, 2.0);
-
-            // Also index common names with normal boost
+            // Also index common names as aliases
             if let Some(common_names) = &substance.common_names {
                 for cn in common_names {
-                    self.trigram_index.insert(cn, idx);
+                    let cn_lower = cn.to_lowercase();
+                    if !self.by_alias.contains_key(&cn_lower)
+                        && !self.by_name.contains_key(&cn_lower)
+                    {
+                        self.by_alias.insert(cn_lower, idx);
+                    }
                 }
             }
 
-            // Index systematic name with lower boost
+            // Also index systematic name as alias (lower priority, don't overwrite)
             if let Some(systematic) = &substance.systematic_name {
-                self.trigram_index.insert_with_boost(systematic, idx, 0.5);
+                let sys_lower = systematic.to_lowercase();
+                if !self.by_alias.contains_key(&sys_lower)
+                    && !self.by_name.contains_key(&sys_lower)
+                {
+                    self.by_alias.insert(sys_lower, idx);
+                }
             }
         }
 
@@ -259,6 +357,92 @@ impl SubstanceSnapshot {
             .map(|&idx| &self.substances[idx])
     }
 
+    /// Get a substance by name or alias (case-insensitive)
+    /// Tries exact name match first, then alias match
+    pub fn get_by_name_or_alias(&self, query: &str) -> Option<&Substance> {
+        let query_lower = query.to_lowercase();
+
+        // 1. Exact name match
+        if let Some(&idx) = self.by_name.get(&query_lower) {
+            return Some(&self.substances[idx]);
+        }
+
+        // 2. Alias match
+        if let Some(&idx) = self.by_alias.get(&query_lower) {
+            return Some(&self.substances[idx]);
+        }
+
+        None
+    }
+
+    /// Search substances by exact name/alias match, then prefix match.
+    ///
+    /// Search priority:
+    /// 1. Exact match on canonical name (case-insensitive)
+    /// 2. Exact match on alias (case-insensitive)
+    /// 3. Prefix match on canonical name (case-insensitive)
+    /// 4. Prefix match on alias (case-insensitive)
+    ///
+    /// Returns results deduplicated and ordered by match quality.
+    pub fn search(&self, query: &str) -> Vec<&Substance> {
+        let query_lower = query.to_lowercase();
+
+        if query_lower.is_empty() {
+            return vec![];
+        }
+
+        let mut seen = std::collections::HashSet::new();
+        let mut results = Vec::new();
+
+        // 1. Exact match on canonical name
+        if let Some(&idx) = self.by_name.get(&query_lower) {
+            if seen.insert(idx) {
+                results.push(&self.substances[idx]);
+            }
+        }
+
+        // 2. Exact match on alias
+        if let Some(&idx) = self.by_alias.get(&query_lower) {
+            if seen.insert(idx) {
+                results.push(&self.substances[idx]);
+            }
+        }
+
+        // If we have an exact match, return just that - no prefix expansion
+        if !results.is_empty() {
+            return results;
+        }
+
+        // 3. Prefix match on canonical names
+        for (name, &idx) in &self.by_name {
+            if name.starts_with(&query_lower) {
+                if seen.insert(idx) {
+                    results.push(&self.substances[idx]);
+                }
+            }
+        }
+
+        // 4. Prefix match on aliases
+        for (alias, &idx) in &self.by_alias {
+            if alias.starts_with(&query_lower) {
+                if seen.insert(idx) {
+                    results.push(&self.substances[idx]);
+                }
+            }
+        }
+
+        // Sort prefix matches alphabetically by name for deterministic results
+        if results.len() > 1 {
+            results.sort_by(|a, b| {
+                let name_a = a.name.as_deref().unwrap_or("");
+                let name_b = b.name.as_deref().unwrap_or("");
+                name_a.to_lowercase().cmp(&name_b.to_lowercase())
+            });
+        }
+
+        results
+    }
+
     /// Get substances by chemical class
     pub fn get_by_chemical_class(&self, class: &str) -> Vec<&Substance> {
         self.by_chemical_class
@@ -299,15 +483,6 @@ impl SubstanceSnapshot {
         }
 
         result
-    }
-
-    /// Search substances by fuzzy text match
-    pub fn search(&self, query: &str, threshold: f32) -> Vec<&Substance> {
-        self.trigram_index
-            .search(query, threshold)
-            .into_iter()
-            .map(|(idx, _score)| &self.substances[idx])
-            .collect()
     }
 
     /// Get all substances with pagination
@@ -433,37 +608,139 @@ impl SnapshotHolder {
 mod tests {
     use super::*;
 
-    #[test]
-    fn test_trigram_extraction() {
-        let trigrams = TrigramIndex::extract_trigrams("LSD");
-        assert!(!trigrams.is_empty());
-        // Should include edge trigrams with padding
-        assert!(trigrams.contains(&"  l".to_string()));
-        assert!(trigrams.contains(&" ls".to_string()));
-        assert!(trigrams.contains(&"lsd".to_string()));
+    fn make_test_substance(name: &str) -> Substance {
+        Substance {
+            name: Some(name.to_string()),
+            ..Default::default()
+        }
+    }
+
+    fn make_test_aliases() -> SubstanceAliases {
+        let mut aliases = HashMap::new();
+        aliases.insert(
+            "LSD".to_string(),
+            vec![
+                "Acid".to_string(),
+                "LSD-25".to_string(),
+                "Lucy".to_string(),
+                "Lysergic acid diethylamide".to_string(),
+            ],
+        );
+        aliases.insert(
+            "MDMA".to_string(),
+            vec![
+                "Ecstasy".to_string(),
+                "Molly".to_string(),
+                "XTC".to_string(),
+            ],
+        );
+        SubstanceAliases { aliases }
     }
 
     #[test]
-    fn test_trigram_search() {
-        let mut index = TrigramIndex::new();
-        index.insert("LSD", 0);
-        index.insert("Lysergic acid diethylamide", 0);
-        index.insert("MDMA", 1);
-        index.insert("Cannabis", 2);
+    fn test_exact_name_search() {
+        let substances = vec![
+            make_test_substance("LSD"),
+            make_test_substance("LSA"),
+            make_test_substance("MDMA"),
+            make_test_substance("Cannabis"),
+        ];
 
-        // Exact match should score high
-        let results = index.search("LSD", 0.3);
-        assert!(!results.is_empty());
-        assert_eq!(results[0].0, 0);
+        let snapshot = SubstanceSnapshot::build_with_aliases(substances, make_test_aliases());
 
-        // Partial match
-        let results = index.search("Lyser", 0.3);
-        assert!(!results.is_empty());
-        assert_eq!(results[0].0, 0);
+        // Exact match: "LSD" should return only LSD
+        let results = snapshot.search("LSD");
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].name.as_deref(), Some("LSD"));
+
+        // Exact match case-insensitive
+        let results = snapshot.search("lsd");
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].name.as_deref(), Some("LSD"));
     }
 
     #[test]
-    fn test_snapshot_build() {
+    fn test_alias_search() {
+        let substances = vec![
+            make_test_substance("LSD"),
+            make_test_substance("MDMA"),
+            make_test_substance("Cannabis"),
+        ];
+
+        let snapshot = SubstanceSnapshot::build_with_aliases(substances, make_test_aliases());
+
+        // Alias match: "Acid" should return LSD
+        let results = snapshot.search("Acid");
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].name.as_deref(), Some("LSD"));
+
+        // Alias match: "Molly" should return MDMA
+        let results = snapshot.search("Molly");
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].name.as_deref(), Some("MDMA"));
+
+        // Alias match: "ecstasy" (case-insensitive) should return MDMA
+        let results = snapshot.search("ecstasy");
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].name.as_deref(), Some("MDMA"));
+    }
+
+    #[test]
+    fn test_prefix_search() {
+        let substances = vec![
+            make_test_substance("LSD"),
+            make_test_substance("LSA"),
+            make_test_substance("LSM-775"),
+            make_test_substance("LSZ"),
+            make_test_substance("MDMA"),
+        ];
+
+        let snapshot = SubstanceSnapshot::build_with_aliases(substances, make_test_aliases());
+
+        // Prefix match: "LS" should return LSD, LSA, LSM-775, LSZ
+        let results = snapshot.search("LS");
+        assert_eq!(results.len(), 4);
+        let names: Vec<&str> = results
+            .iter()
+            .filter_map(|s| s.name.as_deref())
+            .collect();
+        assert!(names.contains(&"LSD"));
+        assert!(names.contains(&"LSA"));
+        assert!(names.contains(&"LSM-775"));
+        assert!(names.contains(&"LSZ"));
+    }
+
+    #[test]
+    fn test_exact_match_takes_priority_over_prefix() {
+        let substances = vec![
+            make_test_substance("LSD"),
+            make_test_substance("LSA"),
+        ];
+
+        let snapshot = SubstanceSnapshot::build_with_aliases(substances, make_test_aliases());
+
+        // "LSD" is an exact match, should return ONLY LSD (not LSA via prefix)
+        let results = snapshot.search("LSD");
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].name.as_deref(), Some("LSD"));
+    }
+
+    #[test]
+    fn test_no_match() {
+        let substances = vec![
+            make_test_substance("LSD"),
+            make_test_substance("MDMA"),
+        ];
+
+        let snapshot = SubstanceSnapshot::build_with_aliases(substances, make_test_aliases());
+
+        // No match
+        let results = snapshot.search("Aspirin");
+        assert_eq!(results.len(), 0);
+    }
+
+    #[test]
+    fn test_snapshot_build_basic() {
         let substances = vec![
             Substance {
                 name: Some("LSD".to_string()),
