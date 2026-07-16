@@ -221,8 +221,8 @@ impl PsychonautApi {
         let json = self.get_with_retry(&params).await?;
 
         let mut effects = Vec::new();
-        if let Some(results) = json.pointer("/query/results") {
-            if let Some(sub_obj) = results.get(substance) {
+        if let Some(results) = json.pointer("/query/results").and_then(|v| v.as_object()) {
+            for sub_obj in results.values() {
                 if let Some(printouts) = sub_obj.get("printouts") {
                     if let Some(eff_arr) = printouts.get("Effect") {
                         if let Some(arr) = eff_arr.as_array() {
