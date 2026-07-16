@@ -506,25 +506,18 @@ impl RevalidatorJob {
 
     /// Fetch effects for a substance
     async fn fetch_effects(&self, name: &str) -> Result<Vec<Effect>, BifrostError> {
-        let query = format!("[[:{}]]|?Effect", name);
-        let json = self.api.ask_query(&query, 100, 0).await;
-
-        // The ask query returns effects in printouts
-        // For now, return empty if we can't parse - effects can come from another query
-        match json {
-            Ok(items) => {
-                // Effects are usually in printouts, not as separate items
-                // This is a simplified implementation
-                Ok(items
+        self.api
+            .get_substance_effects(name, 100, 0)
+            .await
+            .map(|items| {
+                items
                     .into_iter()
                     .map(|item| Effect {
                         name: Some(item.fulltext),
                         url: Some(item.fullurl),
                     })
-                    .collect())
-            }
-            Err(_) => Ok(vec![]),
-        }
+                    .collect()
+            })
     }
 
     /// Fetch summary for a substance
