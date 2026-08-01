@@ -1,4 +1,6 @@
+# -----------------------------------------------------------------------------
 # Build stage
+# -----------------------------------------------------------------------------
 FROM rust:1.91.1-slim-bookworm AS builder
 
 WORKDIR /app
@@ -19,10 +21,15 @@ RUN cargo build --release && rm -rf src
 # Copy actual source code
 COPY src ./src
 
-# Build the actual binary (touch to invalidate the dummy)
+# Copy runtime data files
+COPY data ./data
+
+# Build the actual binary
 RUN touch src/main.rs && cargo build --release
 
+# -----------------------------------------------------------------------------
 # Runtime stage
+# -----------------------------------------------------------------------------
 FROM debian:bookworm-slim
 
 WORKDIR /app
@@ -33,11 +40,15 @@ RUN apt-get update && apt-get install -y \
     libssl3 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the binary from builder
+# Copy the binary
 COPY --from=builder /app/target/release/bifrost /usr/local/bin/bifrost
+
+# Copy runtime data required by self-tests
+COPY --from=builder /app/data ./data
 
 # Default port
 ENV PORT=3000
+
 EXPOSE 3000
 
 # Run the server
